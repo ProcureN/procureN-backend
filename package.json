@@ -4,7 +4,7 @@
   "description": "backend for procure-n",
   "main": "index.js",
   "scripts": {
-    "start": "npx src/index",
+    "start": "node src/index.js",
     "build": "npm install"
   },
   "author": "veronica",
