@@ -4,8 +4,8 @@
   "description": "backend for procure-n",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon src/index"
+    "start": "npx src/index",
+    "build": "npm install"
   },
   "author": "veronica",
   "license": "ISC",
