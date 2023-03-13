@@ -23,7 +23,7 @@ router.get("/getenquiries",getEnquiries)
 router.post("/AddProducts",authentication,addProdcts)
 router.put("/updateProducts/:productID",authentication,authorization1,updateProduct)
 router.delete("/products/:productID",authentication,authorization1,DeleteProduct)
-router.get("/getProducts",getProducts)
+router.get("/getproducts",getProducts)
 //=============================requestAdmin===================================
 // router.post("/requestAdmin",requestAdmin)
 module.exports = router 
