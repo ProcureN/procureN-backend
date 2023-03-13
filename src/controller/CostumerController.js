@@ -181,4 +181,23 @@ const deleteCostumers = async (req,res)=>{
 }
 }
 
-module.exports ={register,updateCostumer,login,deleteCostumers}
+//===================================get details======================================
+
+const getDetails = async (req,res)=>{
+    try {
+        let data = req.query
+    let {SelectRole} = data
+
+    let Role = ["Retailer","manufacturer"];
+    if(!Role.includes(SelectRole)) return res.status(400).send({ status: false, msg: `role must be slected among ${Role}` });
+    if(Object.keys(data).length == 0)
+  return res.status(400).send({status:false,msg:"Enter the key and value to filter" })
+
+  let getdata = await costumerModel.find({SelectRole:SelectRole},{isDeleted:false})
+  res.status(200).send({status:true,data:getdata})
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
+
+module.exports ={register,updateCostumer,login,deleteCostumers,getDetails}

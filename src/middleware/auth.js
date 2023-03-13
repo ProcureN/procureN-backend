@@ -23,7 +23,7 @@ const authentication = async function (req, res, next) {
         res.status(500).send({ status: false, message: err.message })
     }
 }
-
+//===========================================================================================
 const authorization = async function (req, res, next) {
     try {
         let customerID = req.params.customerID
@@ -37,10 +37,49 @@ const authorization = async function (req, res, next) {
         let decoded = req.decoded.customerID
         if (customerID !== decoded) { return res.status(403).send({ staus: false, msg: "you are not authorized" }) }
         next()
-    } catch (error) {
+    } catch (err) {
         return res.status(500).send({ status: false, message: err.message })
     }
 
 }
+//=====================================================================================
 
-module.exports = { authentication, authorization }
+async function authorization1(req, res, next) {
+    try {
+      const customerID = req.decoded.customerID;
+      const productID = req.params.productID;
+  
+      const errors = [];
+  
+      if (productID === ":productID") {
+        errors.push("productID is required");
+      } else {
+        if (!validator.isValidObjectId(customerID)) {
+          errors.push("Given bookId is an invalid ObjectId");
+        }
+      }
+  
+      if (errors.length > 0) {
+        return res.status(400).send({
+          status: false,
+          message: `${errors.join(", ")}`,
+        });
+      }
+  
+      const userDocument = await AddProductsModel.findOne({ _id: productID, isDeleted: false });
+      if (!userDocument) {
+        return res.status(404).send({ status: false, message: "book not found" });
+      }
+  
+      const pathcustomerID = userDocument.CostumerID.toString();
+      if (customerID !== pathcustomerID) {
+        return res
+          .status(403)
+          .send({ status: false, message: "user not authorized" });
+      }
+      next();
+    } catch (error) {
+      return res.status(500).send({ status: false, message: error.message });
+    }
+  }
+module.exports = { authentication, authorization,authorization1 }

@@ -47,6 +47,13 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
         type:Number,
         require:true,
         trim: true,
+    },
+    deletedAt: {
+        type: Date
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 },{timestamps:true})
 

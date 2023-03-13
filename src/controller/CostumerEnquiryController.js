@@ -61,4 +61,16 @@ if (!validator.isValidPincode(ShippingPincode)) {
     
     
 }
-module.exports ={EnquiryForm}
+//===================================================================
+
+const getEnquiries = async (req,res)=>{
+    try {
+        let filter = {isDeleted:false}
+        let data = await AddProductsModel.find(filter)
+    res.status(200).send({status:true,data:data})
+    } catch (error) {
+        return res.send({ status: false, message: error.message })
+    }
+    
+}
+module.exports ={EnquiryForm,getEnquiries}

@@ -55,4 +55,4 @@ const costumerSchema = new mongoose.Schema({
         default: false
     }
 }, { timestamps: true })
-module.exports = mongoose.model('retailerRegist', costumerSchema)
+module.exports = mongoose.model('costumer', costumerSchema)
