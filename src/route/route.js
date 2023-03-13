@@ -18,7 +18,7 @@ router.post("/login",login)
 router.get("/getroles",authentication,getDetails)
 //============================enquiry form ============================
 router.post("/Costumer/EnquiryForm/:customerID",authentication, authorization,EnquiryForm)
-router.get("/getEnquiries",getEnquiries)
+router.get("/getenquiries",getEnquiries)
 //=======================Add products===========================
 router.post("/AddProducts",authentication,addProdcts)
 router.put("/updateProducts/:productID",authentication,authorization1,updateProduct)
