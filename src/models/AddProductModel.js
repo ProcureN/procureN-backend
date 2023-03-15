@@ -75,7 +75,7 @@ const AddProductsSchema = new mongoose.Schema({
     SelectImage2: {
         type: String,
 
-    },deletedAt: {
+    }, deletedAt: {
         type: Date
     },
     isDeleted: {

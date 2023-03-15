@@ -1,51 +1,51 @@
 const mongoose = require("mongoose")
-const costumerEnquiryFormSchema = new mongoose.Schema({ 
-    ProductName:  { 
+const costumerEnquiryFormSchema = new mongoose.Schema({
+    ProductName: {
         type: String,
         require: true,
         trim: true,
     },
-    OtherProduct:{
-        type:String,
+    OtherProduct: {
+        type: String,
         trim: true,
     },
     // OtherProduct:{
     //     type:Number,
     //     trim: true,
     // },
-    Name:  { 
+    Name: {
         type: String,
         require: true,
         trim: true,
     },
-    Contact:{
+    Contact: {
         type: String,
         require: true,
         trim: true,
     },
-    AlternativeNumber:{
+    AlternativeNumber: {
         type: String,
         trim: true,
     },
-    Email:{
+    Email: {
         type: String,
         require: true,
-       // unique: true,
+        // unique: true,
         trim: true
     },
-    State:{
-        type:String,
-        require:true,
+    State: {
+        type: String,
+        require: true,
         trim: true,
     },
-    BillingAddress:{
-        type:String,
-        require:true,
+    BillingAddress: {
+        type: String,
+        require: true,
         trim: true,
     },
-    ShippingPincode:{
-        type:Number,
-        require:true,
+    ShippingPincode: {
+        type: Number,
+        require: true,
         trim: true,
     },
     deletedAt: {
@@ -55,6 +55,6 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-},{timestamps:true})
+}, { timestamps: true })
 
 module.exports = mongoose.model('costumerEnquiryForm', costumerEnquiryFormSchema)

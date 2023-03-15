@@ -79,21 +79,21 @@ const addProdcts = async (req, res) => {
         // if (SelectImage1) {
         //     if (!SelectImage1) return res.status(400).send({ status: false, message: "SelectImage1 is required" });
         //     if (validator.isValid(SelectImage1)) return res.status(400).send({ status: false, message: "SelectImage1 should not be an empty string" });
-            if (files && files.length > 0) {
-                let productImgUrl = await aws.uploadFile(files[0])
-                data.SelectImage1 = productImgUrl
-            }
-       // }
+        if (files && files.length > 0) {
+            let productImgUrl = await aws.uploadFile(files[0])
+            data.SelectImage1 = productImgUrl
+        }
+        // }
         //SelectImage2
         // if (SelectImage2) {
         //     if (!SelectImage2) return res.status(400).send({ status: false, message: "SelectImage2 is required" });
-            // if (validator.isValid(SelectImage2)) return res.status(400).send({ status: false, message: "SelectImage2 should not be an empty string" });
-            if (files && files.length > 0) {
-                let productImgUrl1 = await aws.uploadFile(files[1])
-                data.SelectImage2 = productImgUrl1
-            }
+        // if (validator.isValid(SelectImage2)) return res.status(400).send({ status: false, message: "SelectImage2 should not be an empty string" });
+        if (files && files.length > 0) {
+            let productImgUrl1 = await aws.uploadFile(files[1])
+            data.SelectImage2 = productImgUrl1
+        }
 
-       // }
+        // }
         let saveData = await AddProductsModel.create(data)
         res.status(201).send({ status: true, data: saveData })
     } catch (error) {
