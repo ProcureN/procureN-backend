@@ -133,13 +133,13 @@ const register = async (req, res) => {
         let saveData = await costumerModel.create(data)
       
       let otpData = await optModel.create({otp, Email:Email})
-        res.status(201).send({ status: true, data: saveData })
+        res.status(201).send({ status: true, data: otpData })
     } catch (error) {
-        return res.send({ status: false, message: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     } 
 }
 
-//=========================================update=========================================
+//==================================update=========================================
 
 const updateCostumer = async (req, res) => {
     try {

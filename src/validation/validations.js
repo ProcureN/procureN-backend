@@ -29,7 +29,8 @@ const isValidPhone = (Mobile) => {
 };
 
 const isValidEmail = (Email) => {
-  return /^([a-z0-9]+@[a-z]+\.[a-z]{2,3})+$/.test(Email)
+  return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(Email)
+  // return /^([a-z0-9]+@[a-z]+\.[a-z]{2,3})+$/.test(Email)
 };
 
 const isValidPincode = (num) => {
