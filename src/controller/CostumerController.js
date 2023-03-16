@@ -245,7 +245,7 @@ const login = async (req, res) => {
 
 const deleteCostumers = async (req, res) => {
     try {
-        const deleteCostumerID = req.params.CostumerID
+        const deleteCostumerID = req.params.customerID
         //let error =[]
         if (!validator.isValidObjectId(deleteCostumerID)) {
             res.status(400).send({ status: false, message: "Please provide valid costumer Id" })
