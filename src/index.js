@@ -7,6 +7,8 @@ const multer= require("multer");
 
 app.use( multer().any())
 app.use(express.json());
+var cors = require('cors');
+app.use(cors());
 
 mongoose.connect("mongodb+srv://miryala-veronica123:1Sz5U9LVS3afd1bB@cluster0.vfkx3.mongodb.net/broaddcast", {
     useNewUrlParser: true
