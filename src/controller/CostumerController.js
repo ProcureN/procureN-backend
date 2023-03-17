@@ -212,18 +212,18 @@ const login = async (req, res) => {
     try {
         Data = req.body
         if (validator.isValidBody(Data)) return res.status(400).send({ status: false, message: "Enter details to create your account" });
-        const { Email, Password } = Data
-        if (!Email) return res.status(400).send({ status: false, message: "User Email-id is required" });
+        const { email, password } = Data
+        if (!email) return res.status(400).send({ status: false, message: "User Email-id is required" });
 
-        if (!validator.isValidEmail(Email.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Email-id" });
+        if (!validator.isValidEmail(email.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Email-id" });
 
-        const isEmailExists = await costumerModel.findOne({ Email: Email })
+        const isEmailExists = await costumerModel.findOne({ Email: email })
         if (!isEmailExists) return res.status(401).send({ status: false, message: "Email is Incorrect" })
         //  Password Validation 
-        if (validator.isValid(Password)) return res.status(400).send({ status: false, message: "Password should not be an empty string" });
+        if (validator.isValid(password)) return res.status(400).send({ status: false, message: "Password should not be an empty string" });
 
 
-        const isPasswordMatch = await bcrypt.compare(Password, isEmailExists.Password)
+        const isPasswordMatch = await bcrypt.compare(password, isEmailExists.Password)
         if (!isPasswordMatch) return res.status(401).send({ status: false, message: "Password is Incorrect" })
 
         // > Create Jwt Token 
@@ -237,6 +237,7 @@ const login = async (req, res) => {
             customerID: isEmailExists._id.toString(),
             token: token,
         }
+        console.log("Login done")
         res.status(200).send({ status: true, message: "Login Successful", data: result })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
