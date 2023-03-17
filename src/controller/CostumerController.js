@@ -208,6 +208,7 @@ const updateCostumer = async (req, res) => {
 //==================================login=================================================
 
 const login = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         Data = req.body
         if (validator.isValidBody(Data)) return res.status(400).send({ status: false, message: "Enter details to create your account" });
