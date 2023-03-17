@@ -11,7 +11,7 @@ router.get("/test-me", function (req, res) {
   res.send("this is successfully created");
 });
 //=============================costumer==================================
-router.post("/Register", register)
+router.post("/register", register)
 router.put("/UpdateCostumer/:customerID", authentication, authorization, updateCostumer)
 router.delete("/deletecostumer/:customerID", authentication, authorization, deleteCostumers)
 router.post("/login", login)
@@ -25,8 +25,8 @@ router.put("/updateProducts/:productID", authentication, authorization1, updateP
 router.delete("/products/:productID", authentication, authorization1, DeleteProduct)
 router.get("/getproducts", getProducts)
 //=============================otp verification===================================
-router.post("/otpVerification",otpVerification)
+router.post("/otp",otpVerification)
 
 //=============================requestAdmin=======================================
-router.post("/requestAdmin",requestAdmin)
+router.post("/admin",requestAdmin)
 module.exports = router 
