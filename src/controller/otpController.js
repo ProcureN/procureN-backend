@@ -3,6 +3,7 @@ const validator = require("../validation/validations")
 const mongoose = require("mongoose")
 
 const otpVerification = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     let data = req.body
     let { Email, otp } = data
     if (!Email) return res.status(400).send({ status: false, message: "User Email-id is required" });

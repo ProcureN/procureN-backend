@@ -3,6 +3,7 @@ const productModel = require("../models/AddProductModel")
 const validator = require("../validation/validations")
 
 const requestAdmin = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let data = req.body
         let { ProductId, Description, ApprovealStatus } = data

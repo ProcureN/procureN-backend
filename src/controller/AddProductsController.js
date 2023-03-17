@@ -2,6 +2,7 @@ const AddProductsModel = require("../models/AddProductModel")
 const validator = require("../validation/validations")
 const aws = require("../aws/aws")
 const addProdcts = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let data = req.body
         let files = req.files
@@ -102,6 +103,7 @@ const addProdcts = async (req, res) => {
 }
 //==================================product update======================================
 const updateProduct = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         const productID = req.params.productID
         const data = req.body
@@ -212,6 +214,7 @@ const updateProduct = async (req, res) => {
 //=======================product delete================================================
 
 const DeleteProduct = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let productID = req.params.productID
         if (!validator.isValidObjectId(productID)) { res.status(400).send({ status: false, message: "Please provide valid Product Id" }) }
@@ -228,6 +231,7 @@ const DeleteProduct = async (req, res) => {
 
 //======================get products=======================================================
 const getProducts = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let filter = { isDeleted: false }
         let data = await AddProductsModel.find(filter)

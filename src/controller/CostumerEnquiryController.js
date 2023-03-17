@@ -3,6 +3,7 @@ const CostumerEnquiryModel = require("../models/CostomerEnquiryForm")
 const validator = require("../validation/validations")
 
 const EnquiryForm = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let data = req.body
         const { ProductName, OtherProduct, Name, Contact, AlternativeNumber, Email, State, BillingAddress, ShippingPincode } = data
@@ -66,6 +67,7 @@ const EnquiryForm = async (req, res) => {
 //===================================================================
 
 const getEnquiries = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let filter = { isDeleted: false }
         let data = await AddProductModel.find(filter)

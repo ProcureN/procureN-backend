@@ -11,6 +11,7 @@ const optModel = require("../models/OtpModel")
 
 
 const register = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let data = req.body;
         const { Name, Email, Password, SelectRole, Company, JobTitle, phone, State, city } = data
@@ -142,6 +143,7 @@ const register = async (req, res) => {
 //==================================update=========================================
 
 const updateCostumer = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
 
         let data = req.body
@@ -235,6 +237,7 @@ const login = async (req, res) => {
         //  Make Respoense
         let result = {
             customerID: isEmailExists._id.toString(),
+            SelectRole :isEmailExists.SelectRole.toString(),
             token: token,
         }
         console.log("Login done")
@@ -267,6 +270,7 @@ const deleteCostumers = async (req, res) => {
 //==============================get details======================================
 
 const getDetails = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let data = req.query
         let { SelectRole } = data
