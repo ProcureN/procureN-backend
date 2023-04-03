@@ -76,7 +76,7 @@ const getEnquiries = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let filter = { isDeleted: false }
-        let data = await AddProductModel.find(filter)
+        let data = await CostumerEnquiryModel.find(filter)
         res.status(200).send({ status: true, data: data })
     } catch (error) {
         return res.send({ status: false, message: error.message })

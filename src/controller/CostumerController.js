@@ -14,7 +14,7 @@ const register = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let data = req.body;
-        const {  name, email, password, selectRole, company, jobTitle, phone, state, city } = data
+        const { name, email, password, selectRole, company, jobTitle, phone, state, city } = data
         if (validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Enter details to create your account" });
         //validating firstname
         if (!name) return res.status(400).send({ status: false, message: "name is required" });
@@ -64,10 +64,10 @@ const register = async (req, res) => {
 
         let digits = '0123456789';
         let limit = 6;
-        let otp = '' 
+        let otp = ''
         for (i = 0; i < limit; i++) {
             otp += digits[Math.floor(Math.random() * 10)];
-    
+
         }
         let config = {
             service: 'gmail',
@@ -77,7 +77,7 @@ const register = async (req, res) => {
             }
         }
         let transporter = nodemailer.createTransport(config);
-       
+
 
         let MailGenerator = new Mailgen({
             theme: "default",
@@ -89,57 +89,57 @@ const register = async (req, res) => {
         let response = {
             body: {
                 name: `Hi ${name}`,
-                intro: `please verify your email opt: ${otp}` ,
+                intro: `please verify your email opt: ${otp}`,
                 outro: "thnk u"
             }
         }
         let mail = MailGenerator.generate(response)
 
-    let message = {
-        from : EMAIL,
-        to : email,
-        subject: "OTP verification",
-        html: mail
-    }
-     transporter.sendMail(message)
-    .then(() => {
-        // return res.status(201).json({
-        //     msg: "you should receive an email"
-        // })
-    
-    }).catch(error => {
-        return res.status(500).json({ error })
-    })
-    // transporter.sendMail(
-    //     message, function (error, info) {
-    //         if (error) {
-    //             console.log(error);
-    //             res.status(500).send("couldn't send")
-    //         }
-    //         else {
-    //             savedOTPS[Email] = otp;
-    //             setTimeout(
-    //                 () => {
-    //                     delete savedOTPS.email
-    //                 }, 60000
-    //             )
-    //             res.send("sent otp")
-    //         }
+        let message = {
+            from: EMAIL,
+            to: email,
+            subject: "OTP verification",
+            html: mail
+        }
+        transporter.sendMail(message)
+            .then(() => {
+                // return res.status(201).json({
+                //     msg: "you should receive an email"
+                // })
 
-    //     }
-    // )
+            }).catch(error => {
+                return res.status(500).json({ error })
+            })
+        // transporter.sendMail(
+        //     message, function (error, info) {
+        //         if (error) {
+        //             console.log(error);
+        //             res.status(500).send("couldn't send")
+        //         }
+        //         else {
+        //             savedOTPS[Email] = otp;
+        //             setTimeout(
+        //                 () => {
+        //                     delete savedOTPS.email
+        //                 }, 60000
+        //             )
+        //             res.send("sent otp")
+        //         }
+
+        //     }
+        // )
 
 
 
         let saveData = await costumerModel.create(data)
-      
-      let otpData = await optModel.create({otp, email:email})
+
+        let otpData = await optModel.create({ otp, email:email})
         res.status(201).send({ status: true, data: saveData })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
-    } 
-}   
-  
+    }
+}
+
 //==================================update=========================================
 
 const updateCostumer = async (req, res) => {
@@ -237,7 +237,7 @@ const login = async (req, res) => {
         //  Make Respoense
         let result = {
             customerID: isEmailExists._id.toString(),
-            selectRole :isEmailExists.selectRole.toString(),
+            selectRole: isEmailExists.selectRole.toString(),
             token: token,
         }
         console.log("Login done")
@@ -264,7 +264,7 @@ const deleteCostumers = async (req, res) => {
 
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
-    } 
+    }
 }
 
 //==============================get details======================================

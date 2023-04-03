@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const feedbackSchema = new mongoose.Schema({
+const contactSchema = new mongoose.Schema({
 name :{
     type:String,
     require:true,
@@ -17,6 +17,15 @@ subject:{
 message:{
     type:String,
     trim:true,
+},
+phone:{
+    type:String,
+   // require:true,
+    trim:true
+},
+isDeleted:{
+    type:Boolean,
+    default:false
 }
 }, { timestamps: true })
-module.exports = mongoose.model('feedback', feedbackSchema)
+module.exports = mongoose.model('contactUs', contactSchema)
