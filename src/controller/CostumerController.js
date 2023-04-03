@@ -14,18 +14,18 @@ const register = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let data = req.body;
-        const { Name, Email, Password, SelectRole, Company, JobTitle, phone, State, city } = data
+        const {  name, email, password, selectRole, company, jobTitle, phone, state, city } = data
         if (validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Enter details to create your account" });
         //validating firstname
-        if (!Name) return res.status(400).send({ status: false, message: "name is required" });
-        if (validator.isValid(Name)) return res.status(400).send({ status: false, message: "name should not be an empty string" });
+        if (!name) return res.status(400).send({ status: false, message: "name is required" });
+        if (validator.isValid(name)) return res.status(400).send({ status: false, message: "name should not be an empty string" });
 
 
-        if (!Email) return res.status(400).send({ status: false, message: "User Email-id is required" });
+        if (!email) return res.status(400).send({ status: false, message: "User Email-id is required" });
         //validating user email-id
-        if (!validator.isValidEmail(Email.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Email-id" });
+        if (!validator.isValidEmail(email.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Email-id" });
         //checking if email already exist or not 
-        let duplicateEmail = await costumerModel.findOne({ Email: Email })
+        let duplicateEmail = await costumerModel.findOne({ Email: email })
         if (duplicateEmail) return res.status(400).send({ status: false, message: "Email already exist" })
 
 
@@ -38,34 +38,34 @@ const register = async (req, res) => {
         if (duplicatePhone) return res.status(400).send({ status: false, message: "Phone already exist" })
 
 
-        if (!Password) return res.status(400).send({ status: false, message: "Password is required" });
+        if (!password) return res.status(400).send({ status: false, message: "Password is required" });
         //validating user password
-        if (!validator.isValidPassword(Password)) return res.status(400).send({ status: false, message: "Password should be between 8 and 15 character and it should be alpha numeric" });
-        if (validator.isValid(Password)) return res.status(400).send({ status: false, message: "Password should not be an empty string" });
-        data.Password = await bcrypt.hash(Password, 10);
+        if (!validator.isValidPassword(password)) return res.status(400).send({ status: false, message: "Password should be between 8 and 15 character and it should be alpha numeric" });
+        if (validator.isValid(password)) return res.status(400).send({ status: false, message: "Password should not be an empty string" });
+        data.password = await bcrypt.hash(password, 10);
 
-        if (!Company) return res.status(400).send({ status: false, message: "Company is required" });
-        if (validator.isValid(Company)) return res.status(400).send({ status: false, message: "Company should not be an empty string" });
+        if (!company) return res.status(400).send({ status: false, message: "Company is required" });
+        if (validator.isValid(company)) return res.status(400).send({ status: false, message: "Company should not be an empty string" });
 
 
-        if (!JobTitle) return res.status(400).send({ status: false, message: "JobTitle is required" });
-        if (validator.isValid(JobTitle)) return res.status(400).send({ status: false, message: "JobTitle should not be an empty string" });
+        if (!jobTitle) return res.status(400).send({ status: false, message: "JobTitle is required" });
+        if (validator.isValid(jobTitle)) return res.status(400).send({ status: false, message: "jobTitle should not be an empty string" });
 
-        if (!State) return res.status(400).send({ status: false, message: "State is required" });
-        if (validator.isValid(State)) return res.status(400).send({ status: false, message: "State should not be an empty string" });
+        if (!state) return res.status(400).send({ status: false, message: "State is required" });
+        if (validator.isValid(state)) return res.status(400).send({ status: false, message: "State should not be an empty string" });
 
 
         if (!city) return res.status(400).send({ status: false, message: "city is required" });
         if (validator.isValid(city)) return res.status(400).send({ status: false, message: "city should not be an empty string" });
 
         let Role = ["Retailer", "manufacturer"];
-        if (!Role.includes(SelectRole)) return res.status(400).send({ status: false, msg: `role must be slected among ${Role}` });
+        if (!Role.includes(selectRole)) return res.status(400).send({ status: false, msg: `role must be slected among ${Role}` });
 
 
-        let digits = '123456789';
+        let digits = '0123456789';
         let limit = 6;
-        let otp = ''
-        for (i = 1; i < limit; i++) {
+        let otp = '' 
+        for (i = 0; i < limit; i++) {
             otp += digits[Math.floor(Math.random() * 10)];
     
         }
@@ -88,8 +88,8 @@ const register = async (req, res) => {
         })
         let response = {
             body: {
-                name: `Dear ${Name}`,
-                intro: `please verify your email opt:${otp}` ,
+                name: `Hi ${name}`,
+                intro: `please verify your email opt: ${otp}` ,
                 outro: "thnk u"
             }
         }
@@ -97,7 +97,7 @@ const register = async (req, res) => {
 
     let message = {
         from : EMAIL,
-        to : Email,
+        to : email,
         subject: "OTP verification",
         html: mail
     }
@@ -133,13 +133,13 @@ const register = async (req, res) => {
 
         let saveData = await costumerModel.create(data)
       
-      let otpData = await optModel.create({otp, Email:Email})
-        res.status(201).send({ status: true, data: otpData })
+      let otpData = await optModel.create({otp, email:email})
+        res.status(201).send({ status: true, data: saveData })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     } 
-}
-
+}   
+  
 //==================================update=========================================
 
 const updateCostumer = async (req, res) => {
@@ -219,13 +219,13 @@ const login = async (req, res) => {
 
         if (!validator.isValidEmail(email.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Email-id" });
 
-        const isEmailExists = await costumerModel.findOne({ Email: email })
+        const isEmailExists = await costumerModel.findOne({ email: email })
         if (!isEmailExists) return res.status(401).send({ status: false, message: "Email is Incorrect" })
         //  Password Validation 
         if (validator.isValid(password)) return res.status(400).send({ status: false, message: "Password should not be an empty string" });
 
 
-        const isPasswordMatch = await bcrypt.compare(password, isEmailExists.Password)
+        const isPasswordMatch = await bcrypt.compare(password, isEmailExists.password)
         if (!isPasswordMatch) return res.status(401).send({ status: false, message: "Password is Incorrect" })
 
         // > Create Jwt Token 
@@ -237,7 +237,7 @@ const login = async (req, res) => {
         //  Make Respoense
         let result = {
             customerID: isEmailExists._id.toString(),
-            SelectRole :isEmailExists.SelectRole.toString(),
+            selectRole :isEmailExists.selectRole.toString(),
             token: token,
         }
         console.log("Login done")
@@ -273,14 +273,14 @@ const getDetails = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let data = req.query
-        let { SelectRole } = data
+        let { selectRole } = data
 
         let Role = ["Retailer", "manufacturer"];
-        if (!Role.includes(SelectRole)) return res.status(400).send({ status: false, msg: `role must be slected among ${Role}` });
+        if (!Role.includes(selectRole)) return res.status(400).send({ status: false, msg: `role must be slected among ${Role}` });
         if (Object.keys(data).length == 0)
             return res.status(400).send({ status: false, msg: "Enter the key and value to filter" })
 
-        let getdata = await costumerModel.find({ SelectRole: SelectRole }, { isDeleted: false })
+        let getdata = await costumerModel.find({ selectRole: selectRole }, { isDeleted: false })
         res.status(200).send({ status: true, data: getdata })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })

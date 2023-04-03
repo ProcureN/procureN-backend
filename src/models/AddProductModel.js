@@ -1,28 +1,28 @@
 const mongoose = require("mongoose")
 const ObjectId = mongoose.Schema.Types.ObjectId
 const AddProductsSchema = new mongoose.Schema({
-    ProductName: {
+    productName: {
         type: String,
         require: true,
         trim: true,
     },
-    CostumerID: {
+    costumerID: {
         type: ObjectId,
         required: true,
         ref: "costumer",
         trim: true
     },
-    Category: {
+    category: {
         type: String,
         require: true,
         trim: true
     },
-    SubCategory: {
+    subCategory: {
         type: String,
         require: true,
         trim: true
     },
-    Manufacturer: {
+    manufacturer: {
         type: String,
         require: true,
         trim: true
@@ -32,47 +32,47 @@ const AddProductsSchema = new mongoose.Schema({
         require: true,
         trime: true
     },
-    Price: {
+    price: {
         type: Number,
         require: true,
         trime: true
     },
-    WithGST: {
+    withGST: {
         type: Number,
         require: true,
         trim: true
     },
-    Description: {
+    description: {
         type: String,
         require: true,
         trim: true
     },
-    ShippingCharges: {
+    shippingCharges: {
         type: Number,
         require: true,
         trim: true
     },
-    SizeUnit: {
+    sizeUnit: {
         type: String,
         require: true,
         trim: true
     },
-    ProductQuantity: {
+    productQuantity: {
         type: String,
         require: true,
         trim: true
     },
-    Availability: {
+    availability: {
         type: String,
         require: true,
         trim: true
     },
-    SelectImage1: {
+    selectImage1: {
         require: true,
         type: String,
         require: true
     },
-    SelectImage2: {
+    selectImage2: {
         type: String,
 
     }, deletedAt: {

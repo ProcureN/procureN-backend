@@ -66,12 +66,12 @@ async function authorization1(req, res, next) {
       });
     }
 
-    const userDocument = await AddProductsModel.findOne({ _id: productID, isDeleted: false });
-    if (!userDocument) {
-      return res.status(404).send({ status: false, message: "book not found" });
+    const productDocument = await AddProductsModel.findOne({ _id: productID, isDeleted: false });
+    if (!productDocument) {
+      return res.status(404).send({ status: false, message: "product not found" });
     }
 
-    const pathcustomerID = userDocument.CostumerID.toString();
+    const pathcustomerID = productDocument.costumerID.toString();
     if (customerID !== pathcustomerID) {
       return res
         .status(403)

@@ -1,11 +1,11 @@
 const mongoose = require("mongoose")
 const costumerEnquiryFormSchema = new mongoose.Schema({
-    ProductName: {
+    productName: {
         type: String,
         require: true,
         trim: true,
     },
-    OtherProduct: {
+    otherProduct: {
         type: String,
         trim: true,
     },
@@ -13,37 +13,37 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
     //     type:Number,
     //     trim: true,
     // },
-    Name: {
+    name: {
         type: String,
         require: true,
         trim: true,
     },
-    Contact: {
+    contact: {
         type: String,
         require: true,
         trim: true,
     },
-    AlternativeNumber: {
+    alternativeNumber: {
         type: String,
         trim: true,
     },
-    Email: {
+    email: {
         type: String,
         require: true,
         // unique: true,
         trim: true
     },
-    State: {
+    state: {
         type: String,
         require: true,
         trim: true,
     },
-    BillingAddress: {
+    billingAddress: {
         type: String,
         require: true,
         trim: true,
     },
-    ShippingPincode: {
+    shippingPincode: {
         type: Number,
         require: true,
         trim: true,

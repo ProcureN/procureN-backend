@@ -1,34 +1,34 @@
 const mongoose = require("mongoose")
 const costumerSchema = new mongoose.Schema({
-    Name: {
+    name: {
         type: String,
         require: true,
         trim: true,
     },
-    Email: {
+    email: {
         type: String,
         require: true,
         unique: true,
         trim: true
     },
-    Password: {
+    password: {
         type: String,
         require: true,
         trim: true
     },
   
-    SelectRole: {
+    selectRole: {
         type: String,
         enum: ["Retailer", "manufacturer"],
         require: true,
         trim: true,
     },
-    Company: {
+    company: {
         type: String,
         require: true,
         trim: true,
     },
-    JobTitle: {
+    jobTitle: {
         type: String,
         require: true,
         trim: true,
@@ -38,7 +38,7 @@ const costumerSchema = new mongoose.Schema({
         require: true,
         trim: true,
     },
-    State: {
+    state: {
         type: String,
         require: true,
         trim: true,

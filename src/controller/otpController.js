@@ -11,26 +11,26 @@ const otpVerification = async (req, res) => {
     try {
         res.setHeader('Access-Control-Allow-Origin', '*')
         let data = req.body
-        let { Email, otp } = data
-        if (!Email) return res.status(400).send({ status: false, message: "User Email-id is required" });
+        let { email, otp } = data
+        if (!email) return res.status(400).send({ status: false, message: "User Email-id is required" });
             //validating user email-id
-            if (!validator.isValidEmail(Email.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Email-id" });
-            let costumerData = await costumerModel.findOne({Email:Email})
+            if (!validator.isValidEmail(email.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Email-id" });
+            let costumerData = await costumerModel.findOne({email:email})
             if(!costumerData){
                 return res.status(404).send({status:false,Message:"user not found"})
             }
 
             if (!otp) return res.status(400).send({ status: false, message: "otp is required" });
             
-        let otpData = await optModel.findOne({ Email: Email })
+        let otpData = await optModel.findOne({ email: email })
         if (!otpData) {
             return res.status(400).send("incorrect Email")
         }
         let otpverify = otpData.toObject()
        costumerData.toObject()
-        console.log(otpverify.otp,costumerData.SelectRole)
+        console.log(otpverify.otp,costumerData.selectRole)
         if (otp == otpverify.otp) {
-            return res.status(200).send({status:true,message:"login successful",SelectRole:costumerData.SelectRole.toString()})
+            return res.status(200).send({status:true,message:"login successful",selectRole:costumerData.selectRole.toString()})
         } else {
             return res.status(400).send({status:false,message:"incorrect otp"})
         }
@@ -43,7 +43,7 @@ const otpVerification = async (req, res) => {
 const resendOtp = async (req,res)=>{
     try {
         let data=req.body
-        let {Email}=data
+        let {email}=data
     let digits = '1234567890';
         let limit = 6;
         let otp = ''
@@ -51,7 +51,7 @@ const resendOtp = async (req,res)=>{
             otp += digits[Math.floor(Math.random() * 10)];
     
         }
-        let updateotp =  await optModel.findOneAndUpdate({ Email: Email },{$set:{otp:otp}})
+        let updateotp =  await optModel.findOneAndUpdate({ email: email },{$set:{otp:otp}})
         let config = {
             service: 'gmail',
             auth: {
@@ -80,7 +80,7 @@ const resendOtp = async (req,res)=>{
 
     let message = {
         from : EMAIL,
-        to : Email,
+        to : email,
         subject: "OTP verification",
         html: mail
     }
@@ -94,7 +94,7 @@ const resendOtp = async (req,res)=>{
     // }) 
    
     return res.status(201).json({
-                msg: `resended the OTP${otp} `
+                msg: `resended the OTP  ${otp} `
             })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })

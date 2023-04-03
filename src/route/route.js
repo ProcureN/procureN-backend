@@ -7,6 +7,8 @@ const { addProdcts, updateProduct, DeleteProduct, getProducts } = require("../co
 const { authentication, authorization, authorization1 } = require("../middleware/auth")
  const {requestAdmin}=require("../controller/requestAdminController")
 const {otpVerification,resendOtp} =require("../controller/otpController")
+const {feedbackForm}=require("../controller/feedbackController")
+
 router.get("/test-me", function (req, res) {
   res.send("this is successfully created");
 });
@@ -30,4 +32,9 @@ router.post("/resendOtp",resendOtp)
 
 //=============================requestAdmin=======================================
 router.post("/admin",requestAdmin)
-module.exports = router 
+
+//======================feedbackForm================================
+router.post("/feedback",feedbackForm)
+
+
+module.exports = router  

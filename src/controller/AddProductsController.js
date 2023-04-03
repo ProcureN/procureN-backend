@@ -13,24 +13,24 @@ const addProdcts = async (req, res) => {
         if (!validator.isValidFiles(files)) {
             return res.status(400).send({ status: false, message: "productImage is required" })
         }
-        const { ProductName, Category, SubCategory, Manufacturer, priceBeforeDiscount, Price, WithGST, Description, ShippingCharges, SizeUnit, ProductQuantity, Availability, SelectImage1, SelectImage2 } = data
+        const { productName, category, subCategory, manufacturer, priceBeforeDiscount, price, withGST, description, shippingCharges, sizeUnit, productQuantity, availability, selectImage1, selectImage2 } = data
 
 
         //ProductName
-        if (!ProductName) return res.status(400).send({ status: false, message: "ProductName is required" });
-        if (validator.isValid(ProductName)) return res.status(400).send({ status: false, message: "name should not be an empty string" });
+        if (!productName) return res.status(400).send({ status: false, message: "productName is required" });
+        if (validator.isValid(productName)) return res.status(400).send({ status: false, message: "name should not be an empty string" });
 
         //Category
-        if (!Category) return res.status(400).send({ status: false, message: "Category is required" });
-        if (validator.isValid(Category)) return res.status(400).send({ status: false, message: "Category should not be an empty string" });
+        if (!category) return res.status(400).send({ status: false, message: "category is required" });
+        if (validator.isValid(category)) return res.status(400).send({ status: false, message: "category should not be an empty string" });
 
         //SubCategory
-        if (!SubCategory) return res.status(400).send({ status: false, message: "SubCategory is required" });
-        if (validator.isValid(SubCategory)) return res.status(400).send({ status: false, message: "SubCategory should not be an empty string" });
+        if (!subCategory) return res.status(400).send({ status: false, message: "subCategory is required" });
+        if (validator.isValid(subCategory)) return res.status(400).send({ status: false, message: "subCategory should not be an empty string" });
 
         //Manufacturer
-        if (!Manufacturer) return res.status(400).send({ status: false, message: "Manufacturer is required" });
-        if (validator.isValid(Manufacturer)) return res.status(400).send({ status: false, message: "Manufacturer should not be an empty string" });
+        if (!manufacturer) return res.status(400).send({ status: false, message: "manufacturer is required" });
+        if (validator.isValid(manufacturer)) return res.status(400).send({ status: false, message: "manufacturer should not be an empty string" });
 
         //priceBeforeDiscount
         if (!validator.isValid1(priceBeforeDiscount)) {
@@ -40,41 +40,41 @@ const addProdcts = async (req, res) => {
             return res.status(400).send({ status: false, message: "Enter a Valid priceBeforeDiscount" })
         }
         //Price
-        if (!validator.isValid1(Price)) {
+        if (!validator.isValid1(price)) {
             return res.status(400).send({ status: false, message: "price is required" })
         }
-        if (!validator.isValidPrice(Price)) {
-            return res.status(400).send({ status: false, message: "Enter a Valid Price" })
+        if (!validator.isValidPrice(price)) {
+            return res.status(400).send({ status: false, message: "Enter a Valid price" })
         }
         //WithGST
-        if (!validator.isValid1(WithGST)) {
-            return res.status(400).send({ status: false, message: "WithGST is required" })
+        if (!validator.isValid1(withGST)) {
+            return res.status(400).send({ status: false, message: "withGST is required" })
         }
-        if (!validator.isValidPrice(WithGST)) {
-            return res.status(400).send({ status: false, message: "Enter a Valid WithGST" })
+        if (!validator.isValidPrice(withGST)) {
+            return res.status(400).send({ status: false, message: "Enter a Valid withGST" })
         }
         //Description
-        if (!Description) return res.status(400).send({ status: false, message: "Description is required" });
-        if (validator.isValid(Description)) return res.status(400).send({ status: false, message: "Description should not be an empty string" });
+        if (!description) return res.status(400).send({ status: false, message: "description is required" });
+        if (validator.isValid(description)) return res.status(400).send({ status: false, message: "description should not be an empty string" });
 
         //ShippingCharges
-        if (!validator.isValid1(ShippingCharges)) {
-            return res.status(400).send({ status: false, message: "ShippingCharges is required" })
+        if (!validator.isValid1(shippingCharges)) {
+            return res.status(400).send({ status: false, message: "shippingCharges is required" })
         }
-        if (!validator.isValidPrice(ShippingCharges)) {
-            return res.status(400).send({ status: false, message: "Enter a Valid ShippingCharges" })
+        if (!validator.isValidPrice(shippingCharges)) {
+            return res.status(400).send({ status: false, message: "Enter a Valid shippingCharges" })
         }
         //SizeUnit
-        if (!SizeUnit) return res.status(400).send({ status: false, message: "SizeUnit is required" });
-        if (validator.isValid(SizeUnit)) return res.status(400).send({ status: false, message: "SizeUnit should not be an empty string" });
+        if (!sizeUnit) return res.status(400).send({ status: false, message: "sizeUnit is required" });
+        if (validator.isValid(sizeUnit)) return res.status(400).send({ status: false, message: "sizeUnit should not be an empty string" });
 
         //ProductQuantity
-        if (!ProductQuantity) return res.status(400).send({ status: false, message: "ProductQuantity is required" });
-        if (validator.isValid(ProductQuantity)) return res.status(400).send({ status: false, message: "ProductQuantity should not be an empty string" });
+        if (!productQuantity) return res.status(400).send({ status: false, message: "productQuantity is required" });
+        if (validator.isValid(productQuantity)) return res.status(400).send({ status: false, message: "productQuantity should not be an empty string" });
 
         //Availability
-        if (!Availability) return res.status(400).send({ status: false, message: "Availability is required" });
-        if (validator.isValid(Availability)) return res.status(400).send({ status: false, message: "Availability should not be an empty string" });
+        if (!availability) return res.status(400).send({ status: false, message: "availability is required" });
+        if (validator.isValid(availability)) return res.status(400).send({ status: false, message: "availability should not be an empty string" });
 
         //SelectImage1
         // if (SelectImage1) {
@@ -82,7 +82,7 @@ const addProdcts = async (req, res) => {
         //     if (validator.isValid(SelectImage1)) return res.status(400).send({ status: false, message: "SelectImage1 should not be an empty string" });
         if (files && files.length > 0) {
             let productImgUrl = await aws.uploadFile(files[0])
-            data.SelectImage1 = productImgUrl
+            data.selectImage1 = productImgUrl
         }
         // }
         //SelectImage2
@@ -91,7 +91,7 @@ const addProdcts = async (req, res) => {
         // if (validator.isValid(SelectImage2)) return res.status(400).send({ status: false, message: "SelectImage2 should not be an empty string" });
         if (files && files.length > 0) {
             let productImgUrl1 = await aws.uploadFile(files[1])
-            data.SelectImage2 = productImgUrl1
+            data.selectImage2 = productImgUrl1
         }
 
         // }
@@ -112,30 +112,30 @@ const updateProduct = async (req, res) => {
             return res.status(400).send({ status: false, message: "Enter details to create Product" });
         }
 
-        let { ProductName, Category, SubCategory, Manufacturer, priceBeforeDiscount, Price, WithGST, Description, ShippingCharges, SizeUnit, ProductQuantity, Availability, SelectImage1, SelectImage2 } = data
-        if (SelectImage1 || SelectImage2) {
+        let { productName, category, subCategory, manufacturer, priceBeforeDiscount, price, withGST, description, shippingCharges, sizeUnit, productQuantity, availability, selectImage1, selectImage2 } = data
+        if (selectImage1 || selectImage2) {
             if (!validator.isValidFiles(files)) {
                 return res.status(400).send({ status: false, message: "productImage is required" })
             }
         }
-        if (ProductName) {
-            if (!ProductName) return res.status(400).send({ status: false, message: "ProductName is required" });
-            if (validator.isValid(ProductName)) return res.status(400).send({ status: false, message: "name should not be an empty string" });
+        if (productName) {
+            if (!productName) return res.status(400).send({ status: false, message: "productName is required" });
+            if (validator.isValid(productName)) return res.status(400).send({ status: false, message: "name should not be an empty string" });
         }
 
-        if (Category) {
-            if (!Category) return res.status(400).send({ status: false, message: "Category is required" });
-            if (validator.isValid(Category)) return res.status(400).send({ status: false, message: "Category should not be an empty string" });
+        if (category) {
+            if (!category) return res.status(400).send({ status: false, message: "Category is required" });
+            if (validator.isValid(category)) return res.status(400).send({ status: false, message: "Category should not be an empty string" });
         }
 
-        if (SubCategory) {
-            if (!SubCategory) return res.status(400).send({ status: false, message: "SubCategory is required" });
-            if (validator.isValid(SubCategory)) return res.status(400).send({ status: false, message: "SubCategory should not be an empty string" });
+        if (subCategory) {
+            if (!subCategory) return res.status(400).send({ status: false, message: "SubCategory is required" });
+            if (validator.isValid(subCategory)) return res.status(400).send({ status: false, message: "subCategory should not be an empty string" });
         }
 
-        if (Manufacturer) {
-            if (!Manufacturer) return res.status(400).send({ status: false, message: "Manufacturer is required" });
-            if (validator.isValid(Manufacturer)) return res.status(400).send({ status: false, message: "Manufacturer should not be an empty string" });
+        if (manufacturer) {
+            if (!manufacturer) return res.status(400).send({ status: false, message: "manufacturer is required" });
+            if (validator.isValid(manufacturer)) return res.status(400).send({ status: false, message: "manufacturer should not be an empty string" });
         }
 
         if (priceBeforeDiscount) {
@@ -147,59 +147,59 @@ const updateProduct = async (req, res) => {
             }
         }
         //Price
-        if (Price) {
-            if (!validator.isValid1(Price)) {
+        if (price) {
+            if (!validator.isValid1(price)) {
                 return res.status(400).send({ status: false, message: "price is required" })
             }
-            if (!validator.isValidPrice(Price)) {
-                return res.status(400).send({ status: false, message: "Enter a Valid Price" })
+            if (!validator.isValidPrice(price)) {
+                return res.status(400).send({ status: false, message: "Enter a Valid price" })
             }
         }
         //WithGST
-        if (WithGST) {
-            if (!validator.isValid1(WithGST)) {
-                return res.status(400).send({ status: false, message: "WithGST is required" })
+        if (withGST) {
+            if (!validator.isValid1(withGST)) {
+                return res.status(400).send({ status: false, message: "withGST is required" })
             }
-            if (!validator.isValidPrice(WithGST)) {
-                return res.status(400).send({ status: false, message: "Enter a Valid WithGST" })
+            if (!validator.isValidPrice(withGST)) {
+                return res.status(400).send({ status: false, message: "Enter a Valid withGST" })
             }
         }
 
-        if (Description) {
-            if (!Description) return res.status(400).send({ status: false, message: "Description is required" });
-            if (validator.isValid(Description)) return res.status(400).send({ status: false, message: "Description should not be an empty string" });
+        if (description) {
+            if (!description) return res.status(400).send({ status: false, message: "description is required" });
+            if (validator.isValid(description)) return res.status(400).send({ status: false, message: "description should not be an empty string" });
         }
 
-        if (ShippingCharges) {
-            if (!validator.isValid1(ShippingCharges)) {
-                return res.status(400).send({ status: false, message: "ShippingCharges is required" })
+        if (shippingCharges) {
+            if (!validator.isValid1(shippingCharges)) {
+                return res.status(400).send({ status: false, message: "shippingCharges is required" })
             }
             if (!validator.isValidPrice(ShippingCharges)) {
-                return res.status(400).send({ status: false, message: "Enter a Valid ShippingCharges" })
+                return res.status(400).send({ status: false, message: "Enter a Valid shippingCharges" })
             }
         }
 
-        if (SizeUnit) {
-            if (!SizeUnit) return res.status(400).send({ status: false, message: "SizeUnit is required" });
-            if (validator.isValid(SizeUnit)) return res.status(400).send({ status: false, message: "SizeUnit should not be an empty string" });
+        if (sizeUnit) {
+            if (!sizeUnit) return res.status(400).send({ status: false, message: "sizeUnit is required" });
+            if (validator.isValid(sizeUnit)) return res.status(400).send({ status: false, message: "sizeUnit should not be an empty string" });
         }
 
-        if (ProductQuantity) {
-            if (!ProductQuantity) return res.status(400).send({ status: false, message: "ProductQuantity is required" });
-            if (validator.isValid(ProductQuantity)) return res.status(400).send({ status: false, message: "ProductQuantity should not be an empty string" });
+        if (productQuantity) {
+            if (!productQuantity) return res.status(400).send({ status: false, message: "productQuantity is required" });
+            if (validator.isValid(productQuantity)) return res.status(400).send({ status: false, message: "productQuantity should not be an empty string" });
         }
-        if (Availability) {
-            if (!Availability) return res.status(400).send({ status: false, message: "Availability is required" });
-            if (validator.isValid(Availability)) return res.status(400).send({ status: false, message: "Availability should not be an empty string" });
+        if (availability) {
+            if (!availability) return res.status(400).send({ status: false, message: "availability is required" });
+            if (validator.isValid(availability)) return res.status(400).send({ status: false, message: "availability should not be an empty string" });
         }
 
-        if (SelectImage1) {
-            if (!SelectImage1) return res.status(400).send({ status: false, message: "SelectImage1 is required" });
+        if (selectImage1) {
+            if (!selectImage1) return res.status(400).send({ status: false, message: "SelectImage1 is required" });
             if (validator.isValid(SelectImage1)) return res.status(400).send({ status: false, message: "SelectImage1 should not be an empty string" });
         }
         //SelectImage2
-        if (SelectImage2) {
-            if (!SelectImage2) return res.status(400).send({ status: false, message: "SelectImage2 is required" });
+        if (selectImage2) {
+            if (!selectImage2) return res.status(400).send({ status: false, message: "SelectImage2 is required" });
             if (validator.isValid(SelectImage2)) return res.status(400).send({ status: false, message: "SelectImage2 should not be an empty string" });
         }
         let productData = await AddProductsModel.findOneAndUpdate({ _id: productID }, data, { new: true })
