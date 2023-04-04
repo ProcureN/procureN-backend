@@ -286,5 +286,19 @@ const getDetails = async (req, res) => {
         return res.status(500).send({ status: false, message: error.message })
     }
 }
+const getAllDetails = async (req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {
+     
+        let getdata = await costumerModel.find( { isDeleted: false ,
+            selectRole: {
+              "$ne": "admin"
+            }
+          })
+        res.status(200).send({ status: true, data: getdata })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
 
-module.exports = { register, updateCostumer, login, deleteCostumers, getDetails }
+module.exports = { register, updateCostumer, login, deleteCostumers, getDetails,getAllDetails }

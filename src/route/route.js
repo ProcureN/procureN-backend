@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const { register, updateCostumer, login, deleteCostumers, getDetails } = require("../controller/CostumerController")
+const { register, updateCostumer, login, deleteCostumers, getDetails,getAllDetails } = require("../controller/CostumerController")
 const { EnquiryForm, getEnquiries } = require("../controller/CostumerEnquiryController")
 const { addProdcts, updateProduct, DeleteProduct, getProducts } = require("../controller/AddProductsController")
 const { authentication, authorization, authorization1 } = require("../middleware/auth")
@@ -18,6 +18,7 @@ router.put("/UpdateCostumer/:customerID", authentication, authorization, updateC
 router.delete("/deletecostumer/:customerID", authentication, authorization, deleteCostumers)
 router.post("/login", login)
 router.get("/getroles", authentication, getDetails)
+router.get("/getAllDetails",authentication,getAllDetails)
 //============================enquiry form ============================
 router.post("/Costumer/EnquiryForm/:customerID", authentication, authorization, EnquiryForm)
 router.get("/getenquiries", getEnquiries)
