@@ -140,16 +140,16 @@ return res.status(200).send({ status: true, data: getData })
 const deleteCostumerEnquiry = async (req,res)=>{
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
-        let costumerEnquiryId = req.params.costumerEnquiryId
-        if (!validator.isValidObjectId(costumerEnquiryId)) { res.status(400).send({ status: false, message: "Please provide valid costumerEnquiryId" }) }
-        let getCostumerEnquiryId = await CostumerEnquiryModel.findOne({ _id: costumerEnquiryId });
-        if (!getCostumerEnquiryId) { return res.status(404).send({ status: false, message: "Product Not Found for the request id" }) }
-        if (getCostumerEnquiryId.isDeleted == true) { return res.status(404).send({ status: false, message: "getCostumerEnquiry is already deleted not found" }) }
+        let customerEnquiryId = req.params.customerEnquiryId
+        if (!validator.isValidObjectId(customerEnquiryId)) { res.status(400).send({ status: false, message: "Please provide valid costumerEnquiryId" }) }
+        let getcustomerEnquiryId = await CostumerEnquiryModel.findOne({ _id: customerEnquiryId });
+        if (!getcustomerEnquiryId) { return res.status(404).send({ status: false, message: "customerEnquiry  Not Found for the request id" }) }
+        if (getcustomerEnquiryId.isDeleted == true) { return res.status(404).send({ status: false, message: "CostumerEnquiry is already deleted not found" }) }
 
-        await CostumerEnquiryModel.updateOne({ _id: costumerEnquiryId }, { isDeleted: true, deletedAt: Date.now() })
-        return res.status(200).send({ status: true, message: "getCostumerEnquiryId is deleted" })
+        await CostumerEnquiryModel.updateOne({ _id: customerEnquiryId }, { isDeleted: true, deletedAt: Date.now() })
+        return res.status(200).send({ status: true, message: "customerEnquiryId is deleted" })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
 }
-module.exports = { EnquiryForm, getEnquiries,IndividualCostumerEnquiry }
+module.exports = { EnquiryForm, getEnquiries,IndividualCostumerEnquiry,deleteCostumerEnquiry }

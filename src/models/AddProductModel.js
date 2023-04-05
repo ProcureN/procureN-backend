@@ -22,11 +22,11 @@ const AddProductsSchema = new mongoose.Schema({
         require: true,
         trim: true
     },
-    manufacturer: {
-        type: String,
-        require: true,
-        trim: true
-    },
+    // manufacturer: {
+    //     type: String,
+    //     require: true,
+    //     trim: true
+    // },
     priceBeforeDiscount: {
         type: Number,
         require: true,

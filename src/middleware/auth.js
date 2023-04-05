@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const validator = require("../validation/validations")
 const AddProductsModel = require("../models/AddProductModel")
 const costumerModel = require("../models/CostumerModel")
+const customerEnquiryModel = require("../models/CostomerEnquiryForm")
 const authentication = async function (req, res, next) {
   try {
     let token = req.headers["authorization"]
@@ -87,12 +88,12 @@ async function authorization1(req, res, next) {
 async function authorization2(req, res, next) {
   try {
     const customerID = req.decoded.customerID;
-    const productID = req.params.productID;
+    const customerEnquiryId = req.params.customerEnquiryId;
 
     const errors = [];
 
-    if (productID === ":productID") {
-      errors.push("productID is required");
+    if (customerEnquiryId === ":customerEnquiryId") {
+      errors.push("customerEnquiryId is required");
     } else {
       if (!validator.isValidObjectId(customerID)) {
         errors.push("Given bookId is an invalid ObjectId");
@@ -106,12 +107,12 @@ async function authorization2(req, res, next) {
       });
     }
 
-    const productDocument = await AddProductsModel.findOne({ _id: productID, isDeleted: false });
-    if (!productDocument) {
-      return res.status(404).send({ status: false, message: "product not found" });
+    const customerEnquiryDocument = await customerEnquiryModel.findOne({ _id: customerEnquiryId, isDeleted: false });
+    if (!customerEnquiryDocument) {
+      return res.status(404).send({ status: false, message: "customerEnquiryDocument not found" });
     }
 
-    const pathcustomerID = productDocument.costumerID.toString();
+    const pathcustomerID = customerEnquiryDocument.customerID.toString();
     if (customerID !== pathcustomerID) {
       return res
         .status(403)
@@ -122,4 +123,4 @@ async function authorization2(req, res, next) {
     return res.status(500).send({ status: false, message: error.message });
   }
 }
-module.exports = { authentication, authorization, authorization1 }
+module.exports = { authentication, authorization, authorization1,authorization2 }
