@@ -300,5 +300,26 @@ const getAllDetails = async (req,res)=>{
         return res.status(500).send({ status: false, message: error.message })
     }
 }
+//====================================================================================
 
-module.exports = { register, updateCostumer, login, deleteCostumers, getDetails,getAllDetails }
+const Individualprofiles = async (req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {
+        let customerID = req.params.customerID
+        if (!validator.isValid1(customerID)) {
+            return res.status(400).send({ status: false, message: "costumerID is required" })
+        }
+        if (!validator.isValidObjectId(customerID)) {
+            return res.status(400).send({ status: false, message: "costumerID not valid" })
+        }
+        let getData = await costumerModel.find({_id:customerID})
+        if(!getData){
+            return res.status(400).send({ status: false, message: "not enquiries found" })
+        }
+return res.status(200).send({ status: true, data: getData })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+   
+}
+module.exports = { register, updateCostumer, login, deleteCostumers, getDetails,getAllDetails,Individualprofiles }
