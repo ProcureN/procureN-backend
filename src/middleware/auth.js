@@ -26,7 +26,7 @@ const authentication = async function (req, res, next) {
 //===========================================================================================
 const authorization = async function (req, res, next) {
   try {
-    let customerID = (req.params.customerID || req.body.costumerID)
+    let customerID = (req.params.customerID || req.body.customerID)
     if (!validator.isValidObjectId(customerID)) {
       return res.status(400).send({ status: false, message: "invalid user Id" })
     }
@@ -45,6 +45,46 @@ const authorization = async function (req, res, next) {
 //=====================================================================================
 
 async function authorization1(req, res, next) {
+  try {
+    const customerID = req.decoded.customerID;
+    const productID = req.params.productID;
+
+    const errors = [];
+
+    if (productID === ":productID") {
+      errors.push("productID is required");
+    } else {
+      if (!validator.isValidObjectId(customerID)) {
+        errors.push("Given bookId is an invalid ObjectId");
+      }
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).send({
+        status: false,
+        message: `${errors.join(", ")}`,
+      });
+    }
+
+    const productDocument = await AddProductsModel.findOne({ _id: productID, isDeleted: false });
+    if (!productDocument) {
+      return res.status(404).send({ status: false, message: "product not found" });
+    }
+
+    const pathcustomerID = productDocument.costumerID.toString();
+    if (customerID !== pathcustomerID) {
+      return res
+        .status(403)
+        .send({ status: false, message: "user not authorized" });
+    }
+    next();
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+}
+//========================================================================
+
+async function authorization2(req, res, next) {
   try {
     const customerID = req.decoded.customerID;
     const productID = req.params.productID;

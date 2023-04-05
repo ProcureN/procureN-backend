@@ -22,7 +22,7 @@ router.get("/getAllDetails",authentication,getAllDetails)
 //============================enquiry form ============================
 router.post("/costumer/enquiryForm", authentication, authorization, EnquiryForm)
 router.get("/getenquiries", getEnquiries)
-router.get("/IndividualCostumerEnquiry/:customerID",authentication, authorization,IndividualCostumerEnquiry)
+router.get("/IndividualcustomerEnquiry/:customerID",authentication, authorization,IndividualCostumerEnquiry)
 
 //router.put("/updateCostumersEnquiry",updateCostumersEnquiry)
 //=======================Add products===========================

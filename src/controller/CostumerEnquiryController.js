@@ -8,16 +8,16 @@ const EnquiryForm = async (req, res) => {
     try {
      //   let costumerId = req.params.customerID
         let data = req.body
-        const { productName, otherProduct, name, contact, alternativeNumber, email, state, billingAddress, shippingPincode,quantity,city,costumerID } = data
+        const { productName, otherProduct, name, contact, alternativeNumber, email, state, billingAddress, shippingPincode,quantity,city,customerID } = data
 
         if (validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Enter details to create your account" });
-        if (!validator.isValid1(costumerID)) {
+        if (!validator.isValid1(customerID)) {
             return res.status(400).send({ status: false, message: "costumerID is required" })
         }
-        if (!validator.isValidObjectId(costumerID)) {
+        if (!validator.isValidObjectId(customerID)) {
             return res.status(400).send({ status: false, message: "costumerID not valid" })
         }
-        let getCostumers = await CostumerModel.findOne({_id:costumerID,isDeleted:false})
+        let getCostumers = await CostumerModel.findOne({_id:customerID,isDeleted:false})
         if(!getCostumers){
             return res.status(404).send({status:false,msg:"user not found or already deleted"})
         }
@@ -115,15 +115,16 @@ const getEnquiries = async (req, res) => {
 //=========================================get individual costumer enquiry================================
 
 const IndividualCostumerEnquiry = async (req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
-        let costumerID = req.params.customerID
-        if (!validator.isValid1(costumerID)) {
+        let customerID = req.params.customerID
+        if (!validator.isValid1(customerID)) {
             return res.status(400).send({ status: false, message: "costumerID is required" })
         }
-        if (!validator.isValidObjectId(costumerID)) {
+        if (!validator.isValidObjectId(customerID)) {
             return res.status(400).send({ status: false, message: "costumerID not valid" })
         }
-        let getData = await CostumerEnquiryModel.find({costumerID:costumerID})
+        let getData = await CostumerEnquiryModel.find({customerID:customerID})
         if(!getData){
             return res.status(400).send({ status: false, message: "not enquiries found" })
         }
@@ -132,5 +133,23 @@ return res.status(200).send({ status: true, data: getData })
         return res.status(500).send({ status: false, message: error.message })
     }
    
+}
+
+//==============================delete costumer enquiry =====================================
+
+const deleteCostumerEnquiry = async (req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {
+        let costumerEnquiryId = req.params.costumerEnquiryId
+        if (!validator.isValidObjectId(costumerEnquiryId)) { res.status(400).send({ status: false, message: "Please provide valid costumerEnquiryId" }) }
+        let getCostumerEnquiryId = await CostumerEnquiryModel.findOne({ _id: costumerEnquiryId });
+        if (!getCostumerEnquiryId) { return res.status(404).send({ status: false, message: "Product Not Found for the request id" }) }
+        if (getCostumerEnquiryId.isDeleted == true) { return res.status(404).send({ status: false, message: "getCostumerEnquiry is already deleted not found" }) }
+
+        await CostumerEnquiryModel.updateOne({ _id: costumerEnquiryId }, { isDeleted: true, deletedAt: Date.now() })
+        return res.status(200).send({ status: true, message: "getCostumerEnquiryId is deleted" })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
 }
 module.exports = { EnquiryForm, getEnquiries,IndividualCostumerEnquiry }

@@ -72,7 +72,7 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
         enum:["processing","shipped","inTransit","delivered"],
         default:"processing"
     },
-    costumerID: {
+    customerID: {
         type: ObjectId,
         required: true,
         ref: "costumer",
