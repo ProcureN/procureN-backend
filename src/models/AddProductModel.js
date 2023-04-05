@@ -81,6 +81,16 @@ const AddProductsSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false
+    },
+    status:{
+        type: String,
+        enum:["pending","approved","rejected"],
+        default:"pending"
+    },
+    deliveryStatus:{
+        type: String,
+        enum:["processing","shipped","inTransit","delivered"],
+        default:"processing"
     }
 
 }, { timestamps: true })

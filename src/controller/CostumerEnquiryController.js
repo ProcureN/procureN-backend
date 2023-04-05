@@ -6,13 +6,18 @@ const validator = require("../validation/validations")
 const EnquiryForm = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
-        let costumerId = req.params.customerID
+     //   let costumerId = req.params.customerID
         let data = req.body
-        const { productName, otherProduct, name, contact, alternativeNumber, email, state, billingAddress, shippingPincode } = data
+        const { productName, otherProduct, name, contact, alternativeNumber, email, state, billingAddress, shippingPincode,quantity,city,costumerID } = data
 
         if (validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Enter details to create your account" });
-
-        let getCostumers = await CostumerModel.findOne({_id:costumerId,isDeleted:false})
+        if (!validator.isValid1(costumerID)) {
+            return res.status(400).send({ status: false, message: "costumerID is required" })
+        }
+        if (!validator.isValidObjectId(costumerID)) {
+            return res.status(400).send({ status: false, message: "costumerID not valid" })
+        }
+        let getCostumers = await CostumerModel.findOne({_id:costumerID,isDeleted:false})
         if(!getCostumers){
             return res.status(404).send({status:false,msg:"user not found or already deleted"})
         }
@@ -83,4 +88,49 @@ const getEnquiries = async (req, res) => {
     }
 
 }
-module.exports = { EnquiryForm, getEnquiries }
+
+//==========================update costumers =========================================
+// const updateCostumersEnquiry = async (req,res)=>{
+//     try {
+//         let data = req.body
+//     let customerEnquiryID = req.params.customerEnquiryID
+//     let {status,deliveryStatus}=data
+//     if(status){
+//         let statuses = ["Pending","Approved","Rejected"];
+//         if (!statuses.includes(status)) return res.status(400).send({ status: false, msg: `status must be slected among ${statuses}` });
+//     }
+//     if(deliveryStatus){
+//         let deliveryStatuses = ["processing","shipped","inTransit","delivered"];
+//         if (!deliveryStatuses.includes(deliveryStatus)) return res.status(400).send({ status: false, msg: `status must be slected among ${deliveryStatuses}` });
+//     }
+//     let userData = await CostumerEnquiryModel.findOneAndUpdate({ _id: customerEnquiryID }, data, { new: true })
+//     if (!userData) { return res.status(404).send({ satus: false, message: "no user found to update" }) }
+//     return res.status(200).send({ satus: true, message: "success", data: userData })
+
+//     } catch (error) {
+//         return res.status(200).send({ status: false, message: error.message })
+//     }
+    
+// }
+//=========================================get individual costumer enquiry================================
+
+const IndividualCostumerEnquiry = async (req,res)=>{
+    try {
+        let costumerID = req.params.customerID
+        if (!validator.isValid1(costumerID)) {
+            return res.status(400).send({ status: false, message: "costumerID is required" })
+        }
+        if (!validator.isValidObjectId(costumerID)) {
+            return res.status(400).send({ status: false, message: "costumerID not valid" })
+        }
+        let getData = await CostumerEnquiryModel.find({costumerID:costumerID})
+        if(!getData){
+            return res.status(400).send({ status: false, message: "not enquiries found" })
+        }
+return res.status(200).send({ status: true, data: getData })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+   
+}
+module.exports = { EnquiryForm, getEnquiries,IndividualCostumerEnquiry }

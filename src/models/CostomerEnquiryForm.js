@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const ObjectId = mongoose.Schema.Types.ObjectId
 const costumerEnquiryFormSchema = new mongoose.Schema({
     productName: {
         type: String,
@@ -7,12 +8,13 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
     },
     otherProduct: {
         type: String,
+        require: true,
         trim: true,
     },
-    // OtherProduct:{
-    //     type:Number,
-    //     trim: true,
-    // },
+    quantity:{
+        type:String,
+        trim: true,
+    },
     name: {
         type: String,
         require: true,
@@ -38,13 +40,18 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
         require: true,
         trim: true,
     },
+    city: {
+        type: String,
+        require: true,
+        trim: true,
+    },
     billingAddress: {
         type: String,
         require: true,
         trim: true,
     },
     shippingPincode: {
-        type: Number,
+        type: String,
         require: true,
         trim: true,
     },
@@ -54,7 +61,24 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false
-    }
+    },
+    status:{
+        type: String,
+        enum:["Pending","Approved","Rejected"],
+        default:"Pending"
+    },
+    deliveryStatus:{
+        type: String,
+        enum:["processing","shipped","inTransit","delivered"],
+        default:"processing"
+    },
+    costumerID: {
+        type: ObjectId,
+        required: true,
+        ref: "costumer",
+        trim: true
+    },
+    
 }, { timestamps: true })
 
 module.exports = mongoose.model('costumerEnquiryForm', costumerEnquiryFormSchema)

@@ -1,5 +1,6 @@
 const AddProductsModel = require("../models/AddProductModel")
 const validator = require("../validation/validations")
+const costumerModel =require("../models/CostumerModel")
 const aws = require("../aws/aws")
 const addProdcts = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -10,10 +11,10 @@ const addProdcts = async (req, res) => {
         if (validator.isValidBody(data)) {
             return res.status(400).send({ status: false, message: "Enter details to create Product" });
         }
-        if (!validator.isValidFiles(files)) {
-            return res.status(400).send({ status: false, message: "productImage is required" })
-        }
-        const { productName, category, subCategory, manufacturer, priceBeforeDiscount, price, withGST, description, shippingCharges, sizeUnit, productQuantity, availability, selectImage1, selectImage2 } = data
+        // if (!validator.isValidFiles(files)) {
+        //     return res.status(400).send({ status: false, message: "productImage is required" })
+        // }
+        const { productName, category, subCategory, manufacturer, priceBeforeDiscount, price, withGST, description, shippingCharges, sizeUnit, productQuantity, availability, costumerID,selectImage1, selectImage2 } = data
 
 
         //ProductName
@@ -71,11 +72,18 @@ const addProdcts = async (req, res) => {
         //ProductQuantity
         if (!productQuantity) return res.status(400).send({ status: false, message: "productQuantity is required" });
         if (validator.isValid(productQuantity)) return res.status(400).send({ status: false, message: "productQuantity should not be an empty string" });
-
-        //Availability
+//Availability
         if (!availability) return res.status(400).send({ status: false, message: "availability is required" });
         if (validator.isValid(availability)) return res.status(400).send({ status: false, message: "availability should not be an empty string" });
 
+        if (!validator.isValid1(costumerID)) {
+            return res.status(400).send({ status: false, message: "costumerID is required" })
+        }
+        if (!validator.isValidObjectId(costumerID)) {
+            return res.status(400).send({ status: false, message: "costumerID not valid" })
+        }
+        let checkdata = await costumerModel.findById({_id:costumerID})
+        if(!checkdata)return res.status(201).send({ status: false, message: "costumer not found" })
         //SelectImage1
         // if (SelectImage1) {
         //     if (!SelectImage1) return res.status(400).send({ status: false, message: "SelectImage1 is required" });
@@ -206,7 +214,7 @@ const updateProduct = async (req, res) => {
         if (!productData) { return res.status(404).send({ satus: false, message: "no user found to update" }) }
         return res.status(200).send({ satus: true, message: "success", data: productData })
     } catch (error) {
-        return res.send({ status: false, message: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 
 }
