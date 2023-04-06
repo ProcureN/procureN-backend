@@ -30,8 +30,8 @@ router.delete("/deleteCostumerEnquiry/:customerEnquiryId",authentication, author
 router.post("/addProducts", authentication, addProdcts)
 router.put("/updateProducts/:productID", authentication, authorization1, updateProduct)
 router.delete("/products/:productID", authentication, authorization1, DeleteProduct)
-router.get("/getproducts", getProducts)
-router.get("/getproducts/:customerID", getManufactureProducts)
+router.get("/getproducts",authentication, getProducts)
+router.get("/getproducts/:customerID",authentication, getManufactureProducts)
 //=============================otp verification===================================
 router.post("/otp",otpVerification)
 router.post("/resendOtp",resendOtp)
