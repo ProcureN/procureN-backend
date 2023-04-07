@@ -201,7 +201,7 @@ const addProdcts = async (req, res) => {
     let saveData = await AddProductsModel.create(data);
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
-    return res.send({ status: false, message: error.message });
+    return res.status(500).send({ status: false, message: error.message });
   }
 };
 //==================================product update======================================
@@ -462,7 +462,7 @@ const DeleteProduct = async (req, res) => {
       .status(200)
       .send({ status: true, message: 'Product is deleted' });
   } catch (error) {
-    return res.send({ status: false, message: error.message });
+    return res.status(500).send({ status: false, message: error.message });
   }
 };
 
@@ -474,7 +474,7 @@ const getProducts = async (req, res) => {
     let data = await AddProductsModel.find(filter);
     res.status(200).send({ status: true, data: data });
   } catch (error) {
-    return res.send({ status: false, message: error.message });
+    return res.status(500).send({ status: false, message: error.message });
   }
 };
 
@@ -505,4 +505,18 @@ const getManufactureProducts = async (req, res) => {
   }
 };
 
-module.exports = { addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts };
+//======================================get product names ====================================
+const getproductnames = async (req,res)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {
+      let filter = { isDeleted: false }
+      let data = await AddProductsModel.find(filter).distinct("productName")
+      if(!data )
+      return res.status(404).send({status:false,message:"no enquiries found"})
+      res.status(200).send({ status: true, data: data })
+  } catch (error) {
+      return res.status(500).send({ status: false, message: error.message })
+  }
+}
+
+module.exports = { addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames };

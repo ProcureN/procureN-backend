@@ -24,7 +24,7 @@ if(phone){
 let saveData = await contactformModel.create(data)
 res.status(201).send({ status: true, data: saveData })
 } catch (error) {
-    return res.send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message });
 }
 }
 //=================================================================
@@ -36,8 +36,27 @@ const getcontactform = async (req, res) => {
         let data = await contactformModel.find({isDeleted: false})
         res.status(200).send({ status: true, data: data })
     } catch (error) {
-        return res.send({ status: false, message: error.message })
+        return res.status(500).send({ status: false, message: error.message });
+    }
+}
+//============================================================
+const deleteContactForm = async (req,res)=>{
+    try {
+        const contactUsId = req.params.contactUsId
+        //let error =[]
+        if (!validator.isValidObjectId(contactUsId)) {
+            res.status(400).send({ status: false, message: "Please provide valid costumer Id" })
+        }
+        let getID = await contactformModel.findById(contactUsId)
+        if (!getID) { return res.status(404).send({ status: false, message: "contactUs Id Not Found for the request id" }) }
+        if (getID.isDeleted == true) { return res.status(404).send({ status: false, message: "contactUs id is already deleted not found" }) }
+
+        await contactformModel.updateOne({ _id: contactUsId }, { isDeleted: true, deletedAt: Date.now() })
+        return res.status(200).send({ status: true, message: "contactUs Id is deleted succesfully" })
+
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
-module.exports = {contactform,getcontactform}
+module.exports = {contactform,getcontactform,deleteContactForm}

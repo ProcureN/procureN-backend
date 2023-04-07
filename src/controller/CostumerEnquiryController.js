@@ -69,7 +69,7 @@ const EnquiryForm = async (req, res) => {
         let saveData = await CostumerEnquiryModel.create(data)
         res.status(201).send({ status: true, data: saveData })
     } catch (error) {
-        return res.send({ status: false, message: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 
 
@@ -82,9 +82,11 @@ const getEnquiries = async (req, res) => {
     try {
         let filter = { isDeleted: false }
         let data = await CostumerEnquiryModel.find(filter)
+        if(!data )
+        return res.status(404).send({status:false,message:"no enquiries found"})
         res.status(200).send({ status: true, data: data })
     } catch (error) {
-        return res.send({ status: false, message: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 
 }
@@ -126,7 +128,7 @@ const IndividualCostumerEnquiry = async (req,res)=>{
         }
         let getData = await CostumerEnquiryModel.find({customerID:customerID})
         if(!getData){
-            return res.status(400).send({ status: false, message: "not enquiries found" })
+            return res.status(404).send({ status: false, message: "not enquiries found" })
         }
 return res.status(200).send({ status: true, data: getData })
     } catch (error) {

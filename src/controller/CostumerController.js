@@ -383,7 +383,7 @@ const updateCostumer = async (req, res) => {
       .status(200)
       .send({ satus: true, message: 'success', data: userData });
   } catch (error) {
-    return res.send({ status: false, message: error.message });
+    return res.status(500).send({ status: false, message: error.message });
   }
 };
 
@@ -440,6 +440,7 @@ const login = async (req, res) => {
       'procure-n secret key',
       { expiresIn: '24h' }
     );
+  
     //  Make Respoense
     let result = {
       customerID: isEmailExists._id.toString(),
@@ -522,15 +523,22 @@ const getDetails = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
+//========================================================================
 const getAllDetails = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
+    const resultsPerPage = req.params.limits;
+    let page = req.params.page >= 1 ? req.params.page : 1;
+    //const query = req.query.search;
+
+    page = page - 1
     let getdata = await costumerModel.find({
       isDeleted: false,
       selectRole: {
         $ne: 'admin',
       },
-    });
+    }).limit(resultsPerPage)
+    .skip(resultsPerPage * page)
     res.status(200).send({ status: true, data: getdata });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
