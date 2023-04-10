@@ -22,7 +22,7 @@ const AddProductsSchema = new mongoose.Schema({
         require: true,
         trim: true
     },
-    manufacturer: {
+    manufacturerName: {
         type: String,
         require: true,
         trim: true

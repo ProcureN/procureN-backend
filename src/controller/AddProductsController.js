@@ -20,7 +20,7 @@ const addProdcts = async (req, res) => {
       productName,
       category,
       subCategory,
-      manufacturer,
+      manufacturerName,
       priceBeforeDiscount,
       price,
       withGST,
@@ -67,11 +67,11 @@ const addProdcts = async (req, res) => {
       });
 
     //Manufacturer
-    if (!manufacturer)
+    if (!manufacturerName)
       return res
         .status(400)
         .send({ status: false, message: 'manufacturer is required' });
-    if (validator.isValid(manufacturer))
+    if (validator.isValid( manufacturerName))
       return res.status(400).send({
         status: false,
         message: 'manufacturer should not be an empty string',
@@ -221,7 +221,7 @@ const updateProduct = async (req, res) => {
       productName,
       category,
       subCategory,
-      manufacturer,
+      manufacturerName,
       priceBeforeDiscount,
       price,
       withGST,
@@ -276,12 +276,12 @@ const updateProduct = async (req, res) => {
         });
     }
 
-    if (manufacturer) {
-      if (!manufacturer)
+    if ( manufacturerName) {
+      if (! manufacturerName)
         return res
           .status(400)
           .send({ status: false, message: 'manufacturer is required' });
-      if (validator.isValid(manufacturer))
+      if (validator.isValid( manufacturerName))
         return res.status(400).send({
           status: false,
           message: 'manufacturer should not be an empty string',
