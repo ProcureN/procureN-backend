@@ -14,6 +14,7 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
     quantity:{
         type:String,
         trim: true,
+        require: true,
     },
     name: {
         type: String,

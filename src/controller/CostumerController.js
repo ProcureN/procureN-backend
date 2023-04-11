@@ -504,7 +504,7 @@ const getDetails = async (req, res) => {
     let data = req.query;
     let { selectRole } = data;
 
-    let Role = ['Retailer', 'manufacturer'];
+    let Role = ['Retailer', 'Manufacturer'];
     if (!Role.includes(selectRole))
       return res
         .status(400)

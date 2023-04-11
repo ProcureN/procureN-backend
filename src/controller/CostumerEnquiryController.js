@@ -63,6 +63,12 @@ const EnquiryForm = async (req, res) => {
         if (validator.isValid(shippingPincode)) {
             return res.status(400).send({ status: false, message: "Pincode is in wrong format" })
         };
+
+        //quantity
+        if (!quantity) return res.status(400).send({ status: false, message: "quantity is required" });
+        if (validator.isValid(quantity)) {
+            return res.status(400).send({ status: false, message: "quantity must be string" })
+        };
         if (!validator.isValidPincode(shippingPincode)) {
             return res.status(400).send({ status: false, message: "Please Provide valid Pincode" })
         };
@@ -154,4 +160,4 @@ const deleteCostumerEnquiry = async (req,res)=>{
         return res.status(500).send({ status: false, message: error.message })
     }
 }
-module.exports = { EnquiryForm, getEnquiries,IndividualCostumerEnquiry,deleteCostumerEnquiry }
+module.exports = {EnquiryForm, getEnquiries,IndividualCostumerEnquiry,deleteCostumerEnquiry }
