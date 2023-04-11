@@ -19,7 +19,7 @@ const costumerSchema = new mongoose.Schema({
   
     selectRole: {
         type: String,
-        enum: ["Retailer", "manufacturer"],
+        enum: ["Retailer", "Manufacturer"],
         require: true,
         trim: true,
     },

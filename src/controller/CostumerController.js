@@ -139,7 +139,7 @@ const register = async (req, res) => {
         .status(400)
         .send({ status: false, message: 'city should not be an empty string' });
 
-    let Role = ['Retailer', 'manufacturer'];
+    let Role = ['Retailer', 'Manufacturer'];
     if (!Role.includes(selectRole))
       return res
         .status(400)
@@ -363,7 +363,7 @@ const updateCostumer = async (req, res) => {
           });
     }
     if (SelectRole) {
-      let Role = ['Retailer', 'manufacturer'];
+      let Role = ['Retailer', 'Manufacturer'];
       if (!Role.includes(SelectRole))
         return res
           .status(400)
