@@ -18,11 +18,11 @@ router.put("/UpdateCostumer/:customerID", authentication, authorization, updateC
 router.delete("/deletecostumer/:customerID", authentication, authorization, deleteCostumers)
 router.post("/login", login)
 router.get("/getroles", authentication, getDetails)  // by admin
-router.get("/getAllDetails/:limits/:page",getAllDetails) // by admin
-router.get("/Individualprofiles/:customerID", authentication, authorization, Individualprofiles)
+router.get("/getAllDetails/:page/:limit",getAllDetails) // by admin
+router.get("/Individualprofiles/:customerID",  Individualprofiles)
 //============================enquiry form ============================
 router.post("/costumer/enquiryForm", authentication, authorization, EnquiryForm)
-router.get("/getenquiries", getEnquiries)  // by admin
+router.get("/getenquiries/:page/:limit", getEnquiries)  // by admin
 router.get("/IndividualcustomerEnquiry/:customerID",authentication, authorization,IndividualCostumerEnquiry)
 router.delete("/deleteCostumerEnquiry/:customerEnquiryId",authentication, authorization2,deleteCostumerEnquiry)  // by admin
 //router.put("/updateCostumersEnquiry",updateCostumersEnquiry)

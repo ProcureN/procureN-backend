@@ -87,7 +87,13 @@ const getEnquiries = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let filter = { isDeleted: false }
-        let data = await CostumerEnquiryModel.find(filter)
+        const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
+    let page = req.params.page >= 1 ? req.params.page : 1;
+    //const query = req.query.search;
+
+    page = page - 1
+        let data = await CostumerEnquiryModel.find(filter).limit(resultsPerPage)
+        .skip(resultsPerPage * page)
         if(!data )
         return res.status(404).send({status:false,message:"no enquiries found"})
         res.status(200).send({ status: true, data: data })

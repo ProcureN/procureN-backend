@@ -25,8 +25,9 @@ const isValidPassword = (password) => {
 }
 
 const isValidPhone = (Mobile) => {
-  return /^[6-9]\d{9}$/.test(Mobile)
+  return /^(\+91-|\+91|0)?\d{10}$/.test(Mobile)
 };
+
 
 const isValidEmail = (Email) => {
   return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(Email)
