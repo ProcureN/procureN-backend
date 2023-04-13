@@ -33,8 +33,21 @@ res.status(201).send({ status: true, data: saveData })
 const getcontactform = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
-        let data = await contactformModel.find({isDeleted: false})
-        res.status(200).send({ status: true, data: data })
+        let filter = { isDeleted: false };
+        const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
+        let page = req.params.page >= 1 ? req.params.page : 1;
+        //const query = req.query.search;
+    
+        page = page - 1
+        let CountOfData = await contactformModel.find(filter).countDocuments();
+    if (CountOfData.length===0) {
+      return res
+        .status(400)
+        .send({ status: false, message: 'No data found.' });
+    }
+        let data = await contactformModel.find(filter).limit(resultsPerPage)
+        .skip(resultsPerPage * page);
+        return res.status(200).send({ status: true, data: data, count:CountOfData});
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message });
     }

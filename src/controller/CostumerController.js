@@ -498,11 +498,12 @@ const deleteCostumers = async (req, res) => {
 
 //==============================get details======================================
 
-const getDetails = async (req, res) => {
+const  getDetails = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let data = req.query;
     let { selectRole } = data;
+    let filter = { isDeleted: false };
 
     let Role = ['Retailer', 'Manufacturer'];
     if (!Role.includes(selectRole))
@@ -514,17 +515,17 @@ const getDetails = async (req, res) => {
         .status(400)
         .send({ status: false, msg: 'Enter the key and value to filter' });
 
-        const resultsPerPage = req.params.limits;
+        const resultsPerPage = req.params.limit ===':limit' ?10 : req.params.limit;
         let page = req.params.page >= 1 ? req.params.page : 1;
         //const query = req.query.search;
     
         page = page - 1
+        let CountOfData =await costumerModel.find(  { selectRole: selectRole }).countDocuments()
     let getdata = await costumerModel.find(
       { selectRole: selectRole },
-      { isDeleted: false }
-    ).limit(resultsPerPage)
+      filter ).limit(resultsPerPage)
     .skip(resultsPerPage * page)
-    res.status(200).send({ status: true, data: getdata });
+    res.status(200).send({ status: true,  data : getdata, count:CountOfData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -533,19 +534,22 @@ const getDetails = async (req, res) => {
 const getAllDetails = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
+    let filter = { isDeleted: false };
     const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
     //const query = req.query.search;
 
     page = page - 1
-    let getdata = await costumerModel.find({
+    let CountOfData = await costumerModel.find(filter).countDocuments()
+    let data = await costumerModel.find({
       isDeleted: false,
       selectRole: {
         $ne: 'admin',
       },
     }).limit(resultsPerPage)
     .skip(resultsPerPage * page)
-    res.status(200).send({ status: true, data: getdata });
+    
+    res.status(200).send({ status: true,  data : data, count:CountOfData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -555,7 +559,8 @@ const getAllDetails = async (req, res) => {
 const Individualprofiles = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
-    let customerID = req.params.customerID;
+    let filter = { isDeleted: false };
+   
     if (!validator.isValid1(customerID)) {
       return res
         .status(400)
@@ -566,6 +571,7 @@ const Individualprofiles = async (req, res) => {
         .status(400)
         .send({ status: false, message: 'costumerID not valid' });
     }
+    
     let getData = await costumerModel.findOne({ _id: customerID });
     if (!getData) {
       return res

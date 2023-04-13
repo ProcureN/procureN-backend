@@ -471,8 +471,17 @@ const getProducts = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let filter = { isDeleted: false };
-    let data = await AddProductsModel.find(filter);
-    res.status(200).send({ status: true, data: data });
+    const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
+    let page = req.params.page >= 1 ? req.params.page : 1;
+    //const query = req.query.search;
+
+    page = page - 1
+    let CountOfData = await AddProductsModel.find(filter).countDocuments()
+    let data = await AddProductsModel.find(filter).limit(resultsPerPage)
+    .skip(resultsPerPage * page);
+    
+    res.status(200).send({ status: true,  data : data,
+      count:CountOfData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -483,6 +492,7 @@ const getManufactureProducts = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let customerID = req.params.customerID;
+    let filter = { isDeleted: false };
     if (!validator.isValid1(customerID)) {
       return res
         .status(400)
@@ -493,13 +503,20 @@ const getManufactureProducts = async (req, res) => {
         .status(400)
         .send({ status: false, message: 'costumerID not valid' });
     }
-    let getData = await AddProductsModel.find({ costumerID: customerID });
-    if (getData.length===0) {
+    const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
+    let page = req.params.page >= 1 ? req.params.page : 1;
+    //const query = req.query.search;
+
+    page = page - 1
+    let CountOfData = await AddProductsModel.find({ costumerID: customerID }).countDocuments();
+    if (CountOfData.length===0) {
       return res
         .status(400)
         .send({ status: false, message: 'No data found.' });
     }
-    return res.status(200).send({ status: true, data: getData });
+    let getData = await AddProductsModel.find({ costumerID: customerID }).limit(resultsPerPage)
+    .skip(resultsPerPage * page);
+    return res.status(200).send({ status: true, data: getData, count:CountOfData});
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }

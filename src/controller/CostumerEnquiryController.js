@@ -92,11 +92,14 @@ const getEnquiries = async (req, res) => {
     //const query = req.query.search;
 
     page = page - 1
+    let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments()
         let data = await CostumerEnquiryModel.find(filter).limit(resultsPerPage)
-        .skip(resultsPerPage * page)
+        .skip(resultsPerPage * page)//.countDocuments().exec()
         if(!data )
         return res.status(404).send({status:false,message:"no enquiries found"})
-        res.status(200).send({ status: true, data: data })
+       
+        res.status(200).send({ status: true, data : data,
+            count:CountOfData })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
@@ -132,17 +135,29 @@ const IndividualCostumerEnquiry = async (req,res)=>{
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let customerID = req.params.customerID
+       
         if (!validator.isValid1(customerID)) {
             return res.status(400).send({ status: false, message: "costumerID is required" })
         }
         if (!validator.isValidObjectId(customerID)) {
             return res.status(400).send({ status: false, message: "costumerID not valid" })
         }
-        let getData = await CostumerEnquiryModel.find({customerID:customerID})
-        if(!getData){
-            return res.status(404).send({ status: false, message: "not enquiries found" })
-        }
-return res.status(200).send({ status: true, data: getData })
+        
+        
+        // if(!getData){
+        //     return res.status(404).send({ status: false, message: "not enquiries found" })
+        // }
+        let filter = { isDeleted: false };
+        const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
+        let page = req.params.page >= 1 ? req.params.page : 1;
+        page = page - 1 
+        //const query = req.query.search;
+        let CountOfData =await CostumerEnquiryModel.find({customerID:customerID}).countDocuments()
+        let getData = await CostumerEnquiryModel.find({customerID:customerID}).limit(resultsPerPage)
+        .skip(resultsPerPage * page);
+        
+       
+return res.status(200).send({ status: true, data: getData,  count:CountOfData}) 
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
