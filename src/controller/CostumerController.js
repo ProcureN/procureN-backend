@@ -560,7 +560,7 @@ const Individualprofiles = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let filter = { isDeleted: false };
-   
+    let customerID = req.params.customerID;
     if (!validator.isValid1(customerID)) {
       return res
         .status(400)
