@@ -6,11 +6,11 @@
   "scripts": {
     "build": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon src/index.js"
+    "start": "node src/index.js"
   },
   "author": "veronica",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": { 
     "aws-sdk": "^2.1333.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",

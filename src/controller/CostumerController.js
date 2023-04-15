@@ -518,12 +518,9 @@ const  getDetails = async (req, res) => {
         const resultsPerPage = req.params.limit ===':limit' ?10 : req.params.limit;
         let page = req.params.page >= 1 ? req.params.page : 1;
         //const query = req.query.search;
-    
         page = page - 1
-        let CountOfData =await costumerModel.find(  { selectRole: selectRole }).countDocuments()
-    let getdata = await costumerModel.find(
-      { selectRole: selectRole },
-      filter ).limit(resultsPerPage)
+        let CountOfData =await costumerModel.find({ selectRole: selectRole, isDeleted: false }).countDocuments()
+    let getdata = await costumerModel.find({ selectRole: selectRole, isDeleted: false } ).limit(resultsPerPage)
     .skip(resultsPerPage * page)
     res.status(200).send({ status: true,  data : getdata, count:CountOfData });
   } catch (error) {
@@ -540,7 +537,12 @@ const getAllDetails = async (req, res) => {
     //const query = req.query.search;
 
     page = page - 1
-    let CountOfData = await costumerModel.find(filter).countDocuments()
+    let CountOfData = await costumerModel.find({
+      isDeleted: false,
+      selectRole: {
+        $ne: 'admin',
+      },
+    }).countDocuments()
     let data = await costumerModel.find({
       isDeleted: false,
       selectRole: {
