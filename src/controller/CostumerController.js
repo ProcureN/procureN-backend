@@ -583,6 +583,26 @@ const Individualprofiles = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
+//===================================================================
+const countOfManufacturer = async (req,res)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*')
+ try {//"Retailer", "Manufacturer"
+     let data = await costumerModel.find({selectRole:"Manufacturer"}).countDocuments()
+res.status(200).send({ status: true, data:data })
+ } catch (error) {
+     return res.status(500).send({ status: false, message: error.message })
+ }
+}
+//======================================================================
+const countOfRetailer = async (req,res)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*')
+ try {//"Retailer", "Manufacturer"
+     let data = await costumerModel.find({selectRole:"Retailer"}).countDocuments()
+res.status(200).send({ status: true, data:data })
+ } catch (error) {
+     return res.status(500).send({ status: false, message: error.message })
+ }
+}
 module.exports = {
   register,
   updateCostumer,
@@ -591,4 +611,6 @@ module.exports = {
   getDetails,
   getAllDetails,
   Individualprofiles,
+  countOfManufacturer,
+  countOfRetailer
 };

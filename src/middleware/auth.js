@@ -85,6 +85,44 @@ async function authorization1(req, res, next) {
 }
 //========================================================================
 
+// async function authorization2(req, res, next) {
+//   try {
+//     const customerID = req.decoded.customerID;
+//     const customerEnquiryId = req.params.customerEnquiryId;
+
+//     const errors = [];
+
+//     if (customerEnquiryId === ":customerEnquiryId") {
+//       errors.push("customerEnquiryId is required");
+//     } else {
+//       if (!validator.isValidObjectId(customerID)) {
+//         errors.push("Given bookId is an invalid ObjectId");
+//       }
+//     }
+
+//     if (errors.length > 0) {
+//       return res.status(400).send({
+//         status: false,
+//         message: `${errors.join(", ")}`,
+//       });
+//     }
+
+//     const customerEnquiryDocument = await customerEnquiryModel.find({ _id: customerEnquiryId, isDeleted: false });
+//     if (!customerEnquiryDocument) {
+//       return res.status(404).send({ status: false, message: "customerEnquiryDocument not found" });
+//     }
+    
+//     const pathcustomerID = customerEnquiryDocument.costumerID.toString()
+//     if (customerID !== pathcustomerID) {
+//       return res
+//         .status(403)
+//         .send({ status: false, message: "user not authorized" });
+//     }
+//     next();
+//   } catch (error) {
+//     return res.status(500).send({ status: false, message: error.message });
+//   }
+// }
 async function authorization2(req, res, next) {
   try {
     const customerID = req.decoded.customerID;
@@ -107,13 +145,13 @@ async function authorization2(req, res, next) {
       });
     }
 
-    const customerEnquiryDocument = await customerEnquiryModel.findOne({ _id: customerEnquiryId, isDeleted: false });
-    if (!customerEnquiryDocument) {
+    const customerEnquiryDocument = await customerEnquiryModel.find({ _id: customerEnquiryId, isDeleted: false });
+    if (!customerEnquiryDocument || customerEnquiryDocument.length === 0) {
       return res.status(404).send({ status: false, message: "customerEnquiryDocument not found" });
     }
-
-    const pathcustomerID = customerEnquiryDocument.customerID.toString();
-    if (customerID !== pathcustomerID) {
+    
+    const pathcustomerID = customerEnquiryDocument[0].customerID?.toString();
+    if (!pathcustomerID || customerID !== pathcustomerID) {
       return res
         .status(403)
         .send({ status: false, message: "user not authorized" });
@@ -123,4 +161,5 @@ async function authorization2(req, res, next) {
     return res.status(500).send({ status: false, message: error.message });
   }
 }
-module.exports = { authentication, authorization, authorization1,authorization2 }
+
+module.exports = { authentication, authorization, authorization1, authorization2 } 

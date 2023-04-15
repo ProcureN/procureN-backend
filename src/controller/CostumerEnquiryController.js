@@ -6,9 +6,9 @@ const validator = require("../validation/validations")
 const EnquiryForm = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
-     //   let costumerId = req.params.customerID
+        //   let costumerId = req.params.customerID
         let data = req.body
-        const { productName, otherProduct, name, contact, alternativeNumber, email, state, billingAddress, shippingPincode,quantity,city,customerID } = data
+        const { productName, otherProduct, name, contact, alternativeNumber, email, state, billingAddress, shippingPincode, quantity, city, customerID } = data
 
         if (validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Enter details to create your account" });
         if (!validator.isValid1(customerID)) {
@@ -17,9 +17,9 @@ const EnquiryForm = async (req, res) => {
         if (!validator.isValidObjectId(customerID)) {
             return res.status(400).send({ status: false, message: "costumerID not valid" })
         }
-        let getCostumers = await CostumerModel.findOne({_id:customerID,isDeleted:false})
-        if(!getCostumers){
-            return res.status(404).send({status:false,msg:"user not found or already deleted"})
+        let getCostumers = await CostumerModel.findOne({ _id: customerID, isDeleted: false })
+        if (!getCostumers) {
+            return res.status(404).send({ status: false, msg: "user not found or already deleted" })
         }
         //ProductName
         if (!productName) return res.status(400).send({ status: false, message: "ProductName is required" });
@@ -87,19 +87,21 @@ const getEnquiries = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let filter = { isDeleted: false }
-        const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
-    let page = req.params.page >= 1 ? req.params.page : 1;
-    //const query = req.query.search;
+        const resultsPerPage = req.params.limit === ':limit' ? 10 : req.params.limit;
+        let page = req.params.page >= 1 ? req.params.page : 1;
+        //const query = req.query.search;
 
-    page = page - 1
-    let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments()
+        page = page - 1
+        let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments()
         let data = await CostumerEnquiryModel.find(filter).limit(resultsPerPage)
-        .skip(resultsPerPage * page)//.countDocuments().exec()
-        if(!data )
-        return res.status(404).send({status:false,message:"no enquiries found"})
-       
-        res.status(200).send({ status: true, data : data,
-            count:CountOfData })
+            .skip(resultsPerPage * page)//.countDocuments().exec()
+        if (!data)
+            return res.status(404).send({ status: false, message: "no enquiries found" })
+
+        res.status(200).send({
+            status: true, data: data,
+            count: CountOfData
+        })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
@@ -107,66 +109,66 @@ const getEnquiries = async (req, res) => {
 }
 
 //==========================update costumers =========================================
-// const updateCostumersEnquiry = async (req,res)=>{
-//     try {
-//         let data = req.body
-//     let customerEnquiryID = req.params.customerEnquiryID
-//     let {status,deliveryStatus}=data
-//     if(status){
-//         let statuses = ["Pending","Approved","Rejected"];
-//         if (!statuses.includes(status)) return res.status(400).send({ status: false, msg: `status must be slected among ${statuses}` });
-//     }
-//     if(deliveryStatus){
-//         let deliveryStatuses = ["processing","shipped","inTransit","delivered"];
-//         if (!deliveryStatuses.includes(deliveryStatus)) return res.status(400).send({ status: false, msg: `status must be slected among ${deliveryStatuses}` });
-//     }
-//     let userData = await CostumerEnquiryModel.findOneAndUpdate({ _id: customerEnquiryID }, data, { new: true })
-//     if (!userData) { return res.status(404).send({ satus: false, message: "no user found to update" }) }
-//     return res.status(200).send({ satus: true, message: "success", data: userData })
+const updateCostumersEnquiry = async (req, res) => {
+    try {
+        let data = req.body
+        const customerEnquiryID = req.params.customerEnquiryId;
+        let { status, deliveryStatus } = data
+        if (status) {
+            let statuses = ["Pending", "Approved", "Rejected"];
+            if (!statuses.includes(status)) return res.status(400).send({ status: false, msg: `status must be slected among ${statuses}` });
+        }
+        if (deliveryStatus) {
+            let deliveryStatuses = ["processing", "shipped", "inTransit", "delivered"];
+            if (!deliveryStatuses.includes(deliveryStatus)) return res.status(400).send({ status: false, msg: `status must be slected among ${deliveryStatuses}` });
+        }
+        let userData = await CostumerEnquiryModel.findOneAndUpdate({ _id: customerEnquiryID }, data, { new: true })
+        if (!userData) { return res.status(404).send({ satus: false, message: "no user found to update" }) }
+        return res.status(200).send({ satus: true, message: "success", data: userData })
 
-//     } catch (error) {
-//         return res.status(200).send({ status: false, message: error.message })
-//     }
-    
-// }
+    } catch (error) {
+        return res.status(200).send({ status: false, message: error.message })
+    }
+
+}
 //=========================================get individual costumer enquiry================================
 
-const IndividualCostumerEnquiry = async (req,res)=>{
+const IndividualCostumerEnquiry = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let customerID = req.params.customerID
-       
+
         if (!validator.isValid1(customerID)) {
             return res.status(400).send({ status: false, message: "costumerID is required" })
         }
         if (!validator.isValidObjectId(customerID)) {
             return res.status(400).send({ status: false, message: "costumerID not valid" })
         }
-        
-        
+
+
         // if(!getData){
         //     return res.status(404).send({ status: false, message: "not enquiries found" })
         // }
         let filter = { isDeleted: false };
-        const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
+        const resultsPerPage = req.params.limit === ':limit' ? 10 : req.params.limit;
         let page = req.params.page >= 1 ? req.params.page : 1;
-        page = page - 1 
+        page = page - 1
         //const query = req.query.search;
-        let CountOfData =await CostumerEnquiryModel.find({customerID:customerID}).countDocuments()
-        let getData = await CostumerEnquiryModel.find({customerID:customerID}).limit(resultsPerPage)
-        .skip(resultsPerPage * page);
-        
-       
-return res.status(200).send({ status: true, data: getData,  count:CountOfData}) 
+        let CountOfData = await CostumerEnquiryModel.find({ customerID: customerID }).countDocuments()
+        let getData = await CostumerEnquiryModel.find({ customerID: customerID }).limit(resultsPerPage)
+            .skip(resultsPerPage * page);
+
+
+        return res.status(200).send({ status: true, data: getData, count: CountOfData })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
-   
+
 }
 
 //==============================delete costumer enquiry =====================================
 
-const deleteCostumerEnquiry = async (req,res)=>{
+const deleteCostumerEnquiry = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let customerEnquiryId = req.params.customerEnquiryId
@@ -181,4 +183,49 @@ const deleteCostumerEnquiry = async (req,res)=>{
         return res.status(500).send({ status: false, message: error.message })
     }
 }
-module.exports = {EnquiryForm, getEnquiries,IndividualCostumerEnquiry,deleteCostumerEnquiry }
+//==========================count of enquire====================================================
+
+const countData = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {
+        let data = await CostumerEnquiryModel.find().countDocuments()
+        res.status(200).send({ status: true, data: data })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+
+}
+//================================================================================
+const pendingData = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {
+        let data = await CostumerEnquiryModel.find({ status: "Pending" }).countDocuments()
+        res.status(200).send({ status: true, data: data })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+
+}
+//===============================================================================
+const rejectedData = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {
+        let data = await CostumerEnquiryModel.find({ status: "Approved   " }).countDocuments()
+        res.status(200).send({ status: true, data: data })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+
+}
+//=====================================================================================
+const approvedData = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {
+        let data = await CostumerEnquiryModel.find({ status: "Approved" }).countDocuments()
+        res.status(200).send({ status: true, data: data })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
+//============================
+module.exports = { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData, pendingData, rejectedData, approvedData, updateCostumersEnquiry }

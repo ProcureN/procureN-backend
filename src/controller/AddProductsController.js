@@ -2,12 +2,14 @@ const AddProductsModel = require('../models/AddProductModel');
 const validator = require('../validation/validations');
 const costumerModel = require('../models/CostumerModel');
 const aws = require('../aws/aws');
+const uploadFile = require("../middleware/uploads");
+const fs = require("fs");
 const addProdcts = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let data = req.body;
     let files = req.files;
-
+    
     if (validator.isValidBody(data)) {
       return res
         .status(400)
@@ -176,31 +178,22 @@ const addProdcts = async (req, res) => {
     }
     let checkdata = await costumerModel.findById({ _id: costumerID });
     if (!checkdata)
-      return res
-        .status(201)
-        .send({ status: false, message: 'costumer not found' });
-    //SelectImage1
-    // if (SelectImage1) {
-    //     if (!SelectImage1) return res.status(400).send({ status: false, message: "SelectImage1 is required" });
-    //     if (validator.isValid(SelectImage1)) return res.status(400).send({ status: false, message: "SelectImage1 should not be an empty string" });
-    if (files && files.length > 0) {
-      let productImgUrl = await aws.uploadFile(files[0]);
-      data.selectImage1 = productImgUrl;
-    }
-    // }
-    //SelectImage2
-    // if (SelectImage2) {
-    //     if (!SelectImage2) return res.status(400).send({ status: false, message: "SelectImage2 is required" });
-    // if (validator.isValid(SelectImage2)) return res.status(400).send({ status: false, message: "SelectImage2 should not be an empty string" });
-    if (files && files.length > 0) {
-      let productImgUrl1 = await aws.uploadFile(files[1]);
-      data.selectImage2 = productImgUrl1;
-    }
+      return res.status(201).send({ status: false, message: 'costumer not found' });
+     
+        let uploadImg = await uploadFile(req, res);
 
-    // }
+        if (req.file == undefined) {
+          return res.status(400).send({ message: "Please upload a file!" });
+        }
+        data.selectImage1 = req.file.originalname
     let saveData = await AddProductsModel.create(data);
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
+    if (error.code == "LIMIT_FILE_SIZE") {
+      return res.status(500).send({
+        message: "File size cannot be larger than 2MB!",
+      });
+    }
     return res.status(500).send({ status: false, message: error.message });
   }
 };
@@ -535,5 +528,15 @@ const getproductnames = async (req,res)=>{
       return res.status(500).send({ status: false, message: error.message })
   }
 }
+//==============================count of products========================================
+const countProduct = async (req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
+   try {//"Retailer", "Manufacturer"
+       let data = await AddProductsModel.find().countDocuments()
+  res.status(200).send({ status: true, data:data })
+   } catch (error) {
+       return res.status(500).send({ status: false, message: error.message })
+   }
+  }
 
-module.exports = { addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames };
+module.exports = {addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames,countProduct };
