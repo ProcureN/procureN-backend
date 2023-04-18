@@ -75,7 +75,7 @@ const deleteContactForm = async (req,res)=>{
 const countOfContactForm = async (req,res)=>{
     res.setHeader('Access-Control-Allow-Origin', '*')
    try {//"Retailer", "Manufacturer"
-       let data = await contactformModel.find().countDocuments()
+       let data = await contactformModel.find({isDeleted: false}).countDocuments()
   res.status(200).send({ status: true, data:data })
    } catch (error) {
        return res.status(500).send({ status: false, message: error.message })

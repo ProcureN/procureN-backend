@@ -19,7 +19,7 @@ const otpVerification = async (req, res) => {
         if (!costumerData) {
             return res.status(404).send({ status: false, Message: "user not found" })
         }
-
+        
         if (!otp) return res.status(400).send({ status: false, message: "otp is required" });
 
         let otpData = await optModel.findOne({ email: email })
@@ -30,7 +30,9 @@ const otpVerification = async (req, res) => {
         costumerData.toObject()
         console.log(otpverify.otp, costumerData.selectRole)
         if (otp == otpverify.otp) {
-            return res.status(200).send({ status: true, message: "login successful", selectRole: costumerData.selectRole.toString() })
+            let customerVerification = await costumerModel.findOneAndUpdate({ email: email }, { $set: { verified: true } })
+
+            return res.status(200).send({ status: true, message: "login successful", selectRole: costumerData.selectRole.toString(), verifiedOtp: customerVerification.verified })
         } else {
             return res.status(400).send({ status: false, message: "incorrect otp" })
         }
@@ -101,4 +103,6 @@ const resendOtp = async (req, res) => {
     }
 
 }
+
+
 module.exports = { otpVerification, resendOtp }

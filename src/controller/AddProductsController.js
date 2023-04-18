@@ -532,11 +532,81 @@ const getproductnames = async (req,res)=>{
 const countProduct = async (req,res)=>{
     res.setHeader('Access-Control-Allow-Origin', '*')
    try {//"Retailer", "Manufacturer"
-       let data = await AddProductsModel.find().countDocuments()
+       let data = await AddProductsModel.find({isDeleted: false}).countDocuments()
   res.status(200).send({ status: true, data:data })
    } catch (error) {
        return res.status(500).send({ status: false, message: error.message })
    }
   }
+//==============================================================================
+const pending = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {//["pending","approved","rejected"]
+      let data = await AddProductsModel.find({status:"pending",isDeleted: false}).countDocuments()
+      res.status(200).send({ status: true, data: data })
+  } catch (error) {
+      return res.status(500).send({ status: false, message: error.message })
+  }
+}
+//===============================================================================
+const rejected = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {
+      let data = await AddProductsModel.find({status:"rejected",isDeleted: false}).countDocuments()
+      res.status(200).send({ status: true, data: data })
+  } catch (error) {
+      return res.status(500).send({ status: false, message: error.message })
+  }
 
-module.exports = {addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames,countProduct };
+}
+//=====================================================================================
+const approved = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {
+      let data = await AddProductsModel.find({status:"approved",isDeleted: false}).countDocuments()
+      res.status(200).send({ status: true, data: data })
+  } catch (error) {
+      return res.status(500).send({ status: false, message: error.message })
+  }
+}
+//==============================================================================
+const countOfInprocessing = async(req,res)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {//"processing","shipped","inTransit","delivered"
+      let data = await AddProductsModel.find({deliveryStatus:"processing",isDeleted: false}).countDocuments()
+      res.status(200).send({ status: true, data: data })
+  } catch (error) {
+      return res.status(500).send({ status: false, message: error.message })
+  }
+}
+//=====================================================================================
+const countOfinTransit = async(req,res)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {//"processing","shipped","inTransit","delivered"
+      let data = await AddProductsModel.find({  deliveryStatus:"inTransit",isDeleted: false}).countDocuments()
+      res.status(200).send({ status: true, data: data })
+  } catch (error) {
+      return res.status(500).send({ status: false, message: error.message })
+  }
+}
+//==============================================================
+const countOfinshipped = async(req,res)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {//"processing","shipped","inTransit","delivered"
+      let data = await AddProductsModel.find({  deliveryStatus:"shipped",isDeleted: false}).countDocuments()
+      res.status(200).send({ status: true, data: data })
+  } catch (error) {
+      return res.status(500).send({ status: false, message: error.message })
+  }
+}
+//==============================================================================
+const countOfindelivered = async(req,res)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {//"processing","shipped","inTransit","delivered"
+      let data = await AddProductsModel.find({  deliveryStatus:"delivered",isDeleted: false}).countDocuments()
+      res.status(200).send({ status: true, data: data })
+  } catch (error) {
+      return res.status(500).send({ status: false, message: error.message })
+  }
+}
+module.exports = {addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames,countProduct,pending,rejected,approved,countOfInprocessing,countOfinTransit,countOfinshipped,countOfindelivered };

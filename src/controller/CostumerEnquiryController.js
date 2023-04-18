@@ -188,7 +188,7 @@ const deleteCostumerEnquiry = async (req, res) => {
 const countData = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
-        let data = await CostumerEnquiryModel.find().countDocuments()
+        let data = await CostumerEnquiryModel.find({isDeleted: false}).countDocuments()
         res.status(200).send({ status: true, data: data })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
@@ -199,7 +199,7 @@ const countData = async (req, res) => {
 const pendingData = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
-        let data = await CostumerEnquiryModel.find({ status: "Pending" }).countDocuments()
+        let data = await CostumerEnquiryModel.find({ status: "Pending",isDeleted: false }).countDocuments()
         res.status(200).send({ status: true, data: data })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
@@ -210,7 +210,7 @@ const pendingData = async (req, res) => {
 const rejectedData = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
-        let data = await CostumerEnquiryModel.find({ status: "Approved   " }).countDocuments()
+        let data = await CostumerEnquiryModel.find({ status: "Rejected" ,isDeleted: false}).countDocuments()
         res.status(200).send({ status: true, data: data })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
@@ -221,11 +221,50 @@ const rejectedData = async (req, res) => {
 const approvedData = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
-        let data = await CostumerEnquiryModel.find({ status: "Approved" }).countDocuments()
+        let data = await CostumerEnquiryModel.find({ status: "Approved" ,isDeleted: false}).countDocuments()
         res.status(200).send({ status: true, data: data })
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
     }
 }
-//============================
-module.exports = { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData, pendingData, rejectedData, approvedData, updateCostumersEnquiry }
+//==============================================================================
+const countOfInprocessingDelivery = async(req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {//"processing","shipped","inTransit","delivered"
+        let data = await CostumerEnquiryModel.find({  deliveryStatus:"processing",isDeleted: false}).countDocuments()
+        res.status(200).send({ status: true, data: data })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
+//=====================================================================================
+const countOfinTransitDelivery = async(req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {//"processing","shipped","inTransit","delivered"
+        let data = await CostumerEnquiryModel.find({  deliveryStatus:"inTransit",isDeleted: false}).countDocuments()
+        res.status(200).send({ status: true, data: data })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
+//==============================================================
+const countOfinshippedDelivery = async(req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {//"processing","shipped","inTransit","delivered"
+        let data = await CostumerEnquiryModel.find({  deliveryStatus:"shipped",isDeleted: false}).countDocuments()
+        res.status(200).send({ status: true, data: data })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
+//==============================================================================
+const countOfindeliveredDelivery = async(req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {//"processing","shipped","inTransit","delivered"
+        let data = await CostumerEnquiryModel.find({  deliveryStatus:"delivered",isDeleted: false}).countDocuments()
+        res.status(200).send({ status: true, data: data })
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
+module.exports = { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData, pendingData, rejectedData, approvedData, updateCostumersEnquiry,countOfInprocessingDelivery,countOfindeliveredDelivery,countOfinshippedDelivery,countOfinTransitDelivery }

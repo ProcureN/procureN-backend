@@ -169,9 +169,9 @@ const register = async (req, res) => {
     });
     let response = {
       body: {
-        name: `Hi ${name}`,
+        name: `${name}`,
         intro: `please verify your email opt: ${otp}`,
-        outro: 'thnk u',
+        outro: 'thank you',
       },
     };
     let mail = MailGenerator.generate(response);
@@ -412,6 +412,9 @@ const login = async (req, res) => {
         .send({ status: false, message: 'Please Enter a valid Email-id' });
 
     const isEmailExists = await costumerModel.findOne({ email: email });
+    if(isEmailExists.verified===false){
+      return res.status(400).send({ status: false, message: 'otp is not verified' })
+    }
     if (!isEmailExists)
       return res
         .status(401)
@@ -574,7 +577,7 @@ const Individualprofiles = async (req, res) => {
         .send({ status: false, message: 'costumerID not valid' });
     }
     
-    let getData = await costumerModel.findOne({ _id: customerID });
+    let getData = await costumerModel.findOne({ _id: customerID,isDeleted: false });
     if (!getData) {
       return res
         .status(400)
@@ -589,7 +592,7 @@ const Individualprofiles = async (req, res) => {
 const countOfManufacturer = async (req,res)=>{
   res.setHeader('Access-Control-Allow-Origin', '*')
  try {//"Retailer", "Manufacturer"
-     let data = await costumerModel.find({selectRole:"Manufacturer"}).countDocuments()
+     let data = await costumerModel.find({selectRole:"Manufacturer",isDeleted: false}).countDocuments()
 res.status(200).send({ status: true, data:data })
  } catch (error) {
      return res.status(500).send({ status: false, message: error.message })
@@ -599,7 +602,7 @@ res.status(200).send({ status: true, data:data })
 const countOfRetailer = async (req,res)=>{
   res.setHeader('Access-Control-Allow-Origin', '*')
  try {//"Retailer", "Manufacturer"
-     let data = await costumerModel.find({selectRole:"Retailer"}).countDocuments()
+     let data = await costumerModel.find({selectRole:"Retailer",isDeleted: false}).countDocuments()
 res.status(200).send({ status: true, data:data })
  } catch (error) {
      return res.status(500).send({ status: false, message: error.message })
