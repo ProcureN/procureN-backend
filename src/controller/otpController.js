@@ -19,7 +19,7 @@ const otpVerification = async (req, res) => {
         if (!costumerData) {
             return res.status(404).send({ status: false, Message: "user not found" })
         }
-        
+
         if (!otp) return res.status(400).send({ status: false, message: "otp is required" });
 
         let otpData = await optModel.findOne({ email: email })
@@ -104,5 +104,12 @@ const resendOtp = async (req, res) => {
 
 }
 
+const forgetPassword = async (req, res) => {
+    try {
+
+    } catch (error) {
+        return res.status(500).send({ status: false, message: error.message })
+    }
+}
 
 module.exports = { otpVerification, resendOtp }

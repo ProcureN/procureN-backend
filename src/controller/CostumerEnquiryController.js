@@ -93,7 +93,7 @@ const getEnquiries = async (req, res) => {
 
         page = page - 1
         let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments()
-        let data = await CostumerEnquiryModel.find(filter).limit(resultsPerPage)
+        let data = await CostumerEnquiryModel.find(filter).sort({ status: 1,createdAt: -1,deliveryStatus:1 }).limit(resultsPerPage)
             .skip(resultsPerPage * page)//.countDocuments().exec()
         if (!data)
             return res.status(404).send({ status: false, message: "no enquiries found" })
@@ -154,8 +154,8 @@ const IndividualCostumerEnquiry = async (req, res) => {
         let page = req.params.page >= 1 ? req.params.page : 1;
         page = page - 1
         //const query = req.query.search;
-        let CountOfData = await CostumerEnquiryModel.find({ customerID: customerID }).countDocuments()
-        let getData = await CostumerEnquiryModel.find({ customerID: customerID }).limit(resultsPerPage)
+        let CountOfData = await CostumerEnquiryModel.find({ customerID: customerID, }).countDocuments()
+        let getData = await CostumerEnquiryModel.find({ customerID: customerID }).sort({ status: 1, createdAt: -1,deliveryStatus:1 }).limit(resultsPerPage)
             .skip(resultsPerPage * page);
 
 

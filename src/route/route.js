@@ -43,7 +43,7 @@ router.get("/countOfinTransitDelivery",countOfinTransitDelivery)
 router.post("/addProducts", addProdcts)
 router.put("/updateProducts/:productID", authentication, authorization1, updateProduct)
 router.delete("/products/:productID", authentication, authorization1, DeleteProduct)
-router.get("/getproducts/:page/:limit", authentication, getProducts)  // by admin 
+router.get("/getproducts/:page/:limit",  getProducts)  // by admin 
 router.get("/getproducts/:customerID/:page/:limit", getManufactureProducts)
 router.get("/getproductnames", getproductnames)
 router.get("/countProduct", countProduct)

@@ -470,7 +470,7 @@ const getProducts = async (req, res) => {
 
     page = page - 1
     let CountOfData = await AddProductsModel.find(filter).countDocuments()
-    let data = await AddProductsModel.find(filter).limit(resultsPerPage)
+    let data = await AddProductsModel.find(filter).sort({status: 1,createdAt:-1,deliveryStatus:1}).limit(resultsPerPage)
     .skip(resultsPerPage * page);
     
     res.status(200).send({ status: true,  data : data,
@@ -507,7 +507,7 @@ const getManufactureProducts = async (req, res) => {
         .status(400)
         .send({ status: false, message: 'No data found.' });
     }
-    let getData = await AddProductsModel.find({ costumerID: customerID }).limit(resultsPerPage)
+    let getData = await AddProductsModel.find({ costumerID: customerID }).sort({status: 1,createdAt:-1,deliveryStatus:1}).limit(resultsPerPage)
     .skip(resultsPerPage * page);
     return res.status(200).send({ status: true, data: getData, count:CountOfData});
   } catch (error) {
@@ -521,7 +521,7 @@ const getproductnames = async (req,res)=>{
   try {
       let filter = { isDeleted: false }
       let data = await AddProductsModel.find(filter).distinct("productName")
-      if(!data )
+      if(!data)
       return res.status(404).send({status:false,message:"no enquiries found"})
       res.status(200).send({ status: true, data: data })
   } catch (error) {
