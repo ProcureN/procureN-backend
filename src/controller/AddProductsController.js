@@ -9,7 +9,7 @@ const addProdcts = async (req, res) => {
   try {
     let data = req.body;
     let files = req.files;
-    
+
     if (validator.isValidBody(data)) {
       return res
         .status(400)
@@ -73,7 +73,7 @@ const addProdcts = async (req, res) => {
       return res
         .status(400)
         .send({ status: false, message: 'manufacturer is required' });
-    if (validator.isValid( manufacturerName))
+    if (validator.isValid(manufacturerName))
       return res.status(400).send({
         status: false,
         message: 'manufacturer should not be an empty string',
@@ -179,13 +179,13 @@ const addProdcts = async (req, res) => {
     let checkdata = await costumerModel.findById({ _id: costumerID });
     if (!checkdata)
       return res.status(201).send({ status: false, message: 'costumer not found' });
-     
-        let uploadImg = await uploadFile(req, res);
 
-        if (req.file == undefined) {
-          return res.status(400).send({ message: "Please upload a file!" });
-        }
-        data.selectImage1 = req.file.originalname
+    let uploadImg = await uploadFile(req, res);
+
+    if (req.file == undefined) {
+      return res.status(400).send({ message: "Please upload a file!" });
+    }
+    data.selectImage1 = req.file.originalname
     let saveData = await AddProductsModel.create(data);
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
@@ -269,12 +269,12 @@ const updateProduct = async (req, res) => {
         });
     }
 
-    if ( manufacturerName) {
-      if (! manufacturerName)
+    if (manufacturerName) {
+      if (!manufacturerName)
         return res
           .status(400)
           .send({ status: false, message: 'manufacturer is required' });
-      if (validator.isValid( manufacturerName))
+      if (validator.isValid(manufacturerName))
         return res.status(400).send({
           status: false,
           message: 'manufacturer should not be an empty string',
@@ -464,17 +464,19 @@ const getProducts = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let filter = { isDeleted: false };
-    const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
+    const resultsPerPage = req.params.limit === ':limit' ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
     //const query = req.query.search;
 
     page = page - 1
     let CountOfData = await AddProductsModel.find(filter).countDocuments()
-    let data = await AddProductsModel.find(filter).sort({status: 1,createdAt:-1,deliveryStatus:1}).limit(resultsPerPage)
-    .skip(resultsPerPage * page);
-    
-    res.status(200).send({ status: true,  data : data,
-      count:CountOfData });
+    let data = await AddProductsModel.find(filter).sort({ status: 1, createdAt: -1, deliveryStatus: 1 }).limit(resultsPerPage)
+      .skip(resultsPerPage * page);
+
+    res.status(200).send({
+      status: true, data: data,
+      count: CountOfData
+    });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -496,66 +498,66 @@ const getManufactureProducts = async (req, res) => {
         .status(400)
         .send({ status: false, message: 'costumerID not valid' });
     }
-    const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
+    const resultsPerPage = req.params.limit === ':limit' ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
     //const query = req.query.search;
 
     page = page - 1
     let CountOfData = await AddProductsModel.find({ costumerID: customerID }).countDocuments();
-    if (CountOfData.length===0) {
+    if (CountOfData.length === 0) {
       return res
         .status(400)
         .send({ status: false, message: 'No data found.' });
     }
-    let getData = await AddProductsModel.find({ costumerID: customerID }).sort({status: 1,createdAt:-1,deliveryStatus:1}).limit(resultsPerPage)
-    .skip(resultsPerPage * page);
-    return res.status(200).send({ status: true, data: getData, count:CountOfData});
+    let getData = await AddProductsModel.find({ costumerID: customerID }).sort({ status: 1, createdAt: -1, deliveryStatus: 1 }).limit(resultsPerPage)
+      .skip(resultsPerPage * page);
+    return res.status(200).send({ status: true, data: getData, count: CountOfData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
 
 //======================================get product names ====================================
-const getproductnames = async (req,res)=>{
+const getproductnames = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   try {
-      let filter = { isDeleted: false }
-      let data = await AddProductsModel.find(filter).distinct("productName")
-      if(!data)
-      return res.status(404).send({status:false,message:"no enquiries found"})
-      res.status(200).send({ status: true, data: data })
+    let filter = { isDeleted: false }
+    let data = await AddProductsModel.find(filter).distinct("productName")
+    if (!data)
+      return res.status(404).send({ status: false, message: "no enquiries found" })
+    res.status(200).send({ status: true, data: data })
   } catch (error) {
-      return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
 //==============================count of products========================================
-const countProduct = async (req,res)=>{
-    res.setHeader('Access-Control-Allow-Origin', '*')
-   try {//"Retailer", "Manufacturer"
-       let data = await AddProductsModel.find({isDeleted: false}).countDocuments()
-  res.status(200).send({ status: true, data:data })
-   } catch (error) {
-       return res.status(500).send({ status: false, message: error.message })
-   }
+const countProduct = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  try {//"Retailer", "Manufacturer"
+    let data = await AddProductsModel.find({ isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message })
   }
+}
 //==============================================================================
 const pending = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   try {//["pending","approved","rejected"]
-      let data = await AddProductsModel.find({status:"pending",isDeleted: false}).countDocuments()
-      res.status(200).send({ status: true, data: data })
+    let data = await AddProductsModel.find({ status: "pending", isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
   } catch (error) {
-      return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
 //===============================================================================
 const rejected = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   try {
-      let data = await AddProductsModel.find({status:"rejected",isDeleted: false}).countDocuments()
-      res.status(200).send({ status: true, data: data })
+    let data = await AddProductsModel.find({ status: "rejected", isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
   } catch (error) {
-      return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 
 }
@@ -563,50 +565,50 @@ const rejected = async (req, res) => {
 const approved = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   try {
-      let data = await AddProductsModel.find({status:"approved",isDeleted: false}).countDocuments()
-      res.status(200).send({ status: true, data: data })
+    let data = await AddProductsModel.find({ status: "approved", isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
   } catch (error) {
-      return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
 //==============================================================================
-const countOfInprocessing = async(req,res)=>{
+const countOfInprocessing = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   try {//"processing","shipped","inTransit","delivered"
-      let data = await AddProductsModel.find({deliveryStatus:"processing",isDeleted: false}).countDocuments()
-      res.status(200).send({ status: true, data: data })
+    let data = await AddProductsModel.find({ deliveryStatus: "processing", isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
   } catch (error) {
-      return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
 //=====================================================================================
-const countOfinTransit = async(req,res)=>{
+const countOfinTransit = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   try {//"processing","shipped","inTransit","delivered"
-      let data = await AddProductsModel.find({  deliveryStatus:"inTransit",isDeleted: false}).countDocuments()
-      res.status(200).send({ status: true, data: data })
+    let data = await AddProductsModel.find({ deliveryStatus: "inTransit", isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
   } catch (error) {
-      return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
 //==============================================================
-const countOfinshipped = async(req,res)=>{
+const countOfinshipped = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   try {//"processing","shipped","inTransit","delivered"
-      let data = await AddProductsModel.find({  deliveryStatus:"shipped",isDeleted: false}).countDocuments()
-      res.status(200).send({ status: true, data: data })
+    let data = await AddProductsModel.find({ deliveryStatus: "shipped", isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
   } catch (error) {
-      return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
 //==============================================================================
-const countOfindelivered = async(req,res)=>{
+const countOfindelivered = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   try {//"processing","shipped","inTransit","delivered"
-      let data = await AddProductsModel.find({  deliveryStatus:"delivered",isDeleted: false}).countDocuments()
-      res.status(200).send({ status: true, data: data })
+    let data = await AddProductsModel.find({ deliveryStatus: "delivered", isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
   } catch (error) {
-      return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message })
   }
 }
-module.exports = {addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames,countProduct,pending,rejected,approved,countOfInprocessing,countOfinTransit,countOfinshipped,countOfindelivered };
+module.exports = { addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts, getproductnames, countProduct, pending, rejected, approved, countOfInprocessing, countOfinTransit, countOfinshipped, countOfindelivered };
