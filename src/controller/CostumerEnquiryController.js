@@ -8,7 +8,7 @@ const EnquiryForm = async (req, res) => {
     try {
         //   let costumerId = req.params.customerID
         let data = req.body
-        const { productName, otherProduct, name, contact, alternativeNumber, email, state, billingAddress, shippingPincode, quantity, city, customerID } = data
+        const { productName, otherProduct, name, contact, alternativeNumber, email, state, billingAddress, shippingPincode, quantity, city, customerID,date } = data
 
         if (validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Enter details to create your account" });
         if (!validator.isValid1(customerID)) {
@@ -72,6 +72,14 @@ const EnquiryForm = async (req, res) => {
         if (!validator.isValidPincode(shippingPincode)) {
             return res.status(400).send({ status: false, message: "Please Provide valid Pincode" })
         };
+        var currentdate = new Date();
+        var datetime = currentdate.getDay() + "-" + currentdate.getMonth()
+            + "-" + currentdate.getFullYear()
+            //adding time
+        let time = + currentdate.getHours() + ":"
+            + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+        data.date = datetime
+        data.time = time
         let saveData = await CostumerEnquiryModel.create(data)
         res.status(201).send({ status: true, data: saveData })
     } catch (error) {

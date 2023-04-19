@@ -210,7 +210,14 @@ const register = async (req, res) => {
 
     //     }
     // )
-
+    var currentdate = new Date();
+    var datetime = currentdate.getDay() + "-" + currentdate.getMonth()
+      + "-" + currentdate.getFullYear()
+    //adding time
+    let time = + currentdate.getHours() + ":"
+      + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+    data.date = datetime
+    data.time = time
     let saveData = await costumerModel.create(data);
 
     let otpData = await optModel.create({ otp, email: email });
@@ -412,7 +419,7 @@ const login = async (req, res) => {
         .send({ status: false, message: 'Please Enter a valid Email-id' });
 
     const isEmailExists = await costumerModel.findOne({ email: email });
-    if(isEmailExists.verified===false){
+    if (isEmailExists.verified === false) {
       return res.status(400).send({ status: false, message: 'otp is not verified' })
     }
     if (!isEmailExists)
@@ -443,7 +450,7 @@ const login = async (req, res) => {
       'procure-n secret key',
       { expiresIn: '24h' }
     );
-  
+
     //  Make Respoense
     let result = {
       customerID: isEmailExists._id.toString(),
@@ -501,7 +508,7 @@ const deleteCostumers = async (req, res) => {
 
 //==============================get details======================================
 
-const  getDetails = async (req, res) => {
+const getDetails = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let data = req.query;
@@ -518,14 +525,14 @@ const  getDetails = async (req, res) => {
         .status(400)
         .send({ status: false, msg: 'Enter the key and value to filter' });
 
-        const resultsPerPage = req.params.limit ===':limit' ?10 : req.params.limit;
-        let page = req.params.page >= 1 ? req.params.page : 1;
-        //const query = req.query.search;
-        page = page - 1
-        let CountOfData =await costumerModel.find({ selectRole: selectRole, isDeleted: false }).countDocuments()
-    let getdata = await costumerModel.find({ selectRole: selectRole, isDeleted: false } ).limit(resultsPerPage)
-    .skip(resultsPerPage * page)
-    res.status(200).send({ status: true,  data : getdata, count:CountOfData });
+    const resultsPerPage = req.params.limit === ':limit' ? 10 : req.params.limit;
+    let page = req.params.page >= 1 ? req.params.page : 1;
+    //const query = req.query.search;
+    page = page - 1
+    let CountOfData = await costumerModel.find({ selectRole: selectRole, isDeleted: false }).countDocuments()
+    let getdata = await costumerModel.find({ selectRole: selectRole, isDeleted: false }).limit(resultsPerPage)
+      .skip(resultsPerPage * page)
+    res.status(200).send({ status: true, data: getdata, count: CountOfData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -535,7 +542,7 @@ const getAllDetails = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let filter = { isDeleted: false };
-    const resultsPerPage =  req.params.limit ===':limit' ?10 : req.params.limit;
+    const resultsPerPage = req.params.limit === ':limit' ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
     //const query = req.query.search;
 
@@ -552,9 +559,9 @@ const getAllDetails = async (req, res) => {
         $ne: 'admin',
       },
     }).limit(resultsPerPage)
-    .skip(resultsPerPage * page)
-    
-    res.status(200).send({ status: true,  data : data, count:CountOfData });
+      .skip(resultsPerPage * page)
+
+    res.status(200).send({ status: true, data: data, count: CountOfData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -576,8 +583,8 @@ const Individualprofiles = async (req, res) => {
         .status(400)
         .send({ status: false, message: 'costumerID not valid' });
     }
-    
-    let getData = await costumerModel.findOne({ _id: customerID,isDeleted: false });
+
+    let getData = await costumerModel.findOne({ _id: customerID, isDeleted: false });
     if (!getData) {
       return res
         .status(400)
@@ -589,24 +596,24 @@ const Individualprofiles = async (req, res) => {
   }
 };
 //===================================================================
-const countOfManufacturer = async (req,res)=>{
+const countOfManufacturer = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
- try {//"Retailer", "Manufacturer"
-     let data = await costumerModel.find({selectRole:"Manufacturer",isDeleted: false}).countDocuments()
-res.status(200).send({ status: true, data:data })
- } catch (error) {
-     return res.status(500).send({ status: false, message: error.message })
- }
+  try {//"Retailer", "Manufacturer"
+    let data = await costumerModel.find({ selectRole: "Manufacturer", isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message })
+  }
 }
 //======================================================================
-const countOfRetailer = async (req,res)=>{
+const countOfRetailer = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
- try {//"Retailer", "Manufacturer"
-     let data = await costumerModel.find({selectRole:"Retailer",isDeleted: false}).countDocuments()
-res.status(200).send({ status: true, data:data })
- } catch (error) {
-     return res.status(500).send({ status: false, message: error.message })
- }
+  try {//"Retailer", "Manufacturer"
+    let data = await costumerModel.find({ selectRole: "Retailer", isDeleted: false }).countDocuments()
+    res.status(200).send({ status: true, data: data })
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message })
+  }
 }
 module.exports = {
   register,

@@ -26,7 +26,7 @@ router.get("/countOfRetailer", countOfRetailer)
 //============================enquiry form ============================
 router.post("/costumer/enquiryForm", authentication, authorization, EnquiryForm)
 router.get("/getenquiries/:page/:limit", getEnquiries)  // by admin
-router.get("/IndividualcustomerEnquiry/:customerID/:page/:limit", IndividualCostumerEnquiry)
+router.get("/IndividualcustomerEnquiry/:customerID/:page/:limit",authentication, authorization, IndividualCostumerEnquiry)
 router.delete("/deleteCostumerEnquiry/:customerEnquiryId", authentication, authorization2, deleteCostumerEnquiry)  // by admin
 router.put("/updateCostumersEnquiry/:customerEnquiryId", authentication, authorization2, updateCostumersEnquiry)
 router.get("/countData", countData)

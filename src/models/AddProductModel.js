@@ -91,6 +91,12 @@ const AddProductsSchema = new mongoose.Schema({
         type: String,
         enum:["processing","shipped","inTransit","delivered"],
         default:"processing"
+    },
+    date: {
+        type: String
+    },
+    time:{
+        type:String
     }
 
 }, { timestamps: true })

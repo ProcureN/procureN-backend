@@ -186,6 +186,14 @@ const addProdcts = async (req, res) => {
     //   return res.status(400).send({ message: "Please upload a file!" });
     // }
     // data.selectImage1 = req.file.originalname
+    var currentdate = new Date();
+    var datetime = currentdate.getDay() + "-" + currentdate.getMonth()
+      + "-" + currentdate.getFullYear()
+    //adding time
+    let time = + currentdate.getHours() + ":"
+      + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+    data.date = datetime
+    data.time = time
     let saveData = await AddProductsModel.create(data);
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {

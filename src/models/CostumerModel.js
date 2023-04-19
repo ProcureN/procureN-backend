@@ -58,6 +58,12 @@ const costumerSchema = new mongoose.Schema({
     verified:{
         type:Boolean,
         default:false
+    },
+    date: {
+        type: String
+    },
+    time:{
+        type:String
     }
 }, { timestamps: true })
 module.exports = mongoose.model('costumer', costumerSchema)

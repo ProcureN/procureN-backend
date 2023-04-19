@@ -11,8 +11,8 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
         require: true,
         trim: true,
     },
-    quantity:{
-        type:String,
+    quantity: {
+        type: String,
         trim: true,
         require: true,
     },
@@ -63,15 +63,15 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    status:{
+    status: {
         type: String,
-        enum:["Pending","Approved","Rejected"],
-        default:"Pending"
+        enum: ["Pending", "Approved", "Rejected"],
+        default: "Pending"
     },
-    deliveryStatus:{
+    deliveryStatus: {
         type: String,
-        enum:["processing","shipped","inTransit","delivered"],
-        default:"processing"
+        enum: ["processing", "shipped", "inTransit", "delivered"],
+        default: "processing"
     },
     customerID: {
         type: ObjectId,
@@ -79,7 +79,13 @@ const costumerEnquiryFormSchema = new mongoose.Schema({
         ref: "costumer",
         trim: true
     },
-    
+    date: {
+        type: String
+    },
+    time:{
+        type:String
+    }
+
 }, { timestamps: true })
 
 module.exports = mongoose.model('costumerEnquiryForm', costumerEnquiryFormSchema)

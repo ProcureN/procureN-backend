@@ -26,6 +26,12 @@ phone:{
 isDeleted:{
     type:Boolean,
     default:false
+},
+date: {
+    type: String
+},
+time:{
+    type:String
 }
 }, { timestamps: true })
 module.exports = mongoose.model('contactUs', contactSchema)
