@@ -18,7 +18,7 @@ mongoose.connect("mongodb+srv://miryala-veronica123:1Sz5U9LVS3afd1bB@cluster0.vf
 
  
 
-app.use(`/.netlify/functions/api`, route)
+app.use('/', route)
 
 app.listen(process.env.PORT || 3001, function () {
     console.log('Express app running on port ' + (process.env.PORT || 3001))
