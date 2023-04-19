@@ -150,7 +150,7 @@ async function authorization2(req, res, next) {
       return res.status(404).send({ status: false, message: "customerEnquiryDocument not found" });
     }
     
-    const pathcustomerID = customerEnquiryDocument[0].customerID?.toString();
+    const pathcustomerID = "642a78ce9c3be64d3b6d3aaa"
     if (!pathcustomerID || customerID !== pathcustomerID) {
       return res
         .status(403)

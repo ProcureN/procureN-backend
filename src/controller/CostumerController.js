@@ -530,7 +530,7 @@ const getDetails = async (req, res) => {
     //const query = req.query.search;
     page = page - 1
     let CountOfData = await costumerModel.find({ selectRole: selectRole, isDeleted: false }).countDocuments()
-    let getdata = await costumerModel.find({ selectRole: selectRole, isDeleted: false }).limit(resultsPerPage)
+    let getdata = await costumerModel.find({ selectRole: selectRole, isDeleted: false }).sort({ selectRole: 1,createdAt: -1 }).limit(resultsPerPage)
       .skip(resultsPerPage * page)
     res.status(200).send({ status: true, data: getdata, count: CountOfData });
   } catch (error) {
