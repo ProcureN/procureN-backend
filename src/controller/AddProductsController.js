@@ -180,12 +180,12 @@ const addProdcts = async (req, res) => {
     if (!checkdata)
       return res.status(201).send({ status: false, message: 'costumer not found' });
 
-    let uploadImg = await uploadFile(req, res);
+    // let uploadImg = await uploadFile(req, res);
 
-    if (req.file == undefined) {
-      return res.status(400).send({ message: "Please upload a file!" });
-    }
-    data.selectImage1 = req.file.originalname
+    // if (req.file == undefined) {
+    //   return res.status(400).send({ message: "Please upload a file!" });
+    // }
+    // data.selectImage1 = req.file.originalname
     let saveData = await AddProductsModel.create(data);
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
