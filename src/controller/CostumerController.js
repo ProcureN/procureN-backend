@@ -211,7 +211,7 @@ const register = async (req, res) => {
     //     }
     // )
     var currentdate = new Date();
-    var datetime = currentdate.getDay() + "-" + currentdate.getMonth()
+    var datetime = currentdate.getDay() + "-" + (currentdate.getMonth()+1)
       + "-" + currentdate.getFullYear()
     //adding time
     let time = + currentdate.getHours() + ":"

@@ -73,7 +73,7 @@ const EnquiryForm = async (req, res) => {
             return res.status(400).send({ status: false, message: "Please Provide valid Pincode" })
         };
         var currentdate = new Date();
-        var datetime = currentdate.getDay() + "-" + currentdate.getMonth()
+        var datetime = currentdate.getDay() + "-" + (currentdate.getMonth()+1)
             + "-" + currentdate.getFullYear()
             //adding time
         let time = + currentdate.getHours() + ":"
