@@ -4,9 +4,10 @@
   "description": "backend for procure-n",
   "main": "index.js",
   "scripts": {
-    "build": "npm install",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
+
+    "start": "NODE_ENV=development ./node_modules/.bin/netlify-lambda serve src",
+    "build": "NODE_ENV=production ./node_modules/.bin/netlify-lambda build src",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "veronica",
   "license": "ISC",
