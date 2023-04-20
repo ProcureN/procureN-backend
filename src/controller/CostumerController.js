@@ -610,6 +610,24 @@ const countOfRetailer = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
+
+const updatePassword = async (req, res) => {
+  try {
+    const data = req.body;
+    const { email, password } = data;
+    data.password = await bcrypt.hash(password, 10);
+    let userData = await costumerModel.findOneAndUpdate(
+      { email: email },
+      { password: password },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .send({ satus: true, message: 'success', data: userData });
+  } catch (err) {
+    return res.status(500).send({ status: false, message: err.message });
+  }
+};
 module.exports = {
   register,
   updateCostumer,
@@ -620,4 +638,5 @@ module.exports = {
   Individualprofiles,
   countOfManufacturer,
   countOfRetailer,
+  updatePassword
 };

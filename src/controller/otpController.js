@@ -51,6 +51,7 @@ const otpVerification = async (req, res) => {
           message: 'login successful',
           selectRole: costumerData.selectRole.toString(),
           verifiedOtp: customerVerification.verified,
+          email:email
         });
     } else {
       return res.status(400).send({ status: false, message: 'incorrect otp' });
