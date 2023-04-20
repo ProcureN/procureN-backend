@@ -24,12 +24,10 @@ const register = async (req, res) => {
       city,
     } = data;
     if (validator.isValidBody(data))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: 'Enter details to create your account',
-        });
+      return res.status(400).send({
+        status: false,
+        message: 'Enter details to create your account',
+      });
     //validating firstname
     if (!name)
       return res
@@ -78,20 +76,16 @@ const register = async (req, res) => {
         .send({ status: false, message: 'Password is required' });
     //validating user password
     if (!validator.isValidPassword(password))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message:
-            'Password should be between 8 and 15 character and it should be alpha numeric',
-        });
+      return res.status(400).send({
+        status: false,
+        message:
+          'Password should be between 8 and 15 character and it should be alpha numeric',
+      });
     if (validator.isValid(password))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: 'Password should not be an empty string',
-        });
+      return res.status(400).send({
+        status: false,
+        message: 'Password should not be an empty string',
+      });
     data.password = await bcrypt.hash(password, 10);
 
     if (!company)
@@ -99,36 +93,30 @@ const register = async (req, res) => {
         .status(400)
         .send({ status: false, message: 'Company is required' });
     if (validator.isValid(company))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: 'Company should not be an empty string',
-        });
+      return res.status(400).send({
+        status: false,
+        message: 'Company should not be an empty string',
+      });
 
     if (!jobTitle)
       return res
         .status(400)
         .send({ status: false, message: 'JobTitle is required' });
     if (validator.isValid(jobTitle))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: 'jobTitle should not be an empty string',
-        });
+      return res.status(400).send({
+        status: false,
+        message: 'jobTitle should not be an empty string',
+      });
 
     if (!state)
       return res
         .status(400)
         .send({ status: false, message: 'State is required' });
     if (validator.isValid(state))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: 'State should not be an empty string',
-        });
+      return res.status(400).send({
+        status: false,
+        message: 'State should not be an empty string',
+      });
 
     if (!city)
       return res
@@ -143,7 +131,7 @@ const register = async (req, res) => {
     if (!Role.includes(selectRole))
       return res
         .status(400)
-        .send({ status: false, msg: `role must be slected among ${Role}` });
+        .send({ status: false, message: `role must be slected among ${Role}` });
 
     let digits = '0123456789';
     let limit = 6;
@@ -186,7 +174,7 @@ const register = async (req, res) => {
       .sendMail(message)
       .then(() => {
         // return res.status(201).json({
-        //     msg: "you should receive an email"
+        //     message: "you should receive an email"
         // })
       })
       .catch((error) => {
@@ -211,13 +199,21 @@ const register = async (req, res) => {
     //     }
     // )
     var currentdate = new Date();
-    var datetime = currentdate.getDay() + "-" + (currentdate.getMonth()+1)
-      + "-" + currentdate.getFullYear()
+    var datetime =
+      currentdate.getDay() +
+      '-' +
+      (currentdate.getMonth() + 1) +
+      '-' +
+      currentdate.getFullYear();
     //adding time
-    let time = + currentdate.getHours() + ":"
-      + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-    data.date = datetime
-    data.time = time
+    let time =
+      +currentdate.getHours() +
+      ':' +
+      currentdate.getMinutes() +
+      ':' +
+      currentdate.getSeconds();
+    data.date = datetime;
+    data.time = time;
     let saveData = await costumerModel.create(data);
 
     let otpData = await optModel.create({ otp, email: email });
@@ -251,12 +247,10 @@ const updateCostumer = async (req, res) => {
           .status(400)
           .send({ status: false, message: 'name is required' });
       if (validator.isValid(Name))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: 'name should not be an empty string',
-          });
+        return res.status(400).send({
+          status: false,
+          message: 'name should not be an empty string',
+        });
     }
     if (Email) {
       if (!Email)
@@ -282,20 +276,16 @@ const updateCostumer = async (req, res) => {
           .send({ status: false, message: 'Password is required' });
       //validating user password
       if (!validator.isValidPassword(Password))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message:
-              'Password should be between 8 and 15 character and it should be alpha numeric',
-          });
+        return res.status(400).send({
+          status: false,
+          message:
+            'Password should be between 8 and 15 character and it should be alpha numeric',
+        });
       if (validator.isValid(Password))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: 'Password should not be an empty string',
-          });
+        return res.status(400).send({
+          status: false,
+          message: 'Password should not be an empty string',
+        });
     }
     if (Company) {
       if (!Company)
@@ -303,12 +293,10 @@ const updateCostumer = async (req, res) => {
           .status(400)
           .send({ status: false, message: 'Company is required' });
       if (validator.isValid(Company))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: 'Company should not be an empty string',
-          });
+        return res.status(400).send({
+          status: false,
+          message: 'Company should not be an empty string',
+        });
     }
     if (JobTitle) {
       if (!JobTitle)
@@ -316,12 +304,10 @@ const updateCostumer = async (req, res) => {
           .status(400)
           .send({ status: false, message: 'JobTitle is required' });
       if (validator.isValid(JobTitle))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: 'JobTitle should not be an empty string',
-          });
+        return res.status(400).send({
+          status: false,
+          message: 'JobTitle should not be an empty string',
+        });
     }
     if (phone) {
       if (!phone)
@@ -330,12 +316,10 @@ const updateCostumer = async (req, res) => {
           .send({ status: false, message: 'User Phone number is required' });
       //validating user phone
       if (!validator.isValidPhone(phone.trim()))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: 'Please Enter a valid Phone number',
-          });
+        return res.status(400).send({
+          status: false,
+          message: 'Please Enter a valid Phone number',
+        });
       //checking if phone already exist or not
       let duplicatePhone = await costumerModel.findOne({ phone: phone });
       if (duplicatePhone)
@@ -349,12 +333,10 @@ const updateCostumer = async (req, res) => {
           .status(400)
           .send({ status: false, message: 'State is required' });
       if (validator.isValid(State))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: 'State should not be an empty string',
-          });
+        return res.status(400).send({
+          status: false,
+          message: 'State should not be an empty string',
+        });
     }
     if (city) {
       if (!city)
@@ -362,19 +344,18 @@ const updateCostumer = async (req, res) => {
           .status(400)
           .send({ status: false, message: 'city is required' });
       if (validator.isValid(city))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: 'city should not be an empty string',
-          });
+        return res.status(400).send({
+          status: false,
+          message: 'city should not be an empty string',
+        });
     }
     if (SelectRole) {
       let Role = ['Retailer', 'Manufacturer'];
       if (!Role.includes(SelectRole))
-        return res
-          .status(400)
-          .send({ status: false, msg: `role must be slected among ${Role}` });
+        return res.status(400).send({
+          status: false,
+          message: `role must be slected among ${Role}`,
+        });
     }
     let userData = await costumerModel.findOneAndUpdate(
       { _id: customerID },
@@ -401,12 +382,10 @@ const login = async (req, res) => {
   try {
     Data = req.body;
     if (validator.isValidBody(Data))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: 'Enter details to create your account',
-        });
+      return res.status(400).send({
+        status: false,
+        message: 'Enter details to create your account',
+      });
     const { email, password } = Data;
     if (!email)
       return res
@@ -422,18 +401,18 @@ const login = async (req, res) => {
     if (!isEmailExists)
       return res
         .status(401)
-        .send({ status: false, message: 'Email is Incorrect' });
-        if (isEmailExists.verified === false) {
-          return res.status(400).send({ status: false, message: 'otp is not verified' })
-        }
-    //  Password Validation
-    if (validator.isValid(password))
+        .send({ status: false, message: 'User not found.' });
+    if (isEmailExists.verified === false) {
       return res
         .status(400)
-        .send({
-          status: false,
-          message: 'Password should not be an empty string',
-        });
+        .send({ status: false, message: 'otp is not verified' });
+    }
+    //  Password Validation
+    if (validator.isValid(password))
+      return res.status(400).send({
+        status: false,
+        message: 'Password should not be an empty string',
+      });
 
     const isPasswordMatch = await bcrypt.compare(
       password,
@@ -442,7 +421,7 @@ const login = async (req, res) => {
     if (!isPasswordMatch)
       return res
         .status(401)
-        .send({ status: false, message: 'Password is Incorrect' });
+        .send({ status: false, message: 'Email or Password is Incorrect' });
 
     // > Create Jwt Token
     const token = jwt.sign(
@@ -478,20 +457,16 @@ const deleteCostumers = async (req, res) => {
     }
     let getID = await costumerModel.findById(deleteCostumerID);
     if (!getID) {
-      return res
-        .status(404)
-        .send({
-          status: false,
-          message: 'costumer Id Not Found for the request id',
-        });
+      return res.status(404).send({
+        status: false,
+        message: 'costumer Id Not Found for the request id',
+      });
     }
     if (getID.isDeleted == true) {
-      return res
-        .status(404)
-        .send({
-          status: false,
-          message: 'costume id is already deleted not found',
-        });
+      return res.status(404).send({
+        status: false,
+        message: 'costume id is already deleted not found',
+      });
     }
 
     await costumerModel.updateOne(
@@ -519,19 +494,25 @@ const getDetails = async (req, res) => {
     if (!Role.includes(selectRole))
       return res
         .status(400)
-        .send({ status: false, msg: `role must be slected among ${Role}` });
+        .send({ status: false, message: `role must be slected among ${Role}` });
     if (Object.keys(data).length == 0)
       return res
         .status(400)
-        .send({ status: false, msg: 'Enter the key and value to filter' });
+        .send({ status: false, message: 'Enter the key and value to filter' });
 
-    const resultsPerPage = req.params.limit === ':limit' ? 10 : req.params.limit;
+    const resultsPerPage =
+      req.params.limit === ':limit' ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
     //const query = req.query.search;
-    page = page - 1
-    let CountOfData = await costumerModel.find({ selectRole: selectRole, isDeleted: false }).countDocuments()
-    let getdata = await costumerModel.find({ selectRole: selectRole, isDeleted: false }).sort({ selectRole: 1,createdAt: -1 }).limit(resultsPerPage)
-      .skip(resultsPerPage * page)
+    page = page - 1;
+    let CountOfData = await costumerModel
+      .find({ selectRole: selectRole, isDeleted: false })
+      .countDocuments();
+    let getdata = await costumerModel
+      .find({ selectRole: selectRole, isDeleted: false })
+      .sort({ selectRole: 1, createdAt: -1 })
+      .limit(resultsPerPage)
+      .skip(resultsPerPage * page);
     res.status(200).send({ status: true, data: getdata, count: CountOfData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
@@ -542,24 +523,29 @@ const getAllDetails = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let filter = { isDeleted: false };
-    const resultsPerPage = req.params.limit === ':limit' ? 10 : req.params.limit;
+    const resultsPerPage =
+      req.params.limit === ':limit' ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
     //const query = req.query.search;
 
-    page = page - 1
-    let CountOfData = await costumerModel.find({
-      isDeleted: false,
-      selectRole: {
-        $ne: 'admin',
-      },
-    }).countDocuments()
-    let data = await costumerModel.find({
-      isDeleted: false,
-      selectRole: {
-        $ne: 'admin',
-      },
-    }).limit(resultsPerPage)
-      .skip(resultsPerPage * page)
+    page = page - 1;
+    let CountOfData = await costumerModel
+      .find({
+        isDeleted: false,
+        selectRole: {
+          $ne: 'admin',
+        },
+      })
+      .countDocuments();
+    let data = await costumerModel
+      .find({
+        isDeleted: false,
+        selectRole: {
+          $ne: 'admin',
+        },
+      })
+      .limit(resultsPerPage)
+      .skip(resultsPerPage * page);
 
     res.status(200).send({ status: true, data: data, count: CountOfData });
   } catch (error) {
@@ -584,7 +570,10 @@ const Individualprofiles = async (req, res) => {
         .send({ status: false, message: 'costumerID not valid' });
     }
 
-    let getData = await costumerModel.findOne({ _id: customerID, isDeleted: false });
+    let getData = await costumerModel.findOne({
+      _id: customerID,
+      isDeleted: false,
+    });
     if (!getData) {
       return res
         .status(400)
@@ -597,24 +586,30 @@ const Individualprofiles = async (req, res) => {
 };
 //===================================================================
 const countOfManufacturer = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  try {//"Retailer", "Manufacturer"
-    let data = await costumerModel.find({ selectRole: "Manufacturer", isDeleted: false }).countDocuments()
-    res.status(200).send({ status: true, data: data })
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  try {
+    //"Retailer", "Manufacturer"
+    let data = await costumerModel
+      .find({ selectRole: 'Manufacturer', isDeleted: false })
+      .countDocuments();
+    res.status(200).send({ status: true, data: data });
   } catch (error) {
-    return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message });
   }
-}
+};
 //======================================================================
 const countOfRetailer = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  try {//"Retailer", "Manufacturer"
-    let data = await costumerModel.find({ selectRole: "Retailer", isDeleted: false }).countDocuments()
-    res.status(200).send({ status: true, data: data })
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  try {
+    //"Retailer", "Manufacturer"
+    let data = await costumerModel
+      .find({ selectRole: 'Retailer', isDeleted: false })
+      .countDocuments();
+    res.status(200).send({ status: true, data: data });
   } catch (error) {
-    return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message });
   }
-}
+};
 module.exports = {
   register,
   updateCostumer,
@@ -624,5 +619,5 @@ module.exports = {
   getAllDetails,
   Individualprofiles,
   countOfManufacturer,
-  countOfRetailer
+  countOfRetailer,
 };
