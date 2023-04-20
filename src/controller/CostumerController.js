@@ -543,7 +543,7 @@ const getAllDetails = async (req, res) => {
         selectRole: {
           $ne: 'admin',
         },
-      })
+      }) .sort({ selectRole: 1, createdAt: -1 }).select({selectRole:1,_id:0})
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
 
