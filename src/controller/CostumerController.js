@@ -618,7 +618,7 @@ const updatePassword = async (req, res) => {
     data.password = await bcrypt.hash(password, 10);
     let userData = await costumerModel.findOneAndUpdate(
       { email: email },
-      { password: password },
+      { password: data.password },
       { new: true }
     );
     return res
