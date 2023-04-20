@@ -365,11 +365,11 @@ const updateCostumer = async (req, res) => {
     if (!userData) {
       return res
         .status(404)
-        .send({ satus: false, message: 'no user found to update' });
+        .send({ status: false, message: 'no user found to update' });
     }
     return res
       .status(200)
-      .send({ satus: true, message: 'success', data: userData });
+      .send({ status: true, message: 'success', data: userData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -543,7 +543,9 @@ const getAllDetails = async (req, res) => {
         selectRole: {
           $ne: 'admin',
         },
-      }) .sort({ selectRole: 1, createdAt: -1 }).select({selectRole:1,_id:0})
+      })
+      .sort({ selectRole: 1, createdAt: -1 })
+      .select({ selectRole: 1, _id: 0 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
 
@@ -623,7 +625,7 @@ const updatePassword = async (req, res) => {
     );
     return res
       .status(200)
-      .send({ satus: true, message: 'success', data: userData });
+      .send({ status: true, message: 'success', data: userData });
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }
@@ -638,5 +640,5 @@ module.exports = {
   Individualprofiles,
   countOfManufacturer,
   countOfRetailer,
-  updatePassword
+  updatePassword,
 };
