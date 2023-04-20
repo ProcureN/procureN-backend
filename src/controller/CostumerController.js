@@ -419,13 +419,13 @@ const login = async (req, res) => {
         .send({ status: false, message: 'Please Enter a valid Email-id' });
 
     const isEmailExists = await costumerModel.findOne({ email: email });
-    if (isEmailExists.verified === false) {
-      return res.status(400).send({ status: false, message: 'otp is not verified' })
-    }
     if (!isEmailExists)
       return res
         .status(401)
         .send({ status: false, message: 'Email is Incorrect' });
+        if (isEmailExists.verified === false) {
+          return res.status(400).send({ status: false, message: 'otp is not verified' })
+        }
     //  Password Validation
     if (validator.isValid(password))
       return res

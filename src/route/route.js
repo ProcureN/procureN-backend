@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const { register, updateCostumer, login, deleteCostumers, getDetails, getAllDetails, Individualprofiles, countOfManufacturer, countOfRetailer } = require("../controller/CostumerController")
-const { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData, pendingData, rejectedData, approvedData, updateCostumersEnquiry,countOfInprocessingDelivery,countOfindeliveredDelivery,countOfinshippedDelivery,countOfinTransitDelivery } = require("../controller/CostumerEnquiryController")
+const { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData, pendingData, rejectedData, approvedData, updateCostumersEnquiry,countOfInprocessingDelivery,countOfindeliveredDelivery,countOfinshippedDelivery,countOfinTransitDelivery,trackEnquiry } = require("../controller/CostumerEnquiryController")
 const { authentication, authorization, authorization1, authorization2 } = require("../middleware/auth")
 const { requestAdmin } = require("../controller/requestAdminController")
 const { otpVerification, resendOtp } = require("../controller/otpController")
@@ -37,7 +37,7 @@ router.get("/countOfInprocessingDelivery",countOfInprocessingDelivery)
 router.get("/countOfindeliveredDelivery",countOfindeliveredDelivery)
 router.get("/countOfinshippedDelivery",countOfinshippedDelivery)
 router.get("/countOfinTransitDelivery",countOfinTransitDelivery)
-
+router.get("/trackEnquiry/:enquireId",trackEnquiry)
 
 //=======================Add products===================================
 router.post("/addProducts", addProdcts)
