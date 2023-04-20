@@ -5,7 +5,7 @@ const { register, updateCostumer, login, deleteCostumers, getDetails, getAllDeta
 const { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData, pendingData, rejectedData, approvedData, updateCostumersEnquiry,countOfInprocessingDelivery,countOfindeliveredDelivery,countOfinshippedDelivery,countOfinTransitDelivery,trackEnquiry } = require("../controller/CostumerEnquiryController")
 const { authentication, authorization, authorization1, authorization2 } = require("../middleware/auth")
 const { requestAdmin } = require("../controller/requestAdminController")
-const { otpVerification, resendOtp } = require("../controller/otpController")
+const { otpVerification, resendOtp,forgetPassword } = require("../controller/otpController")
 const { contactform, getcontactform, deleteContactForm, countOfContactForm } = require("../controller/contactUsController")
 const {addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames,countProduct,pending,rejected,approved,countOfInprocessing,countOfinTransit,countOfinshipped,countOfindelivered } = require("../controller/AddProductsController")
 router.get("/test-me", function (req, res) {
@@ -59,7 +59,7 @@ router.get("/countOfinTransitProducts",countOfinTransit)
 //=============================otp verification===================================
 router.post("/otp", otpVerification)
 router.post("/resendOtp", resendOtp)
-
+router.put("/forgetPassword",forgetPassword)
 
 //=============================requestAdmin=======================================
 router.post("/admin", requestAdmin) // by admin

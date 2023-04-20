@@ -124,9 +124,31 @@ const resendOtp = async (req, res) => {
 
 const forgetPassword = async (req, res) => {
   try {
+    let data = req.body
+    let { email,password} =data
+    if (!password)
+    return res
+      .status(400)
+      .send({ status: false, message: 'Password is required' });
+  //validating user password
+  if (!validator.isValidPassword(password))
+    return res.status(400).send({
+      status: false,
+      message:
+        'Password should be between 8 and 15 character and it should be alpha numeric',
+    });
+  if (validator.isValid(password))
+    return res.status(400).send({
+      status: false,
+      message: 'Password should not be an empty string',
+    });
+    data.password = await bcrypt.hash(password, 10);
+    let getCustomerData = await costumerModel.findOneAndUpdate({email:email},data,{new:true})
+    res.status(200).send({status:true, data:getCustomerData})
+   
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
 
-module.exports = { otpVerification, resendOtp };
+module.exports = { otpVerification, resendOtp,forgetPassword };
