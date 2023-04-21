@@ -544,7 +544,7 @@ const getAllDetails = async (req, res) => {
           $ne: 'admin',
         },
       })
-      .sort({ selectRole: 1, createdAt: -1 })
+      .sort({ selectRole: -1, createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
 
