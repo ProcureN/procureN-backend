@@ -545,7 +545,6 @@ const getAllDetails = async (req, res) => {
         },
       })
       .sort({ selectRole: 1, createdAt: -1 })
-      .select({ selectRole: 1, _id: 0 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
 
