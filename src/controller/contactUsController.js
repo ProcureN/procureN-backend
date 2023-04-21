@@ -22,7 +22,7 @@ if(phone){
     if (!validator.isValidPhone(phone.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Phone number" });
 }
 var currentdate = new Date();
-var datetime = currentdate.getDay() + "-" + (currentdate.getMonth()+1)
+var datetime = currentdate.getDate() + "-" + (currentdate.getMonth()+1)
     + "-" + currentdate.getFullYear()
     //adding time
 let time = + currentdate.getHours() + ":"

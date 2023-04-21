@@ -190,7 +190,7 @@ const addProdcts = async (req, res) => {
     // data.selectImage1 = req.file.originalname
     var currentdate = new Date();
     var datetime =
-      currentdate.getDay() +
+      currentdate.getDate() +
       '-' +
       (currentdate.getMonth() + 1) +
       '-' +

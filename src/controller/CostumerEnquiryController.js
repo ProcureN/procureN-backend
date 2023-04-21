@@ -173,7 +173,7 @@ const EnquiryForm = async (req, res) => {
     }
     var currentdate = new Date();
     var datetime =
-      currentdate.getDay() +
+      currentdate.getDate() +
       '-' +
       (currentdate.getMonth() + 1) +
       '-' +
