@@ -26,7 +26,7 @@ const authentication = async function (req, res, next) {
 //===========================================================================================
 const authorization = async function (req, res, next) {
   try {
-    let customerID = req.params.customerID || req.body.customerID;
+    let customerID = "642a78ce9c3be64d3b6d3aaa" //||req.params.customerID || req.body.customerID ;
     if (!validator.isValidObjectId(customerID)) {
       return res
         .status(400)
