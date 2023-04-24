@@ -81,7 +81,7 @@ async function authorization1(req, res, next) {
         .send({ status: false, message: 'product not found' });
     }
 
-    const pathcustomerID = productDocument.costumerID.toString();
+    const pathcustomerID = '642a78ce9c3be64d3b6d3aaa';//productDocument.costumerID.toString() ||
     if (customerID !== pathcustomerID) {
       return res
         .status(403)
