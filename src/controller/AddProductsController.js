@@ -357,7 +357,7 @@ const updateProduct = async (req, res) => {
           .status(400)
           .send({ status: false, message: 'shippingCharges is required' });
       }
-      if (!validator.isValidPrice(ShippingCharges)) {
+      if (!validator.isValidPrice(shippingCharges)) {
         return res
           .status(400)
           .send({ status: false, message: 'Enter a Valid shippingCharges' });
@@ -416,7 +416,7 @@ const updateProduct = async (req, res) => {
         return res
           .status(400)
           .send({ status: false, message: 'SelectImage2 is required' });
-      if (validator.isValid(SelectImage2))
+      if (validator.isValid(selectImage2))
         return res.status(400).send({
           status: false,
           message: 'SelectImage2 should not be an empty string',
