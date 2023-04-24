@@ -361,7 +361,7 @@ const updateCostumer = async (req, res) => {
       { _id: customerID },
       data,
       { new: true }
-    );
+    ).sort({createdAt:-1});
     if (!userData) {
       return res
         .status(404)

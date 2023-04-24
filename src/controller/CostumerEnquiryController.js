@@ -199,6 +199,9 @@ const getEnquiries = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let filter = { isDeleted: false };
+    let sortStatus = req.query.status
+    let delivery = req.query.deliveryStatus
+    let created = req.query.createdAt
     const resultsPerPage =
       req.params.limit === ':limit' ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
@@ -206,20 +209,38 @@ const getEnquiries = async (req, res) => {
 
     page = page - 1;
     let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments();
-    let data = await CostumerEnquiryModel.find(filter)
-      .sort({ status: 1, createdAt: -1, deliveryStatus: 1 })
-      .limit(resultsPerPage)
-      .skip(resultsPerPage * page); //.countDocuments().exec()
-    if (!data)
-      return res
-        .status(404)
-        .send({ status: false, message: 'no enquiries found' });
+   
+    if (sortStatus){
+      let data = await CostumerEnquiryModel.find(filter)
+        .sort({ createdAt: created, status: sortStatus })
+        .limit(resultsPerPage)
+        .skip(resultsPerPage * page);
+      if (!data)
+        return res
+          .status(404)
+          .send({ status: false, message: 'no enquiries found' });
 
-    res.status(200).send({
-      status: true,
-      data: data,
-      count: CountOfData,
-    });
+      res.status(200).send({
+        status: true,
+        data: data,
+        count: CountOfData,
+      });
+    }
+    else {
+      let data = await CostumerEnquiryModel.find(filter)
+        .sort({deliveryStatus:delivery,createdAt:created})
+        .limit(resultsPerPage)
+        .skip(resultsPerPage * page);
+      if (!data)
+        return res
+          .status(404)
+          .send({ status: false, message: 'no enquiries found' });
+      res.status(200).send({
+        status: true,
+        data: data,
+        count: CountOfData,
+      });
+    }
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
