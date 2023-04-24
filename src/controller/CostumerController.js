@@ -321,11 +321,11 @@ const updateCostumer = async (req, res) => {
           message: 'Please Enter a valid Phone number',
         });
       //checking if phone already exist or not
-      let duplicatePhone = await costumerModel.findOne({ phone: phone });
-      if (duplicatePhone)
-        return res
-          .status(400)
-          .send({ status: false, message: 'Phone already exist' });
+      // let duplicatePhone = await costumerModel.findOne({ phone: phone });
+      // if (duplicatePhone)
+      //   return res
+      //     .status(400)
+      //     .send({ status: false, message: 'Phone already exist' });
     }
     if (State) {
       if (!State)
