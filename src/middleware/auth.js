@@ -7,26 +7,27 @@ const authentication = async function (req, res, next) {
   try {
     let token = req.headers['authorization'];
     if (!token) {
-      return res.status(401).send({ message: 'required token' });
+      return res.status(401).send({ message: 'Token required' });
     }
-    let splittoken = token.split(' '); //converting into array
+    let splitToken = token.split(' ');
     // decoding token
-    jwt.verify(splittoken[1], 'procure-n secret key', (err, decoded) => {
-      if (err) {
-        return res.status(401).send({ status: false, message: err.message });
-      } else {
+    jwt.verify(splitToken[1], 'procure-n secret key', (err, decoded) => {
+      if (!err) {
         req.decoded = decoded;
         next();
+      } else {
+        return res.status(401).send({ status: false, message: err.message });
       }
     });
-  } catch (error) {
+  } catch (err) {
     res.status(500).send({ status: false, message: err.message });
   }
 };
+
 //===========================================================================================
 const authorization = async function (req, res, next) {
   try {
-    let customerID = "642a78ce9c3be64d3b6d3aaa" //||req.params.customerID || req.body.customerID ;
+    let customerID = req.params.customerID || req.body.customerID ||  "642a78ce9c3be64d3b6d3aaa" ;
     if (!validator.isValidObjectId(customerID)) {
       return res
         .status(400)

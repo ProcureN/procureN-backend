@@ -387,9 +387,9 @@ const login = async (req, res) => {
         message: 'Enter details to create your account',
       });
     const { email, password } = Data;
-    if (!email)
+    if (!email) 
       return res
-        .status(400)
+        .status(400) 
         .send({ status: false, message: 'User Email-id is required' });
 
     if (!validator.isValidEmail(email.trim()))
@@ -414,7 +414,7 @@ const login = async (req, res) => {
         message: 'Password should not be an empty string',
       });
 
-    const isPasswordMatch = await bcrypt.compare(
+    const isPasswordMatch =  bcrypt.compare(
       password,
       isEmailExists.password
     );
@@ -488,7 +488,6 @@ const getDetails = async (req, res) => {
   try {
     let data = req.query;
     let { selectRole } = data;
-    let filter = { isDeleted: false };
 
     let Role = ['Retailer', 'Manufacturer'];
     if (!Role.includes(selectRole))

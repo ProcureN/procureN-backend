@@ -65,12 +65,23 @@ const resendOtp = async (req, res) => {
   try {
     let data = req.body;
     let { email } = data;
-    let digits = '1234567890';
+    if (!email) {
+      return res.status(400).json({ message: "Please provide a valid email" });
+    }
+    if (!validator.isValidEmail(email.trim()))
+    return res
+      .status(400)
+      .send({ status: false, message: 'Please Enter a valid Email-id' });
+    let digits = '1234567890'; 
     let limit = 6;
     let otp = '';
     for (i = 1; i < limit; i++) {
       otp += digits[Math.floor(Math.random() * 10)];
     }
+     let checkdata = await costumerModel.findOne({email:email}) 
+     if(!checkdata){
+     return res.status(400).send({status:false,message:"email is not register"})
+     }
     let updateotp = await optModel.findOneAndUpdate(
       { email: email },
       { $set: { otp: otp } }
@@ -100,28 +111,24 @@ const resendOtp = async (req, res) => {
     };
     let mail = MailGenerator.generate(response);
 
-    let message = {
+    let message = { 
       from: EMAIL,
-      to: email,
+      to: email, // Ensure that the 'email' field is set
       subject: 'OTP verification',
       html: mail,
     };
     transporter.sendMail(message);
-    // .then(() => {
-    //     return res.status(201).json({
-    //         message: "resended the OTP"
-    //     })
-    // }).catch(error => {
-    //     return res.status(500).json({ error })
-    // })
-
+    
     return res.status(201).json({
       message: `OTP send successfully`,
-    });
+   });
   } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
+    console.error(error);
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+
 
 const forgetPassword = async (req, res) => {
   try {

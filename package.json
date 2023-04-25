@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
+    "start": "npx nodemon src/index.js"
   },
   "author": "veronica",
   "license": "ISC",

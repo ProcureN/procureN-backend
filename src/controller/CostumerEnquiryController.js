@@ -273,16 +273,7 @@ const updateCostumersEnquiry = async (req, res) => {
           message: `deliveryStatus must be selected among ${deliveryStatuses}`,
         });
     }
-    let userData = await CostumerEnquiryModel.findOneAndUpdate(
-      { _id: customerEnquiryID },
-      data,
-      { new: true }
-    );
-    if (!userData) {
-      return res
-        .status(404)
-        .send({ status: false, message: 'no user found to update' });
-    }
+  
     let getcustomerEnquiryData = await CostumerEnquiryModel.findById(
       customerEnquiryID
     );
@@ -306,28 +297,29 @@ const updateCostumersEnquiry = async (req, res) => {
     let email = customerData.email?.toString();
     let name = customerData.name?.toString();
     let otp = 123;
-    if (userData.status) {
-      let config = {
-        service: 'gmail',
-        auth: {
-          user: EMAIL,
-          pass: PASSWORD,
-        },
-      };
-      let transporter = nodemailer.createTransport(config);
-
-      let MailGenerator = new Mailgen({
-        theme: 'default',
-        product: {
-          name: 'procureN',
-          link: 'https://mailgen.js/',
-        },
-      });
-      if (userData.status === 'Rejected') {
+    if (status) {
+     
+      if (status === 'Rejected') {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+  
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            name: 'procureN',
+            link: 'https://mailgen.js/',
+          },
+        });
         let response = {
           body: {
             name: `${name}`,
-            intro: `your enquiry is ${userData.status}.`,
+            intro: `your enquiry is ${status}.`,
             outro: 'thank you',
           },
         };
@@ -349,11 +341,27 @@ const updateCostumersEnquiry = async (req, res) => {
             return res.status(500).json({ error });
           });
       }
-      if (userData.status === 'Approved') {
+      if (status === 'Approved') {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+  
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            name: 'procureN',
+            link: 'https://mailgen.js/',
+          },
+        });
         let response = {
           body: {
             name: `${name}`,
-            intro: `your enquiry is ${userData.status}.track now: ${customerEnquiryID}`,
+            intro: `your enquiry is ${status}.track now: ${customerEnquiryID}`,
             outro: 'thank you',
           },
         };
@@ -375,11 +383,27 @@ const updateCostumersEnquiry = async (req, res) => {
             return res.status(500).json({ error });
           });
       }
-      if (userData.status === 'Pending') {
+      if (status === 'Pending') {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+  
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            name: 'procureN',
+            link: 'https://mailgen.js/',
+          },
+        });
         let response = {
           body: {
             name: `${name}`,
-            intro: `your enquiry is ${userData.status}.`,
+            intro: `your enquiry is ${status}.`,
             outro: 'thank you',
           },
         };
@@ -401,6 +425,16 @@ const updateCostumersEnquiry = async (req, res) => {
             return res.status(500).json({ error });
           });
       }
+    }
+    let userData = await CostumerEnquiryModel.findOneAndUpdate(
+      { _id: customerEnquiryID },
+      data,
+      { new: true }
+    );
+    if (!userData) {
+      return res
+        .status(404)
+        .send({ status: false, message: 'no user found to update' });
     }
     return res
       .status(200)
@@ -437,10 +471,10 @@ const IndividualCostumerEnquiry = async (req, res) => {
     let page = req.params.page >= 1 ? req.params.page : 1;
     page = page - 1;
     //const query = req.query.search;
-    let CountOfData = await CostumerEnquiryModel.find({
+    let CountOfData = await CostumerEnquiryModel.find({isDeleted: false,
       customerID: customerID,
     }).countDocuments();
-    let getData = await CostumerEnquiryModel.find({ customerID: customerID })
+    let getData = await CostumerEnquiryModel.find({isDeleted: false, customerID: customerID })
       .sort({ status: 1, createdAt: -1, deliveryStatus: 1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
