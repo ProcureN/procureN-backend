@@ -82,6 +82,7 @@ const resendOtp = async (req, res) => {
      if(!checkdata){
      return res.status(400).send({status:false,message:"email is not register"})
      }
+     let name = checkdata.name
     let updateotp = await optModel.findOneAndUpdate(
       { email: email },
       { $set: { otp: otp } }
@@ -97,16 +98,34 @@ const resendOtp = async (req, res) => {
 
     let MailGenerator = new Mailgen({
       theme: 'default',
+      // Custom text direction
+     // textDirection: 'rtl',
+      color: '#48cfad',
       product: {
-        name: 'procure-n',
-        link: 'https://mailgen.js/',
+        logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+        // Custom logo height
+        logoHeight: '100px',
+        name: 'ProcureN', 
+        link: 'https://procuren.in/',
+       
       },
     });
     let response = {
       body: {
-        name: `Dear `,
-        intro: `resended OTP:${otp}`,
-        outro: 'thnk you',
+        greeting: 'Dear',
+        name :name,
+        intro:  [`Thank you for choosing ProcureN. We have resent your OTP.`],
+       //intro: [`resended OTP:${otp}`],
+       action: {
+        instructions: "",
+        button: {
+            color: '#5c67f5', // Optional action button color
+            text: `${otp}`,
+            link: 'https://procuren.in/'
+
+        }
+    }
+       //outro: ,
       },
     };
     let mail = MailGenerator.generate(response);
@@ -114,7 +133,7 @@ const resendOtp = async (req, res) => {
     let message = { 
       from: EMAIL,
       to: email, // Ensure that the 'email' field is set
-      subject: 'OTP verification',
+      subject: `${otp} is the resent OTP`,
       html: mail,
     };
     transporter.sendMail(message);

@@ -327,7 +327,7 @@ const updateCostumersEnquiry = async (req, res) => {
         let message = {
           from: EMAIL,
           to: email,
-          subject: 'Track it',
+          subject: 'Rejected',
           html: mail,
         };
         transporter
@@ -411,7 +411,7 @@ const updateCostumersEnquiry = async (req, res) => {
         let message = {
           from: EMAIL,
           to: email,
-          subject: 'Track it',
+          subject: 'Pending',
           html: mail,
         };
         transporter

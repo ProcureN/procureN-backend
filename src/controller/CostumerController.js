@@ -150,16 +150,33 @@ const register = async (req, res) => {
 
     let MailGenerator = new Mailgen({
       theme: 'default',
+      // Custom text direction
+     // textDirection: 'rtl',
+      color: '#48cfad',
       product: {
-        name: 'procure-n',
-        link: 'https://mailgen.js/',
+        logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+        // Custom logo height
+        logoHeight: '100px',
+        name: 'ProcureN', 
+        link: 'https://procuren.in/',
+       
       },
     });
     let response = {
       body: {
+        greeting: 'Dear',
         name: `${name}`,
-        intro: `please verify your email opt: ${otp}`,
-        outro: 'thank you',
+        intro: `Your OTP is ${otp}. Please enter it to complete verification.`,
+       //outro: 'thank you',
+       action: {
+        instructions: "",
+        button: {
+            color: '#5c67f5', // Optional action button color
+            text: `${otp}`,
+            link: 'https://procuren.in/'
+
+        }
+    }
       },
     };
     let mail = MailGenerator.generate(response);
@@ -167,7 +184,7 @@ const register = async (req, res) => {
     let message = {
       from: EMAIL,
       to: email,
-      subject: 'OTP verification',
+      subject: `${otp} is the OTP to sign in to your account `,
       html: mail,
     };
     transporter
@@ -180,24 +197,6 @@ const register = async (req, res) => {
       .catch((error) => {
         return res.status(500).json({ error });
       });
-    // transporter.sendMail(
-    //     message, function (error, info) {
-    //         if (error) {
-    //             console.log(error);
-    //             res.status(500).send("couldn't send")
-    //         }
-    //         else {
-    //             savedOTPS[Email] = otp;
-    //             setTimeout(
-    //                 () => {
-    //                     delete savedOTPS.email
-    //                 }, 60000
-    //             )
-    //             res.send("sent otp")
-    //         }
-
-    //     }
-    // )
     var currentdate = new Date();
     var datetime =
       currentdate.getDate() +
