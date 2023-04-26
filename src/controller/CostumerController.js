@@ -166,14 +166,14 @@ const register = async (req, res) => {
       body: {
         greeting: 'Dear',
         name: `${name}`,
-        intro: `Your OTP is ${otp}. Please enter it to complete verification.`,
+        intro:  [`Thank you for choosing ProcureN! Your One-Time Password (OTP) has been generated. Please find your OTP below:`],
        //outro: 'thank you',
        action: {
         instructions: "",
         button: {
             color: '#5c67f5', // Optional action button color
             text: `${otp}`,
-            link: 'https://procuren.in/'
+            link: 'https://procuren.in/otp/signup'
 
         }
     }
