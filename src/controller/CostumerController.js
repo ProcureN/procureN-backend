@@ -23,115 +23,115 @@ const register = async (req, res) => {
       state,
       city,
     } = data;
-    if (validator.isValidBody(data))
-      return res.status(400).send({
-        status: false,
-        message: 'Enter details to create your account',
-      });
+    // if (validator.isValidBody(data))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'Enter details to create your account',
+    //   });
     //validating firstname
-    if (!name)
-      return res
-        .status(400)
-        .send({ status: false, message: 'name is required' });
-    if (validator.isValid(name))
-      return res
-        .status(400)
-        .send({ status: false, message: 'name should not be an empty string' });
+    // if (!name)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'name is required' });
+    // if (validator.isValid(name))
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'name should not be an empty string' });
 
-    if (!email)
-      return res
-        .status(400)
-        .send({ status: false, message: 'User Email-id is required' });
-    //validating user email-id
-    if (!validator.isValidEmail(email.trim()))
-      return res
-        .status(400)
-        .send({ status: false, message: 'Please Enter a valid Email-id' });
-    //checking if email already exist or not
-    let duplicateEmail = await costumerModel.findOne({ Email: email });
-    if (duplicateEmail)
-      return res
-        .status(400)
-        .send({ status: false, message: 'Email already exist' });
+    // if (!email)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'User Email-id is required' });
+    // //validating user email-id
+    // if (!validator.isValidEmail(email.trim()))
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Please Enter a valid Email-id' });
+    // //checking if email already exist or not
+    // let duplicateEmail = await costumerModel.findOne({ Email: email });
+    // if (duplicateEmail)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Email already exist' });
 
-    if (!phone)
-      return res
-        .status(400)
-        .send({ status: false, message: 'User Phone number is required' });
-    //validating user phone
-    if (!validator.isValidPhone(phone.trim()))
-      return res
-        .status(400)
-        .send({ status: false, message: 'Please Enter a valid Phone number' });
-    //checking if phone already exist or not
-    let duplicatePhone = await costumerModel.findOne({ phone: phone });
-    if (duplicatePhone)
-      return res
-        .status(400)
-        .send({ status: false, message: 'Phone already exist' });
+    // if (!phone)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'User Phone number is required' });
+    // //validating user phone
+    // if (!validator.isValidPhone(phone.trim()))
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Please Enter a valid Phone number' });
+    // //checking if phone already exist or not
+    // let duplicatePhone = await costumerModel.findOne({ phone: phone });
+    // if (duplicatePhone)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Phone already exist' });
 
-    if (!password)
-      return res
-        .status(400)
-        .send({ status: false, message: 'Password is required' });
-    //validating user password
-    if (!validator.isValidPassword(password))
-      return res.status(400).send({
-        status: false,
-        message:
-          'Password should be between 8 and 15 character and it should be alpha numeric',
-      });
-    if (validator.isValid(password))
-      return res.status(400).send({
-        status: false,
-        message: 'Password should not be an empty string',
-      });
+    // if (!password)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Password is required' });
+    // //validating user password
+    // if (!validator.isValidPassword(password))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message:
+    //       'Password should be between 8 and 15 character and it should be alpha numeric',
+    //   });
+    // if (validator.isValid(password))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'Password should not be an empty string',
+    //   });
     data.password = await bcrypt.hash(password, 10);
 
-    if (!company)
-      return res
-        .status(400)
-        .send({ status: false, message: 'Company is required' });
-    if (validator.isValid(company))
-      return res.status(400).send({
-        status: false,
-        message: 'Company should not be an empty string',
-      });
+    // if (!company)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Company is required' });
+    // if (validator.isValid(company))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'Company should not be an empty string',
+    //   });
 
-    if (!jobTitle)
-      return res
-        .status(400)
-        .send({ status: false, message: 'JobTitle is required' });
-    if (validator.isValid(jobTitle))
-      return res.status(400).send({
-        status: false,
-        message: 'jobTitle should not be an empty string',
-      });
+    // if (!jobTitle)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'JobTitle is required' });
+    // if (validator.isValid(jobTitle))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'jobTitle should not be an empty string',
+    //   });
 
-    if (!state)
-      return res
-        .status(400)
-        .send({ status: false, message: 'State is required' });
-    if (validator.isValid(state))
-      return res.status(400).send({
-        status: false,
-        message: 'State should not be an empty string',
-      });
+    // if (!state)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'State is required' });
+    // if (validator.isValid(state))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'State should not be an empty string',
+    //   });
 
-    if (!city)
-      return res
-        .status(400)
-        .send({ status: false, message: 'city is required' });
-    if (validator.isValid(city))
-      return res
-        .status(400)
-        .send({ status: false, message: 'city should not be an empty string' });
+    // if (!city)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'city is required' });
+    // if (validator.isValid(city))
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'city should not be an empty string' });
 
-    let Role = ['Retailer', 'Manufacturer'];
-    if (!Role.includes(selectRole))
-      return res
-        .status(400)
-        .send({ status: false, message: `role must be slected among ${Role}` });
+    // let Role = ['Retailer', 'Manufacturer'];
+    // if (!Role.includes(selectRole))
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: `role must be slected among ${Role}` });
 
     let digits = '0123456789';
     let limit = 6;
@@ -184,7 +184,7 @@ const register = async (req, res) => {
     let message = {
       from: EMAIL,
       to: email,
-      subject: `${otp} is the OTP to sign in to your account `,
+      subject: `${otp} is the OTP to sign in to your ProcureN account `,
       html: mail,
     };
     transporter
@@ -240,17 +240,17 @@ const updateCostumer = async (req, res) => {
       State,
       city,
     } = data;
-    if (Name) {
-      if (!Name)
-        return res
-          .status(400)
-          .send({ status: false, message: 'name is required' });
-      if (validator.isValid(Name))
-        return res.status(400).send({
-          status: false,
-          message: 'name should not be an empty string',
-        });
-    }
+    // if (Name) {
+    //   if (!Name)
+    //     return res
+    //       .status(400)
+    //       .send({ status: false, message: 'name is required' });
+    //   if (validator.isValid(Name))
+    //     return res.status(400).send({
+    //       status: false,
+    //       message: 'name should not be an empty string',
+    //     });
+    // }
     if (Email) {
       if (!Email)
         return res

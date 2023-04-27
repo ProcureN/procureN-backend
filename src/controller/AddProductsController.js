@@ -4,6 +4,12 @@ const costumerModel = require('../models/CostumerModel');
 const aws = require('../aws/aws');
 const uploadFile = require('../middleware/uploads');
 const fs = require('fs');
+
+const Mail = require('nodemailer/lib/mailer');
+const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
+const Mailgen = require('mailgen');
+const { EMAIL, PASSWORD } = require('../env');
 const addProdcts = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
@@ -243,6 +249,7 @@ const updateProduct = async (req, res) => {
       availability,
       selectImage1,
       selectImage2,
+      status, deliveryStatus
     } = data;
     if (selectImage1 || selectImage2) {
       if (!validator.isValidFiles(files)) {
@@ -421,6 +428,183 @@ const updateProduct = async (req, res) => {
           status: false,
           message: 'SelectImage2 should not be an empty string',
         });
+    }
+
+    if (status) {
+      let statuses = ['Pending', 'Approved', 'Rejected'];
+      if (!statuses.includes(status))
+        return res.status(400).send({
+          status: false,
+          message: `status must be selected among ${statuses}`,
+        });
+    }
+    if (deliveryStatus) {
+      let deliveryStatuses = [
+        'processing',
+        'shipped',
+        'inTransit',
+        'delivered',
+      ];
+      if (!deliveryStatuses.includes(deliveryStatus))
+        return res.status(400).send({
+          status: false,
+          message: `deliveryStatus must be selected among ${deliveryStatuses}`,
+        });
+    }
+    let manufacturerData = await AddProductsModel.findById({_id:productID})
+    if (!manufacturerData) {
+      return res
+        .status(404)
+        .send({ status: false, message: 'no  manufacturerData found' });
+    }
+    let customerId = manufacturerData.costumerID?.toString();
+    if (!customerId) {
+      return res
+        .status(404)
+        .send({ status: false, message: 'customerID not found' });
+    }
+    let customerData = await costumerModel.findById(customerId);
+    if (!customerData) {
+      return res
+        .status(404)
+        .send({ status: false, message: 'customer not found' });
+    }
+    let email = customerData.email?.toString();
+    let name = customerData.name?.toString();
+
+    if (status) {
+      if (status === 'Rejected') {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+  
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          color: '#48cfad',
+          product: {
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN', 
+            link: 'https://procuren.in/',
+           
+          },
+        });
+        let response = {
+          body: {
+            greeting: 'Dear',
+            name: `${name}`,
+            intro: [`We regret to inform you that your product ${productID} has been rejected. We have reviewed it thoroughly, and it does not meet our requirements. We understand that this may be disappointing news, but we assure you that we have taken every possible step to ensure fairness in our decision.`],
+            outro: 'Thank you for your understanding.',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: ` Rejection of Product ${productID}`,
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+      }
+      if (status === 'Approved') {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+  
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            name: 'procureN',
+            link: 'https://mailgen.js/',
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: `your product is ${status}.track now: ${productID}`,
+            outro: 'thank you',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: 'Track it',
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+      }
+      if (status === 'Pending') {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+  
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            name: 'procureN',
+            link: 'https://mailgen.js/',
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: `your product is ${status}.`,
+            outro: 'thank you',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: 'Pending',
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+      }
     }
     let productData = await AddProductsModel.findOneAndUpdate(
       { _id: productID },
@@ -693,6 +877,7 @@ const countOfindelivered = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
+//========================================================================
 module.exports = {
   addProdcts,
   updateProduct,

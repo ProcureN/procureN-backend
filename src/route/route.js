@@ -3,7 +3,7 @@ const router = express.Router()
 
 const { register, updateCostumer, login, updatePassword, deleteCostumers, getDetails, getAllDetails, Individualprofiles, countOfManufacturer, countOfRetailer } = require("../controller/CostumerController")
 const { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData, pendingData, rejectedData, approvedData, updateCostumersEnquiry,countOfInprocessingDelivery,countOfindeliveredDelivery,countOfinshippedDelivery,countOfinTransitDelivery,trackEnquiry } = require("../controller/CostumerEnquiryController")
-const { authentication, authorization, authorization1, authorization2 } = require("../middleware/auth")
+const { authentication, authorization, authorization1, authorization2 ,authorization3} = require("../middleware/auth")
 const { requestAdmin } = require("../controller/requestAdminController")
 const { otpVerification, resendOtp,forgetPassword } = require("../controller/otpController")
 const { contactform, getcontactform, deleteContactForm, countOfContactForm } = require("../controller/contactUsController")
@@ -13,10 +13,11 @@ router.get("/test-me", function (req, res) {
 });
 
 //=============================costumer==================================
+
 router.post("/register", register)
-router.put("/UpdateCostumer/:customerID", authentication, authorization, updateCostumer)
+router.put("/UpdateCostumer/:customerID", authentication, authorization3, updateCostumer)
 router.put("/updatepassword", updatePassword )
-router.delete("/deletecostumer/:customerID", authentication, authorization, deleteCostumers)
+router.delete("/deletecostumer/:customerID", authentication, authorization3, deleteCostumers)
 router.post("/login", login)
 router.get("/getroles/:page/:limit", authentication, getDetails)  // by admin
 router.get("/getAllDetails/:page/:limit", getAllDetails) // by admin
@@ -68,7 +69,7 @@ router.post("/admin", requestAdmin) // by admin
 //======================contactform================================
 router.post("/contactform", contactform)
 router.get("/getcontactform/:page/:limit", getcontactform)//by admin
-router.delete("/deleteContactForm/", deleteContactForm) // by admin
+router.delete("/deleteContactForm/:contactUsId", deleteContactForm) // by admin
 router.get("/countOfContactForm", countOfContactForm)
 
 module.exports = router  

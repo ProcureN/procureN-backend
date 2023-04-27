@@ -38,7 +38,7 @@ const authorization = async function (req, res, next) {
       return res.status(404).send({ status: false, message: 'User Not Found' });
     }
     let decoded = req.decoded.customerID;
-    if (customerID !== decoded) {
+    if ((customerID!== decoded  || "642a78ce9c3be64d3b6d3aaa"!== decoded) ) {
       return res
         .status(403)
         .send({ staus: false, message: 'you are not authorized' });
@@ -176,10 +176,35 @@ async function authorization2(req, res, next) {
     return res.status(500).send({ status: false, message: error.message });
   }
 }
+//=================================================================================================
+const authorization3 = async function (req, res, next) {
+  try {
+    let adminID =  "642a78ce9c3be64d3b6d3aaa" ;
+    if (!validator.isValidObjectId(adminID)) {
+      return res
+        .status(400)
+        .send({ status: false, message: 'invalid user Id' });
+    }
+    const user = await costumerModel.findById(adminID);
+    if (!user) {
+      return res.status(404).send({ status: false, message: 'User Not Found' });
+    }
+    let decoded = req.decoded.customerID;
+    if (adminID!== decoded) {
+      return res
+        .status(403)
+        .send({ staus: false, message: 'you are not authorized' });
+    }
+    next();
+  } catch (err) {
+    return res.status(500).send({ status: false, message: err.message });
+  }
+};
 
 module.exports = {
   authentication,
   authorization,
   authorization1,
   authorization2,
+  authorization3
 };
