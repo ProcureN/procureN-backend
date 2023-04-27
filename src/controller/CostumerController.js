@@ -520,7 +520,6 @@ const getDetails = async (req, res) => {
 const getAllDetails = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
-    let filter = { isDeleted: false };
     const resultsPerPage =
       req.params.limit === ':limit' ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;

@@ -38,7 +38,7 @@ const authorization = async function (req, res, next) {
       return res.status(404).send({ status: false, message: 'User Not Found' });
     }
     let decoded = req.decoded.customerID;
-    if ((customerID!== decoded  || "642a78ce9c3be64d3b6d3aaa"!== decoded) ) {
+    if (customerID!== decoded) {
       return res
         .status(403)
         .send({ staus: false, message: 'you are not authorized' });

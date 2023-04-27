@@ -43,134 +43,134 @@ const addProdcts = async (req, res) => {
     } = data;
 
     //ProductName
-    if (!productName)
-      return res
-        .status(400)
-        .send({ status: false, message: 'productName is required' });
-    if (validator.isValid(productName))
-      return res
-        .status(400)
-        .send({ status: false, message: 'name should not be an empty string' });
+    // if (!productName)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'productName is required' });
+    // if (validator.isValid(productName))
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'name should not be an empty string' });
 
     //Category
-    if (!category)
-      return res
-        .status(400)
-        .send({ status: false, message: 'category is required' });
-    if (validator.isValid(category))
-      return res.status(400).send({
-        status: false,
-        message: 'category should not be an empty string',
-      });
+    // if (!category)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'category is required' });
+    // if (validator.isValid(category))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'category should not be an empty string',
+    //   });
 
     //SubCategory
-    if (!subCategory)
-      return res
-        .status(400)
-        .send({ status: false, message: 'subCategory is required' });
-    if (validator.isValid(subCategory))
-      return res.status(400).send({
-        status: false,
-        message: 'subCategory should not be an empty string',
-      });
+    // if (!subCategory)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'subCategory is required' });
+    // if (validator.isValid(subCategory))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'subCategory should not be an empty string',
+    //   });
 
     //Manufacturer
-    if (!manufacturerName)
-      return res
-        .status(400)
-        .send({ status: false, message: 'manufacturer is required' });
-    if (validator.isValid(manufacturerName))
-      return res.status(400).send({
-        status: false,
-        message: 'manufacturer should not be an empty string',
-      });
+    // if (!manufacturerName)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'manufacturer is required' });
+    // if (validator.isValid(manufacturerName))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'manufacturer should not be an empty string',
+    //   });
 
     //priceBeforeDiscount
-    if (!validator.isValid1(priceBeforeDiscount)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'price is required' });
-    }
-    if (!validator.isValidPrice(priceBeforeDiscount)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'Enter a Valid priceBeforeDiscount' });
-    }
+    // if (!validator.isValid1(priceBeforeDiscount)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'price is required' });
+    // }
+    // if (!validator.isValidPrice(priceBeforeDiscount)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Enter a Valid priceBeforeDiscount' });
+    // }
     //Price
-    if (!validator.isValid1(price)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'price is required' });
-    }
-    if (!validator.isValidPrice(price)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'Enter a Valid price' });
-    }
+    // if (!validator.isValid1(price)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'price is required' });
+    // }
+    // if (!validator.isValidPrice(price)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Enter a Valid price' });
+    //}
     //WithGST
-    if (!validator.isValid1(withGST)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'withGST is required' });
-    }
-    if (!validator.isValidPrice(withGST)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'Enter a Valid withGST' });
-    }
+    // if (!validator.isValid1(withGST)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'withGST is required' });
+    // }
+    // if (!validator.isValidPrice(withGST)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Enter a Valid withGST' });
+    // }
     //Description
-    if (!description)
-      return res
-        .status(400)
-        .send({ status: false, message: 'description is required' });
-    if (validator.isValid(description))
-      return res.status(400).send({
-        status: false,
-        message: 'description should not be an empty string',
-      });
+    // if (!description)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'description is required' });
+    // if (validator.isValid(description))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'description should not be an empty string',
+    //   });
 
     //ShippingCharges
-    if (!validator.isValid1(shippingCharges)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'shippingCharges is required' });
-    }
-    if (!validator.isValidPrice(shippingCharges)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'Enter a Valid shippingCharges' });
-    }
+    // if (!validator.isValid1(shippingCharges)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'shippingCharges is required' });
+    // }
+    // if (!validator.isValidPrice(shippingCharges)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Enter a Valid shippingCharges' });
+    // }
     //SizeUnit
-    if (!sizeUnit)
-      return res
-        .status(400)
-        .send({ status: false, message: 'sizeUnit is required' });
-    if (validator.isValid(sizeUnit))
-      return res.status(400).send({
-        status: false,
-        message: 'sizeUnit should not be an empty string',
-      });
+    // if (!sizeUnit)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'sizeUnit is required' });
+    // if (validator.isValid(sizeUnit))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'sizeUnit should not be an empty string',
+    //   });
 
     //ProductQuantity
-    if (!productQuantity)
-      return res
-        .status(400)
-        .send({ status: false, message: 'productQuantity is required' });
-    if (validator.isValid(productQuantity))
-      return res.status(400).send({
-        status: false,
-        message: 'productQuantity should not be an empty string',
-      });
+    // if (!productQuantity)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'productQuantity is required' });
+    // if (validator.isValid(productQuantity))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'productQuantity should not be an empty string',
+    //   });
     //Availability
-    if (!availability)
-      return res
-        .status(400)
-        .send({ status: false, message: 'availability is required' });
-    if (validator.isValid(availability))
-      return res.status(400).send({
-        status: false,
-        message: 'availability should not be an empty string',
-      });
+    // if (!availability)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'availability is required' });
+    // if (validator.isValid(availability))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'availability should not be an empty string',
+    //   });
 
     if (!validator.isValid1(costumerID)) {
       return res
