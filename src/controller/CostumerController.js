@@ -380,21 +380,21 @@ const login = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     Data = req.body;
-    if (validator.isValidBody(Data))
-      return res.status(400).send({
-        status: false,
-        message: 'Enter details to create your account',
-      });
+    // if (validator.isValidBody(Data))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'Enter details to create your account',
+    //   });
     const { email, password } = Data;
-    if (!email) 
-      return res
-        .status(400) 
-        .send({ status: false, message: 'User Email-id is required' });
+    // if (!email) 
+    //   return res
+    //     .status(400) 
+    //     .send({ status: false, message: 'User Email-id is required' });
 
-    if (!validator.isValidEmail(email.trim()))
-      return res
-        .status(400)
-        .send({ status: false, message: 'Please Enter a valid Email-id' });
+    // if (!validator.isValidEmail(email.trim()))
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Please Enter a valid Email-id' });
 
     const isEmailExists = await costumerModel.findOne({ email: email });
     if (!isEmailExists)
@@ -407,11 +407,11 @@ const login = async (req, res) => {
         .send({ status: false, message: 'otp is not verified' });
     }
     //  Password Validation
-    if (validator.isValid(password))
-      return res.status(400).send({
-        status: false,
-        message: 'Password should not be an empty string',
-      });
+    // if (validator.isValid(password))
+    //   return res.status(400).send({
+    //     status: false,
+    //     message: 'Password should not be an empty string',
+    //   });
 
     const isPasswordMatch =  bcrypt.compare(
       password,
@@ -435,7 +435,7 @@ const login = async (req, res) => {
       selectRole: isEmailExists.selectRole.toString(),
       token: token,
     };
-    console.log('Login done');
+   // console.log('Login done');
     res
       .status(200)
       .send({ status: true, message: 'Login Successful', data: result });
@@ -627,6 +627,27 @@ const updatePassword = async (req, res) => {
     return res.status(500).send({ status: false, message: err.message });
   }
 };
+//====================================== UniqueEmail =========================================
+
+const UniqueEmail = async (req,res)=>{
+  let email = req.body.email
+  let checkdata = await costumerModel.find({email:email})
+  if(!checkdata || checkdata.length ===0){
+     return res.status(200).send({status:true,message:"email is unique"})
+  }else
+  return res.status(200).send({status:true,message:"email already existing"})
+}
+//==================================================================================================
+
+const uniquePhone = async (req,res)=>{
+  let phone = req.body.phone
+  let checkdata = await costumerModel.find({phone:phone})
+  if(!checkdata || checkdata.length ===0){
+     return res.status(200).send({status:true,message:"phone is unique"})
+  }else
+  return res.status(200).send({status:true,message:"phone already existing"})
+}
+//====================================================================================================
 module.exports = {
   register,
   updateCostumer,
@@ -638,4 +659,6 @@ module.exports = {
   countOfManufacturer,
   countOfRetailer,
   updatePassword,
+  UniqueEmail,
+  uniquePhone
 };

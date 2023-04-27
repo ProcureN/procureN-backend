@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const { register, updateCostumer, login, updatePassword, deleteCostumers, getDetails, getAllDetails, Individualprofiles, countOfManufacturer, countOfRetailer } = require("../controller/CostumerController")
+const { register, updateCostumer, login, updatePassword, deleteCostumers, getDetails, getAllDetails, Individualprofiles, countOfManufacturer, countOfRetailer,UniqueEmail,uniquePhone } = require("../controller/CostumerController")
 const { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData, pendingData, rejectedData, approvedData, updateCostumersEnquiry,countOfInprocessingDelivery,countOfindeliveredDelivery,countOfinshippedDelivery,countOfinTransitDelivery,trackEnquiry } = require("../controller/CostumerEnquiryController")
 const { authentication, authorization, authorization1, authorization2 ,authorization3} = require("../middleware/auth")
 const { requestAdmin } = require("../controller/requestAdminController")
@@ -14,9 +14,12 @@ router.get("/test-me", function (req, res) {
 
 //=============================costumer==================================
 
+router.post("/UniqueEmail",UniqueEmail)
+router.post("/uniquePhone",uniquePhone)
+
 router.post("/register", register)
 router.put("/UpdateCostumer/:customerID", authentication, authorization3, updateCostumer)
-router.put("/updatepassword", updatePassword )
+router.put("/updatepassword", updatePassword ) 
 router.delete("/deletecostumer/:customerID", authentication, authorization3, deleteCostumers)
 router.post("/login", login)
 router.get("/getroles/:page/:limit", authentication, getDetails)  // by admin
