@@ -51,7 +51,7 @@ const otpVerification = async (req, res) => {
           message: 'login successful',
           selectRole: costumerData.selectRole.toString(),
           verifiedOtp: customerVerification.verified,
-          email:email
+          email: email
         });
     } else {
       return res.status(400).send({ status: false, message: 'incorrect otp' });
@@ -69,20 +69,20 @@ const resendOtp = async (req, res) => {
       return res.status(400).json({ message: "Please provide a valid email" });
     }
     if (!validator.isValidEmail(email.trim()))
-    return res
-      .status(400)
-      .send({ status: false, message: 'Please Enter a valid Email-id' });
-    let digits = '1234567890'; 
+      return res
+        .status(400)
+        .send({ status: false, message: 'Please Enter a valid Email-id' });
+    let digits = '1234567890';
     let limit = 6;
     let otp = '';
     for (i = 1; i < limit; i++) {
       otp += digits[Math.floor(Math.random() * 10)];
     }
-     let checkdata = await costumerModel.findOne({email:email}) 
-     if(!checkdata){
-     return res.status(400).send({status:false,message:"email is not register"})
-     }
-     let name = checkdata.name
+    let checkdata = await costumerModel.findOne({ email: email })
+    if (!checkdata) {
+      return res.status(400).send({ status: false, message: "email is not register" })
+    }
+    let name = checkdata.name
     let updateotp = await optModel.findOneAndUpdate(
       { email: email },
       { $set: { otp: otp } }
@@ -99,48 +99,48 @@ const resendOtp = async (req, res) => {
     let MailGenerator = new Mailgen({
       theme: 'default',
       // Custom text direction
-     // textDirection: 'rtl',
+      // textDirection: 'rtl',
       color: '#48cfad',
       product: {
         logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
         // Custom logo height
         logoHeight: '100px',
-        name: 'ProcureN', 
+        name: 'ProcureN',
         link: 'https://procuren.in/',
-       
+
       },
     });
     let response = {
       body: {
         greeting: 'Dear',
-        name :name,
-        intro:  [`Thank you for choosing ProcureN. We have resent your OTP.`],
-       //intro: [`resended OTP:${otp}`],
-       action: {
-        instructions: "",
-        button: {
+        name: name,
+        intro: [`We have resent your OTP. Please use the following code for verification:`],
+        //intro: [`resended OTP:${otp}`],
+        action: {
+          instructions: "",
+          button: {
             color: '#5c67f5', // Optional action button color
             text: `${otp}`,
             link: 'https://procuren.in/'
 
+          }
         }
-    }
-       //outro: ,
+        //outro: ,
       },
     };
     let mail = MailGenerator.generate(response);
 
-    let message = { 
+    let message = {
       from: EMAIL,
       to: email, // Ensure that the 'email' field is set
       subject: `${otp} is the resent OTP`,
       html: mail,
     };
     transporter.sendMail(message);
-    
+
     return res.status(201).json({
       message: `OTP send successfully`,
-   });
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Something went wrong" });
@@ -152,30 +152,30 @@ const resendOtp = async (req, res) => {
 const forgetPassword = async (req, res) => {
   try {
     let data = req.body
-    let { email,password} =data
+    let { email, password } = data
     if (!password)
-    return res
-      .status(400)
-      .send({ status: false, message: 'Password is required' });
-  //validating user password
-  if (!validator.isValidPassword(password))
-    return res.status(400).send({
-      status: false,
-      message:
-        'Password should be between 8 and 15 character and it should be alpha numeric',
-    });
-  if (validator.isValid(password))
-    return res.status(400).send({
-      status: false,
-      message: 'Password should not be an empty string',
-    });
+      return res
+        .status(400)
+        .send({ status: false, message: 'Password is required' });
+    //validating user password
+    if (!validator.isValidPassword(password))
+      return res.status(400).send({
+        status: false,
+        message:
+          'Password should be between 8 and 15 character and it should be alpha numeric',
+      });
+    if (validator.isValid(password))
+      return res.status(400).send({
+        status: false,
+        message: 'Password should not be an empty string',
+      });
     data.password = await bcrypt.hash(password, 10);
-    let getCustomerData = await costumerModel.findOneAndUpdate({email:email},data,{new:true})
-    res.status(200).send({status:true, data:getCustomerData})
-   
+    let getCustomerData = await costumerModel.findOneAndUpdate({ email: email }, data, { new: true })
+    res.status(200).send({ status: true, data: getCustomerData })
+
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
 
-module.exports = { otpVerification, resendOtp,forgetPassword };
+module.exports = { otpVerification, resendOtp, forgetPassword };

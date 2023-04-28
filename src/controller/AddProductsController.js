@@ -534,14 +534,19 @@ const updateProduct = async (req, res) => {
         let MailGenerator = new Mailgen({
           theme: 'default',
           product: {
-            name: 'procureN',
-            link: 'https://mailgen.js/',
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+    
           },
         });
         let response = {
           body: {
+            greeting: 'Dear',
             name: `${name}`,
-            intro: `your product is ${status}.track now: ${productID}`,
+            intro: [`We are pleased to inform you that your product has been approved and is ready for dispatch. Your tracking ID is :`],
             outro: 'thank you',
           },
         };
@@ -576,14 +581,18 @@ const updateProduct = async (req, res) => {
         let MailGenerator = new Mailgen({
           theme: 'default',
           product: {
-            name: 'procureN',
-            link: 'https://mailgen.js/',
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+    
           },
         });
         let response = {
           body: {
             name: `${name}`,
-            intro: `your product is ${status}.`,
+            intro: [`Your order with product ${productID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`],
             outro: 'thank you',
           },
         };
@@ -591,7 +600,7 @@ const updateProduct = async (req, res) => {
         let message = {
           from: EMAIL,
           to: email,
-          subject: 'Pending',
+          subject: `Pending Product Update`,
           html: mail,
         };
         transporter

@@ -318,16 +318,17 @@ const updateCostumersEnquiry = async (req, res) => {
         });
         let response = {
           body: {
+            greeting: 'Dear',
             name: `${name}`,
-            intro: `your enquiry is ${status}.`,
-            outro: 'thank you',
+            intro: [`We regret to inform you that your Enquiry ${customerEnquiryID} has been rejected. We have reviewed it thoroughly, and it does not meet our requirements. We understand that this may be disappointing news, but we assure you that we have taken every possible step to ensure fairness in our decision.`],
+            outro:'Thank you for your understanding.',
           },
         };
         let mail = MailGenerator.generate(response);
         let message = {
           from: EMAIL,
           to: email,
-          subject: 'Rejected',
+          subject: ` Rejection of enquiry ${customerEnquiryID}`,
           html: mail,
         };
         transporter
@@ -354,15 +355,29 @@ const updateCostumersEnquiry = async (req, res) => {
         let MailGenerator = new Mailgen({
           theme: 'default',
           product: {
-            name: 'procureN',
-            link: 'https://mailgen.js/',
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+    
           },
         });
         let response = {
           body: {
+            greeting: 'Dear',
             name: `${name}`,
-            intro: `your enquiry is ${status}.track now: ${customerEnquiryID}`,
-            outro: 'thank you',
+            intro: [`We are pleased to inform you that your enquiry has been approved and is ready for dispatch. Please find your tracking ID below: `],
+            action: {
+              instructions: "",
+              button: {
+                color: '#5c67f5', // Optional action button color
+                text: `${customerEnquiryID}`,
+                link: 'https://procuren.in/'
+    
+              }
+            },
+            outro: 'Thank you for choosing our services.',
           },
         };
         let mail = MailGenerator.generate(response);
@@ -396,14 +411,18 @@ const updateCostumersEnquiry = async (req, res) => {
         let MailGenerator = new Mailgen({
           theme: 'default',
           product: {
-            name: 'procureN',
-            link: 'https://mailgen.js/',
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+    
           },
         });
         let response = {
           body: {
             name: `${name}`,
-            intro: `your enquiry is ${status}.`,
+            intro: [`Your order with enquiry ${customerEnquiryID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`],
             outro: 'thank you',
           },
         };
@@ -411,7 +430,7 @@ const updateCostumersEnquiry = async (req, res) => {
         let message = {
           from: EMAIL,
           to: email,
-          subject: 'Pending',
+          subject: `Pending  of enquiry `,
           html: mail,
         };
         transporter
