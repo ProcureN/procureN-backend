@@ -551,7 +551,7 @@ const updateProduct = async (req, res) => {
               instructions: "",
               button: {
                 color: '#5c67f5', // Optional action button color
-                text: `${otp}`,
+                text: `${productID}`,
                 link: 'https://procuren.in/'
     
               }
