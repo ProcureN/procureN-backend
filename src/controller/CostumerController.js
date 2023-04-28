@@ -635,7 +635,7 @@ const UniqueEmail = async (req,res)=>{
     if(!checkdata || checkdata.length ===0){
        return res.status(200).send({status:true,message:"email is unique"})
     }else
-    return res.status(200).send({status:true,message:"email already existing"})
+    return res.status(400).send({status:false,message:"email already existing"})
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -650,7 +650,7 @@ const uniquePhone = async (req,res)=>{
     if(!checkdata || checkdata.length ===0){
        return res.status(200).send({status:true,message:"phone is unique"})
     }else
-    return res.status(200).send({status:true,message:"phone already existing"})
+    return res.status(400).send({status:false,message:"phone already existing"})
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
