@@ -312,8 +312,12 @@ const updateCostumersEnquiry = async (req, res) => {
         let MailGenerator = new Mailgen({
           theme: 'default',
           product: {
-            name: 'procureN',
-            link: 'https://mailgen.js/',
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+    
           },
         });
         let response = {

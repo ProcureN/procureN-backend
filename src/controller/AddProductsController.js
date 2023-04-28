@@ -547,6 +547,15 @@ const updateProduct = async (req, res) => {
             greeting: 'Dear',
             name: `${name}`,
             intro: [`We are pleased to inform you that your product has been approved and is ready for dispatch. Your tracking ID is :`],
+            action: {
+              instructions: "",
+              button: {
+                color: '#5c67f5', // Optional action button color
+                text: `${otp}`,
+                link: 'https://procuren.in/'
+    
+              }
+            },
             outro: 'thank you',
           },
         };

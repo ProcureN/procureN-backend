@@ -230,14 +230,14 @@ const updateCostumer = async (req, res) => {
     let data = req.body;
     let customerID = req.params.customerID;
     const {
-      Name,
-      Email,
-      Password,
-      SelectRole,
-      Company,
-      JobTitle,
+      name,
+      email,
+      password,
+      selectRole,
+      company,
+      jobTitle,
       phone,
-      State,
+      state,
       city,
     } = data;
     // if (Name) {
@@ -251,111 +251,111 @@ const updateCostumer = async (req, res) => {
     //       message: 'name should not be an empty string',
     //     });
     // }
-    if (Email) {
-      if (!Email)
-        return res
-          .status(400)
-          .send({ status: false, message: 'User Email-id is required' });
-      //validating user email-id
-      if (!validator.isValidEmail(Email.trim()))
-        return res
-          .status(400)
-          .send({ status: false, message: 'Please Enter a valid Email-id' });
+    if (email) {
+      // if (!email)
+      //   return res
+      //     .status(400)
+      //     .send({ status: false, message: 'User Email-id is required' });
+      // //validating user email-id
+      // if (!validator.isValidEmail(email.trim()))
+      //   return res
+      //     .status(400)
+      //     .send({ status: false, message: 'Please Enter a valid Email-id' });
       //checking if email already exist or not
-      let duplicateEmail = await costumerModel.findOne({ Email: Email });
+      let duplicateEmail = await costumerModel.findOne({ email: email });
       if (duplicateEmail)
         return res
           .status(400)
           .send({ status: false, message: 'Email already exist' });
     }
-    if (Password) {
-      if (!Password)
-        return res
-          .status(400)
-          .send({ status: false, message: 'Password is required' });
-      //validating user password
-      if (!validator.isValidPassword(Password))
-        return res.status(400).send({
-          status: false,
-          message:
-            'Password should be between 8 and 15 character and it should be alpha numeric',
-        });
-      if (validator.isValid(Password))
-        return res.status(400).send({
-          status: false,
-          message: 'Password should not be an empty string',
-        });
-    }
-    if (Company) {
-      if (!Company)
-        return res
-          .status(400)
-          .send({ status: false, message: 'Company is required' });
-      if (validator.isValid(Company))
-        return res.status(400).send({
-          status: false,
-          message: 'Company should not be an empty string',
-        });
-    }
-    if (JobTitle) {
-      if (!JobTitle)
-        return res
-          .status(400)
-          .send({ status: false, message: 'JobTitle is required' });
-      if (validator.isValid(JobTitle))
-        return res.status(400).send({
-          status: false,
-          message: 'JobTitle should not be an empty string',
-        });
-    }
-    if (phone) {
-      if (!phone)
-        return res
-          .status(400)
-          .send({ status: false, message: 'User Phone number is required' });
-      //validating user phone
-      if (!validator.isValidPhone(phone.trim()))
-        return res.status(400).send({
-          status: false,
-          message: 'Please Enter a valid Phone number',
-        });
-      //checking if phone already exist or not
-      // let duplicatePhone = await costumerModel.findOne({ phone: phone });
-      // if (duplicatePhone)
+    //if (password) {
+      // if (!password)
       //   return res
       //     .status(400)
-      //     .send({ status: false, message: 'Phone already exist' });
-    }
-    if (State) {
-      if (!State)
+      //     .send({ status: false, message: 'Password is required' });
+      // //validating user password
+      // if (!validator.isValidPassword(Password))
+      //   return res.status(400).send({
+      //     status: false,
+      //     message:
+      //       'Password should be between 8 and 15 character and it should be alpha numeric',
+      //   });
+    //   if (validator.isValid(Password))
+    //     return res.status(400).send({
+    //       status: false,
+    //       message: 'Password should not be an empty string',
+    //     });
+    // }
+    // if (Company) {
+    //   if (!Company)
+    //     return res
+    //       .status(400)
+    //       .send({ status: false, message: 'Company is required' });
+    //   if (validator.isValid(Company))
+    //     return res.status(400).send({
+    //       status: false,
+    //       message: 'Company should not be an empty string',
+    //     });
+    // }
+    // if (JobTitle) {
+    //   if (!JobTitle)
+    //     return res
+    //       .status(400)
+    //       .send({ status: false, message: 'JobTitle is required' });
+    //   if (validator.isValid(JobTitle))
+    //     return res.status(400).send({
+    //       status: false,
+    //       message: 'JobTitle should not be an empty string',
+    //     });
+    // }
+    if (phone) {
+      // if (!phone)
+      //   return res
+      //     .status(400)
+      //     .send({ status: false, message: 'User Phone number is required' });
+      // //validating user phone
+      // if (!validator.isValidPhone(phone.trim()))
+      //   return res.status(400).send({
+      //     status: false,
+      //     message: 'Please Enter a valid Phone number',
+      //   });
+      // checking if phone already exist or not
+      let duplicatePhone = await costumerModel.findOne({ phone: phone });
+      if (duplicatePhone)
         return res
           .status(400)
-          .send({ status: false, message: 'State is required' });
-      if (validator.isValid(State))
-        return res.status(400).send({
-          status: false,
-          message: 'State should not be an empty string',
-        });
+          .send({ status: false, message: 'Phone already exist' });
     }
-    if (city) {
-      if (!city)
-        return res
-          .status(400)
-          .send({ status: false, message: 'city is required' });
-      if (validator.isValid(city))
-        return res.status(400).send({
-          status: false,
-          message: 'city should not be an empty string',
-        });
-    }
-    if (SelectRole) {
-      let Role = ['Retailer', 'Manufacturer'];
-      if (!Role.includes(SelectRole))
-        return res.status(400).send({
-          status: false,
-          message: `role must be slected among ${Role}`,
-        });
-    }
+    // if (State) {
+    //   if (!State)
+    //     return res
+    //       .status(400)
+    //       .send({ status: false, message: 'State is required' });
+    //   if (validator.isValid(State))
+    //     return res.status(400).send({
+    //       status: false,
+    //       message: 'State should not be an empty string',
+    //     });
+    // }
+    // if (city) {
+    //   if (!city)
+    //     return res
+    //       .status(400)
+    //       .send({ status: false, message: 'city is required' });
+    //   if (validator.isValid(city))
+    //     return res.status(400).send({
+    //       status: false,
+    //       message: 'city should not be an empty string',
+    //     });
+    // }
+    // if (SelectRole) {
+    //   let Role = ['Retailer', 'Manufacturer'];
+    //   if (!Role.includes(SelectRole))
+    //     return res.status(400).send({
+    //       status: false,
+    //       message: `role must be slected among ${Role}`,
+    //     });
+    // }
     let userData = await costumerModel.findOneAndUpdate(
       { _id: customerID },
       data,
@@ -629,22 +629,32 @@ const updatePassword = async (req, res) => {
 //====================================== UniqueEmail =========================================
 
 const UniqueEmail = async (req,res)=>{
-  let email = req.body.email
-  let checkdata = await costumerModel.find({email:email})
-  if(!checkdata || checkdata.length ===0){
-     return res.status(200).send({status:true,message:"email is unique"})
-  }else
-  return res.status(200).send({status:true,message:"email already existing"})
+  try {
+    let email = req.body.email
+    let checkdata = await costumerModel.find({email:email})
+    if(!checkdata || checkdata.length ===0){
+       return res.status(200).send({status:true,message:"email is unique"})
+    }else
+    return res.status(200).send({status:true,message:"email already existing"})
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+ 
 }
 //==================================================================================================
 
 const uniquePhone = async (req,res)=>{
-  let phone = req.body.phone
-  let checkdata = await costumerModel.find({phone:phone})
-  if(!checkdata || checkdata.length ===0){
-     return res.status(200).send({status:true,message:"phone is unique"})
-  }else
-  return res.status(200).send({status:true,message:"phone already existing"})
+  try {
+    let phone = req.body.phone
+    let checkdata = await costumerModel.find({phone:phone})
+    if(!checkdata || checkdata.length ===0){
+       return res.status(200).send({status:true,message:"phone is unique"})
+    }else
+    return res.status(200).send({status:true,message:"phone already existing"})
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+
 }
 //====================================================================================================
 module.exports = {
