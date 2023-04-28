@@ -629,6 +629,7 @@ const updatePassword = async (req, res) => {
 //====================================== UniqueEmail =========================================
 
 const UniqueEmail = async (req,res)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*')
   try {
     let email = req.body.email
     let checkdata = await costumerModel.find({email:email})
@@ -644,6 +645,7 @@ const UniqueEmail = async (req,res)=>{
 //==================================================================================================
 
 const uniquePhone = async (req,res)=>{
+  res.setHeader('Access-Control-Allow-Origin', '*')
   try {
     let phone = req.body.phone
     let checkdata = await costumerModel.find({phone:phone})

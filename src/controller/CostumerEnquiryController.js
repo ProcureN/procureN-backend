@@ -193,7 +193,7 @@ const EnquiryForm = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-//===================================================================
+//==========================================================================================================
 
 const getEnquiries = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -248,6 +248,7 @@ const getEnquiries = async (req, res) => {
 
 //==========================update costumers =========================================
 const updateCostumersEnquiry = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
   try {
     let data = req.body;
     const customerEnquiryID = req.params.customerEnquiryId;

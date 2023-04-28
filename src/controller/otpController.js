@@ -8,8 +8,9 @@ const validator = require('../validation/validations');
 const { EMAIL, PASSWORD } = require('../env');
 
 const otpVerification = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   try {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+   
     let data = req.body;
     let { email, otp } = data;
     if (!email)
@@ -62,6 +63,7 @@ const otpVerification = async (req, res) => {
 };
 
 const resendOtp = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
   try {
     let data = req.body;
     let { email } = data;
@@ -147,9 +149,10 @@ const resendOtp = async (req, res) => {
   }
 };
 
-
+///=============================================================================================================
 
 const forgetPassword = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
   try {
     let data = req.body
     let { email, password } = data

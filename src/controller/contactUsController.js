@@ -1,6 +1,7 @@
 const contactformModel = require("../models/contactUsModel")
 const validator = require("../validation/validations")
 const contactform =async (req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
     let data = req.body
     let {name,email,subject,message,phone}= data
@@ -62,6 +63,7 @@ const getcontactform = async (req, res) => {
 }
 //============================================================
 const deleteContactForm = async (req,res)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         const contactUsId = req.params.contactUsId
         //let error =[]
