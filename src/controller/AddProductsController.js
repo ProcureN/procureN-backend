@@ -624,6 +624,55 @@ const updateProduct = async (req, res) => {
           });
       }
     }
+    if(deliveryStatus){ //'processing','shipped','inTransit','delivered',
+      if(deliveryStatus ==="processing"){
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+  
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+    
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: [`Your order with product ${productID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`],
+            outro: 'thank you',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: ` Product processing`,
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+      
+      }
+    }
     let productData = await AddProductsModel.findOneAndUpdate(
       { _id: productID },
       data,

@@ -268,24 +268,9 @@ const updateCostumer = async (req, res) => {
           .status(400)
           .send({ status: false, message: 'Email already exist' });
     }
-    //if (password) {
-      // if (!password)
-      //   return res
-      //     .status(400)
-      //     .send({ status: false, message: 'Password is required' });
-      // //validating user password
-      // if (!validator.isValidPassword(Password))
-      //   return res.status(400).send({
-      //     status: false,
-      //     message:
-      //       'Password should be between 8 and 15 character and it should be alpha numeric',
-      //   });
-    //   if (validator.isValid(Password))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: 'Password should not be an empty string',
-    //     });
-    // }
+    if (password) {
+    data.password = await bcrypt.hash(password, 10);
+     }
     // if (Company) {
     //   if (!Company)
     //     return res
@@ -401,10 +386,21 @@ const login = async (req, res) => {
       return res
         .status(401)
         .send({ status: false, message: 'User not found.' });
+
+
+        const isPasswordMatch =   await bcrypt.compare(
+          password,
+          isEmailExists.password
+        );
+        if (!isPasswordMatch)
+          return res
+            .status(401)
+            .send({ status: false, message: 'Email or Password is Incorrect' });
+    
     if (isEmailExists.verified === false) {
       return res
         .status(400)
-        .send({ status: false, message: 'otp is not verified' });
+        .send({ status: false, message: 'you are not verified' });
     }
     //  Password Validation
     // if (validator.isValid(password))
@@ -412,15 +408,6 @@ const login = async (req, res) => {
     //     status: false,
     //     message: 'Password should not be an empty string',
     //   });
-
-    const isPasswordMatch =  bcrypt.compare(
-      password,
-      isEmailExists.password
-    );
-    if (!isPasswordMatch)
-      return res
-        .status(401)
-        .send({ status: false, message: 'Email or Password is Incorrect' });
 
     // > Create Jwt Token
     const token = jwt.sign(
@@ -504,10 +491,8 @@ const getDetails = async (req, res) => {
     //const query = req.query.search;
     page = page - 1;
     let CountOfData = await costumerModel
-      .find({ selectRole: selectRole, isDeleted: false })
-      .countDocuments();
-    let getdata = await costumerModel
-      .find({ selectRole: selectRole, isDeleted: false })
+      .find({ selectRole: selectRole, isDeleted: false }).countDocuments();
+    let getdata = await costumerModel.find({ selectRole: selectRole, isDeleted: false })
       .sort({ selectRole: 1, createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
@@ -555,7 +540,6 @@ const getAllDetails = async (req, res) => {
 const Individualprofiles = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
-    let filter = { isDeleted: false };
     let customerID = req.params.customerID;
     if (!validator.isValid1(customerID)) {
       return res
@@ -582,7 +566,7 @@ const Individualprofiles = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-//===================================================================
+//============================================================================================
 const countOfManufacturer = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
@@ -595,7 +579,7 @@ const countOfManufacturer = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-//======================================================================
+//============================================================================================
 const countOfRetailer = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
@@ -608,7 +592,7 @@ const countOfRetailer = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-
+//===========================================================================================================
 const updatePassword = async (req, res) => {
   try {
     const data = req.body;
