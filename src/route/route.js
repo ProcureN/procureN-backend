@@ -2,12 +2,12 @@ const express = require('express')
 const router = express.Router()
 
 const { register, updateCostumer, login, updatePassword, deleteCostumers, getDetails, getAllDetails, Individualprofiles, countOfManufacturer, countOfRetailer,UniqueEmail,uniquePhone } = require("../controller/CostumerController")
-const { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData, pendingData, rejectedData, approvedData, updateCostumersEnquiry,countOfInprocessingDelivery,countOfindeliveredDelivery,countOfinshippedDelivery,countOfinTransitDelivery,trackEnquiry } = require("../controller/CostumerEnquiryController")
+const { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData,  updateCostumersEnquiry,trackEnquiry ,allData,IndividualCostumerEnquiryCounts} = require("../controller/CostumerEnquiryController")
 const { authentication, authorization, authorization1, authorization2 ,authorization3} = require("../middleware/auth")
 const { requestAdmin } = require("../controller/requestAdminController")
 const { otpVerification, resendOtp,forgetPassword } = require("../controller/otpController")
 const { contactform, getcontactform, deleteContactForm, countOfContactForm } = require("../controller/contactUsController")
-const {addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames,countProduct,pending,rejected,approved,countOfInprocessing,countOfinTransit,countOfinshipped,countOfindelivered } = require("../controller/AddProductsController")
+const {addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames,countProduct,pending,rejected,approved,countOfInprocessing,countOfinTransit,countOfinshipped,countOfindelivered ,productsByStatus,getCounts ,individualProductsCount} = require("../controller/AddProductsController")
 router.get("/test-me", function (req, res) {
   res.send("this is successfully created");
 });
@@ -35,15 +35,9 @@ router.get("/IndividualcustomerEnquiry/:customerID/:page/:limit",authentication,
 router.delete("/deleteCostumerEnquiry/:customerEnquiryId", authentication, authorization2, deleteCostumerEnquiry)  // by admin
 router.put("/updateCostumersEnquiry/:customerEnquiryId", authentication, authorization2, updateCostumersEnquiry)
 router.get("/countData", countData)
-router.get("/pendingData", pendingData)
-router.get("/approvedData", approvedData)
-router.get('/rejectedData',rejectedData)
-router.get("/countOfInprocessingDelivery",countOfInprocessingDelivery)
-router.get("/countOfindeliveredDelivery",countOfindeliveredDelivery)
-router.get("/countOfinshippedDelivery",countOfinshippedDelivery)
-router.get("/countOfinTransitDelivery",countOfinTransitDelivery)
-router.get("/trackEnquiry/:enquireId",trackEnquiry)
-
+ router.get("/trackEnquiry/:enquireId",trackEnquiry)
+router.get("/allDataOfEnquiries",allData)
+router.get("/individualcostumerenquirycounts/:customerID",IndividualCostumerEnquiryCounts)
 //=======================Add products===================================
 router.post("/addProducts", addProdcts)
 router.put("/updateProducts/:productID", authentication, authorization1, updateProduct)
@@ -59,7 +53,9 @@ router.get("/countOfInprocessingProducts",countOfInprocessing)
 router.get("/countOfindeliveredProducts",countOfindelivered)
 router.get("/countOfinshippedProducts",countOfinshipped)
 router.get("/countOfinTransitProducts",countOfinTransit)
-
+//router.get('/productsByStatus',productsByStatus)
+router.get("/getCountsOfProduct",getCounts)
+router.get('/individualproductscount/:customerID',individualProductsCount)
 
 //=============================otp verification===================================
 router.post("/otp", otpVerification)

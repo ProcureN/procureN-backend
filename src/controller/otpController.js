@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
+const jwt = require('jsonwebtoken');
 
 const optModel = require('../models/OtpModel');
 const costumerModel = require('../models/CostumerModel');
@@ -10,31 +11,20 @@ const { EMAIL, PASSWORD } = require('../env');
 const otpVerification = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
-   
+
     let data = req.body;
     let { email, otp } = data;
-    if (!email)
-      return res
-        .status(400)
-        .send({ status: false, message: 'User Email-id is required' });
-    //validating user email-id
-    if (!validator.isValidEmail(email.trim()))
-      return res
-        .status(400)
-        .send({ status: false, message: 'Please Enter a valid Email-id' });
     let costumerData = await costumerModel.findOne({ email: email });
     if (!costumerData) {
-      return res.status(404).send({ status: false, Message: 'user not found' });
-    }
-
-    if (!otp)
       return res
-        .status(400)
-        .send({ status: false, message: 'otp is required' });
-
+      .status(404)
+      .send({ status: false, Message: 'user not found' });
+    }
     let otpData = await optModel.findOne({ email: email });
     if (!otpData) {
-      return res.status(400).send('incorrect Email');
+      return res
+      .status(400)
+      .send('incorrect Email');
     }
     let otpverify = otpData.toObject();
     costumerData.toObject();
@@ -42,9 +32,14 @@ const otpVerification = async (req, res) => {
     if (otp == otpverify.otp) {
       let customerVerification = await costumerModel.findOneAndUpdate(
         { email: email },
-        { $set: { verified: true } }
+        { $set: { verified: true } },
+        {new:true}
       );
-
+      const token = jwt.sign(
+        { customerID: costumerData._id.toString() },
+        'procure-n secret key',
+        { expiresIn: '24h' }
+      );
       return res
         .status(200)
         .send({
@@ -52,7 +47,9 @@ const otpVerification = async (req, res) => {
           message: 'login successful',
           selectRole: costumerData.selectRole.toString(),
           verifiedOtp: customerVerification.verified,
-          email: email
+          email: email,
+          token:token,
+          customerID: costumerData._id
         });
     } else {
       return res.status(400).send({ status: false, message: 'incorrect otp' });

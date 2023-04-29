@@ -4,7 +4,7 @@ const costumerModel = require('../models/CostumerModel');
 const aws = require('../aws/aws');
 const uploadFile = require('../middleware/uploads');
 const fs = require('fs');
-
+const { Aggregate } = require('mongoose');
 const Mail = require('nodemailer/lib/mailer');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
@@ -451,7 +451,7 @@ const updateProduct = async (req, res) => {
           message: `deliveryStatus must be selected among ${deliveryStatuses}`,
         });
     }
-    let manufacturerData = await AddProductsModel.findById({_id:productID})
+    let manufacturerData = await AddProductsModel.findById({ _id:productID})
     if (!manufacturerData) {
       return res
         .status(404)
@@ -482,7 +482,7 @@ const updateProduct = async (req, res) => {
           },
         };
         let transporter = nodemailer.createTransport(config);
-  
+
         let MailGenerator = new Mailgen({
           theme: 'default',
           color: '#48cfad',
@@ -490,9 +490,9 @@ const updateProduct = async (req, res) => {
             logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
             // Custom logo height
             logoHeight: '100px',
-            name: 'ProcureN', 
+            name: 'ProcureN',
             link: 'https://procuren.in/',
-           
+
           },
         });
         let response = {
@@ -530,7 +530,7 @@ const updateProduct = async (req, res) => {
           },
         };
         let transporter = nodemailer.createTransport(config);
-  
+
         let MailGenerator = new Mailgen({
           theme: 'default',
           product: {
@@ -539,7 +539,7 @@ const updateProduct = async (req, res) => {
             logoHeight: '100px',
             name: 'ProcureN',
             link: 'https://procuren.in/',
-    
+
           },
         });
         let response = {
@@ -553,7 +553,7 @@ const updateProduct = async (req, res) => {
                 color: '#5c67f5', // Optional action button color
                 text: `${productID}`,
                 link: 'https://procuren.in/'
-    
+
               }
             },
             outro: 'thank you',
@@ -586,7 +586,7 @@ const updateProduct = async (req, res) => {
           },
         };
         let transporter = nodemailer.createTransport(config);
-  
+
         let MailGenerator = new Mailgen({
           theme: 'default',
           product: {
@@ -595,7 +595,7 @@ const updateProduct = async (req, res) => {
             logoHeight: '100px',
             name: 'ProcureN',
             link: 'https://procuren.in/',
-    
+
           },
         });
         let response = {
@@ -624,8 +624,8 @@ const updateProduct = async (req, res) => {
           });
       }
     }
-    if(deliveryStatus){ //'processing','shipped','inTransit','delivered',
-      if(deliveryStatus ==="processing"){
+    if (deliveryStatus) { //'processing','shipped','inTransit','delivered',
+      if (deliveryStatus === "processing") {
         let config = {
           service: 'gmail',
           auth: {
@@ -634,7 +634,7 @@ const updateProduct = async (req, res) => {
           },
         };
         let transporter = nodemailer.createTransport(config);
-  
+
         let MailGenerator = new Mailgen({
           theme: 'default',
           product: {
@@ -643,7 +643,7 @@ const updateProduct = async (req, res) => {
             logoHeight: '100px',
             name: 'ProcureN',
             link: 'https://procuren.in/',
-    
+
           },
         });
         let response = {
@@ -670,7 +670,7 @@ const updateProduct = async (req, res) => {
           .catch((error) => {
             return res.status(500).json({ error });
           });
-      
+
       }
     }
     let productData = await AddProductsModel.findOneAndUpdate(
@@ -743,8 +743,8 @@ const getProducts = async (req, res) => {
 
     page = page - 1;
     let CountOfData = await AddProductsModel.find(filter).countDocuments();
-    
-    if (sortStatus){
+
+    if (sortStatus) {
       let data = await AddProductsModel.find(filter)
         .sort({ createdAt: created, status: sortStatus })
         .limit(resultsPerPage)
@@ -762,7 +762,7 @@ const getProducts = async (req, res) => {
     }
     else {
       let data = await AddProductsModel.find(filter)
-        .sort({deliveryStatus:delivery,createdAt:created})
+        .sort({ deliveryStatus: delivery, createdAt: created })
         .limit(resultsPerPage)
         .skip(resultsPerPage * page);
       if (!data)
@@ -945,6 +945,83 @@ const countOfindelivered = async (req, res) => {
   }
 };
 //========================================================================
+
+const getCounts = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  try {
+    const pipeline = [
+      {
+        $match: {
+          isDeleted: false
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          pending: { $sum: { $cond: [{ $eq: ['$status', 'Pending'] }, 1, 0] } },
+          rejected: { $sum: { $cond: [{ $eq: ['$status', 'Rejected'] }, 1, 0] } },
+          approved: { $sum: { $cond: [{ $eq: ['$status', 'Approved'] }, 1, 0] } },
+          inprocessing: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'processing'] }, 1, 0] } },
+          inTransit: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'inTransit'] }, 1, 0] } },
+          shipped: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'shipped'] }, 1, 0] } },
+          delivered: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'delivered'] }, 1, 0] } }
+        }
+      },
+      {
+        $project: {
+          _id: 0
+        }
+      }
+    ];
+    const data = await AddProductsModel.aggregate(pipeline);
+    const count = await  AddProductsModel.countDocuments({ isDeleted: false })
+    res.status(200).send({ status: true, data: data[0],count });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+//=============================================================================================
+const individualProductsCount = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  try {
+    const pipeline = [
+      {
+        $match: {
+          isDeleted: false,
+          costumerID: new mongoose.Types.ObjectId(req.params.customerID)
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          pending: { $sum: { $cond: [{ $eq: ['$status', 'Pending'] }, 1, 0] } },
+          rejected: { $sum: { $cond: [{ $eq: ['$status', 'Rejected'] }, 1, 0] } },
+          approved: { $sum: { $cond: [{ $eq: ['$status', 'Approved'] }, 1, 0] } },
+          inprocessing: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'processing'] }, 1, 0] } },
+          inTransit: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'inTransit'] }, 1, 0] } },
+          shipped: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'shipped'] }, 1, 0] } },
+          delivered: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'delivered'] }, 1, 0] } },
+          total: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0
+        }
+      }
+    ];
+
+    const [data, count] = await Promise.all([
+      AddProductsModel.aggregate(pipeline),
+      AddProductsModel.countDocuments({ isDeleted: false, costumerID: new mongoose.Types.ObjectId(req.params.customerID) })
+    ]);
+
+    res.status(200).send({ status: true, data: data[0], count });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+;
 module.exports = {
   addProdcts,
   updateProduct,
@@ -960,4 +1037,7 @@ module.exports = {
   countOfinTransit,
   countOfinshipped,
   countOfindelivered,
+ // productsByStatus,
+  getCounts,
+  individualProductsCount
 };

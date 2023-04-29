@@ -563,102 +563,8 @@ const countData = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-//================================================================================
-const pendingData = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    let data = await CostumerEnquiryModel.find({
-      status: 'Pending',
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//===============================================================================
-const rejectedData = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    let data = await CostumerEnquiryModel.find({
-      status: 'Rejected',
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//=====================================================================================
-const approvedData = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    let data = await CostumerEnquiryModel.find({
-      status: 'Approved',
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//==============================================================================
-const countOfInprocessingDelivery = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    //"processing","shipped","inTransit","delivered"
-    let data = await CostumerEnquiryModel.find({
-      deliveryStatus: 'processing',
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//=====================================================================================
-const countOfinTransitDelivery = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    //"processing","shipped","inTransit","delivered"
-    let data = await CostumerEnquiryModel.find({
-      deliveryStatus: 'inTransit',
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//==============================================================
-const countOfinshippedDelivery = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    //"processing","shipped","inTransit","delivered"
-    let data = await CostumerEnquiryModel.find({
-      deliveryStatus: 'shipped',
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//==============================================================================
-const countOfindeliveredDelivery = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    //"processing","shipped","inTransit","delivered"
-    let data = await CostumerEnquiryModel.find({
-      deliveryStatus: 'delivered',
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
 //==========================tracking customer enquiry====================================
+
 const trackEnquiry = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
@@ -693,6 +599,72 @@ const trackEnquiry = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
+//============================================================================
+const allData = async (req, res) => {
+  try {
+    const [data, count] = await Promise.all([
+      CostumerEnquiryModel.aggregate([
+        { $match: { isDeleted: false } },
+        {
+          $group: {
+            _id: null,
+            pendingData: { $sum: { $cond: [{ $eq: ['$status', 'Pending'] }, 1, 0] } },
+            rejectedData: { $sum: { $cond: [{ $eq: ['$status', 'Rejected'] }, 1, 0] } },
+            approvedData: { $sum: { $cond: [{ $eq: ['$status', 'Approved'] }, 1, 0] } },
+            countOfInprocessingDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'processing'] }, 1, 0] } },
+            countOfinTransitDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'inTransit'] }, 1, 0] } },
+            countOfinshippedDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'shipped'] }, 1, 0] } },
+            countOfindeliveredDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'delivered'] }, 1, 0] } }
+          }
+        },
+        { $project: { _id: 0 } }
+      ]),
+      CostumerEnquiryModel.countDocuments({ isDeleted: false })
+    ]);
+
+    res.status(200).send({ status: true, data: data[0], count });
+  } catch (error) {
+    res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+//===========================================================================
+const IndividualCostumerEnquiryCounts = async (req, res) => {
+  try {
+    const data = await CostumerEnquiryModel.aggregate([
+      { $match: { isDeleted: false, customerID: new mongoose.Types.ObjectId(req.params.customerID) } },
+      {
+        $group: {
+          _id: null,
+          pendingData: { $sum: { $cond: [{ $eq: ['$status', 'Pending'] }, 1, 0] } },
+          rejectedData: { $sum: { $cond: [{ $eq: ['$status', 'Rejected'] }, 1, 0] } },
+          approvedData: { $sum: { $cond: [{ $eq: ['$status', 'Approved'] }, 1, 0] } },
+          countOfInprocessingDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'processing'] }, 1, 0] } },
+          countOfinTransitDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'inTransit'] }, 1, 0] } },
+          countOfinshippedDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'shipped'] }, 1, 0] } },
+          countOfindeliveredDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'delivered'] }, 1, 0] } }
+        }
+      },
+      {
+        $group: {
+          _id: "$customerID",
+          count: { $sum: 1 },
+          data: { $first: "$$ROOT" }
+        }
+      },
+      { $project: { _id: 0, count: 1, data: 1 } }
+    ]);
+    const count = await CostumerEnquiryModel.find({customerID: req.params.customerID}).countDocuments({ isDeleted: false });
+    res.send({ status: true, count: count, data: data[0].data });
+  } catch (error) {
+    res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+
+
+
+ 
 
 module.exports = {
   EnquiryForm,
@@ -700,13 +672,8 @@ module.exports = {
   IndividualCostumerEnquiry,
   deleteCostumerEnquiry,
   countData,
-  pendingData,
-  rejectedData,
-  approvedData,
-  updateCostumersEnquiry,
-  countOfInprocessingDelivery,
-  countOfindeliveredDelivery,
-  countOfinshippedDelivery,
-  countOfinTransitDelivery,
+  updateCostumersEnquiry, 
   trackEnquiry,
+  allData,
+  IndividualCostumerEnquiryCounts
 };
