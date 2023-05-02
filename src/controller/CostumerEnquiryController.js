@@ -2,6 +2,7 @@ const AddProductModel = require("../models/AddProductModel");
 const CostumerEnquiryModel = require("../models/CostomerEnquiryForm");
 const CostumerModel = require("../models/CostumerModel");
 const validator = require("../validation/validations");
+const moment = require('moment');
 
 const Mail = require("nodemailer/lib/mailer");
 const mongoose = require("mongoose");
@@ -27,7 +28,7 @@ const EnquiryForm = async (req, res) => {
       quantity,
       city,
       customerID,
-      date,
+     
     } = data;
 
     // if (validator.isValidBody(data))
@@ -171,21 +172,9 @@ const EnquiryForm = async (req, res) => {
     //     .status(400)
     //     .send({ status: false, message: 'Please Provide valid Pincode' });
     // }
-    var currentdate = new Date();
-    var datetime =
-      currentdate.getDate() +
-      "-" +
-      (currentdate.getMonth() + 1) +
-      "-" +
-      currentdate.getFullYear();
-    //adding time
-    let time =
-      +currentdate.getHours() +
-      ":" +
-      currentdate.getMinutes() +
-      ":" +
-      currentdate.getSeconds();
-    data.date = datetime;
+    let date = moment().format('DD-MM-YYYY');
+    let time = moment().format('HH:mm:ss');
+    data.date = date;
     data.time = time;
     let saveData = await CostumerEnquiryModel.create(data);
     res.status(201).send({ status: true, data: saveData });
