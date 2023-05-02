@@ -1,16 +1,16 @@
-const AddProductModel = require('../models/AddProductModel');
-const CostumerEnquiryModel = require('../models/CostomerEnquiryForm');
-const CostumerModel = require('../models/CostumerModel');
-const validator = require('../validation/validations');
+const AddProductModel = require("../models/AddProductModel");
+const CostumerEnquiryModel = require("../models/CostomerEnquiryForm");
+const CostumerModel = require("../models/CostumerModel");
+const validator = require("../validation/validations");
 
-const Mail = require('nodemailer/lib/mailer');
-const mongoose = require('mongoose');
-const nodemailer = require('nodemailer');
-const Mailgen = require('mailgen');
-const { EMAIL, PASSWORD } = require('../env');
+const Mail = require("nodemailer/lib/mailer");
+const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
+const Mailgen = require("mailgen");
+const { EMAIL, PASSWORD } = require("../env");
 
 const EnquiryForm = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     //   let costumerId = req.params.customerID
     let data = req.body;
@@ -38,12 +38,12 @@ const EnquiryForm = async (req, res) => {
     if (!validator.isValid1(customerID)) {
       return res
         .status(400)
-        .send({ status: false, message: 'costumerID is required' });
+        .send({ status: false, message: "costumerID is required" });
     }
     if (!validator.isValidObjectId(customerID)) {
       return res
         .status(400)
-        .send({ status: false, message: 'costumerID not valid' });
+        .send({ status: false, message: "costumerID not valid" });
     }
     let getCostumers = await CostumerModel.findOne({
       _id: customerID,
@@ -52,7 +52,7 @@ const EnquiryForm = async (req, res) => {
     if (!getCostumers) {
       return res
         .status(404)
-        .send({ status: false, message: 'user not found or already deleted' });
+        .send({ status: false, message: "user not found or already deleted" });
     }
     //ProductName
     // if (!productName)
@@ -174,16 +174,16 @@ const EnquiryForm = async (req, res) => {
     var currentdate = new Date();
     var datetime =
       currentdate.getDate() +
-      '-' +
+      "-" +
       (currentdate.getMonth() + 1) +
-      '-' +
+      "-" +
       currentdate.getFullYear();
     //adding time
     let time =
       +currentdate.getHours() +
-      ':' +
+      ":" +
       currentdate.getMinutes() +
-      ':' +
+      ":" +
       currentdate.getSeconds();
     data.date = datetime;
     data.time = time;
@@ -196,21 +196,21 @@ const EnquiryForm = async (req, res) => {
 //==========================================================================================================
 
 const getEnquiries = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let filter = { isDeleted: false };
-    let sortStatus = req.query.status
-    let delivery = req.query.deliveryStatus
-    let created = req.query.createdAt
+    let sortStatus = req.query.status;
+    let delivery = req.query.deliveryStatus;
+    let created = req.query.createdAt;
     const resultsPerPage =
-      req.params.limit === ':limit' ? 10 : req.params.limit;
+      req.params.limit === ":limit" ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
     //const query = req.query.search;
 
     page = page - 1;
     let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments();
-   
-    if (sortStatus){
+
+    if (sortStatus) {
       let data = await CostumerEnquiryModel.find(filter)
         .sort({ createdAt: created, status: sortStatus })
         .limit(resultsPerPage)
@@ -218,23 +218,22 @@ const getEnquiries = async (req, res) => {
       if (!data)
         return res
           .status(404)
-          .send({ status: false, message: 'no enquiries found' });
+          .send({ status: false, message: "no enquiries found" });
 
       res.status(200).send({
         status: true,
         data: data,
         count: CountOfData,
       });
-    }
-    else {
+    } else {
       let data = await CostumerEnquiryModel.find(filter)
-        .sort({deliveryStatus:delivery,createdAt:created})
+        .sort({ deliveryStatus: delivery, createdAt: created })
         .limit(resultsPerPage)
         .skip(resultsPerPage * page);
       if (!data)
         return res
           .status(404)
-          .send({ status: false, message: 'no enquiries found' });
+          .send({ status: false, message: "no enquiries found" });
       res.status(200).send({
         status: true,
         data: data,
@@ -248,13 +247,13 @@ const getEnquiries = async (req, res) => {
 
 //==========================update costumers =========================================
 const updateCostumersEnquiry = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let data = req.body;
     const customerEnquiryID = req.params.customerEnquiryId;
     let { status, deliveryStatus } = data;
     if (status) {
-      let statuses = ['Pending', 'Approved', 'Rejected'];
+      let statuses = ["Pending", "Approved", "Rejected"];
       if (!statuses.includes(status))
         return res.status(400).send({
           status: false,
@@ -263,10 +262,10 @@ const updateCostumersEnquiry = async (req, res) => {
     }
     if (deliveryStatus) {
       let deliveryStatuses = [
-        'processing',
-        'shipped',
-        'inTransit',
-        'delivered',
+        "processing",
+        "shipped",
+        "inTransit",
+        "delivered",
       ];
       if (!deliveryStatuses.includes(deliveryStatus))
         return res.status(400).send({
@@ -274,59 +273,59 @@ const updateCostumersEnquiry = async (req, res) => {
           message: `deliveryStatus must be selected among ${deliveryStatuses}`,
         });
     }
-  
+
     let getcustomerEnquiryData = await CostumerEnquiryModel.findById(
       customerEnquiryID
     );
     if (!getcustomerEnquiryData) {
       return res
         .status(404)
-        .send({ status: false, message: 'no customer enquiry found' });
+        .send({ status: false, message: "no customer enquiry found" });
     }
     let customerId = getcustomerEnquiryData.customerID?.toString();
     if (!customerId) {
       return res
         .status(404)
-        .send({ status: false, message: 'customerID not found' });
+        .send({ status: false, message: "customerID not found" });
     }
     let customerData = await CostumerModel.findById(customerId);
     if (!customerData) {
       return res
         .status(404)
-        .send({ status: false, message: 'customer not found' });
+        .send({ status: false, message: "customer not found" });
     }
     let email = customerData.email?.toString();
     let name = customerData.name?.toString();
     let otp = 123;
     if (status) {
-     
-      if (status === 'Rejected') {
+      if (status === "Rejected") {
         let config = {
-          service: 'gmail',
+          service: "gmail",
           auth: {
             user: EMAIL,
             pass: PASSWORD,
           },
         };
         let transporter = nodemailer.createTransport(config);
-  
+
         let MailGenerator = new Mailgen({
-          theme: 'default',
+          theme: "default",
           product: {
-            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
             // Custom logo height
-            logoHeight: '100px',
-            name: 'ProcureN',
-            link: 'https://procuren.in/',
-    
+            logoHeight: "100px",
+            name: "ProcureN",
+            link: "https://procuren.in/",
           },
         });
         let response = {
           body: {
-            greeting: 'Dear',
+            greeting: "Dear",
             name: `${name}`,
-            intro: [`We regret to inform you that your Enquiry ${customerEnquiryID} has been rejected. We have reviewed it thoroughly, and it does not meet our requirements. We understand that this may be disappointing news, but we assure you that we have taken every possible step to ensure fairness in our decision.`],
-            outro:'Thank you for your understanding.',
+            intro: [
+              `We regret to inform you that your Enquiry ${customerEnquiryID} has been rejected. We have reviewed it thoroughly, and it does not meet our requirements. We understand that this may be disappointing news, but we assure you that we have taken every possible step to ensure fairness in our decision.`,
+            ],
+            outro: "Thank you for your understanding.",
           },
         };
         let mail = MailGenerator.generate(response);
@@ -347,49 +346,49 @@ const updateCostumersEnquiry = async (req, res) => {
             return res.status(500).json({ error });
           });
       }
-      if (status === 'Approved') {
+      if (status === "Approved") {
         let config = {
-          service: 'gmail',
+          service: "gmail",
           auth: {
             user: EMAIL,
             pass: PASSWORD,
           },
         };
         let transporter = nodemailer.createTransport(config);
-  
+
         let MailGenerator = new Mailgen({
-          theme: 'default',
+          theme: "default",
           product: {
-            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
             // Custom logo height
-            logoHeight: '100px',
-            name: 'ProcureN',
-            link: 'https://procuren.in/',
-    
+            logoHeight: "100px",
+            name: "ProcureN",
+            link: "https://procuren.in/",
           },
         });
         let response = {
           body: {
-            greeting: 'Dear',
+            greeting: "Dear",
             name: `${name}`,
-            intro: [`We are pleased to inform you that your enquiry has been approved and is ready for dispatch. Please find your tracking ID below: `],
+            intro: [
+              `We are pleased to inform you that your enquiry has been approved and is ready for dispatch. Please find your tracking ID below: `,
+            ],
             action: {
               instructions: "",
               button: {
-                color: '#5c67f5', // Optional action button color
+                color: "#5c67f5", // Optional action button color
                 text: `${customerEnquiryID}`,
-                link: 'https://procuren.in/'
-    
-              }
+                link: "https://procuren.in/",
+              },
             },
-            outro: 'Thank you for choosing our services.',
+            outro: "Thank you for choosing our services.",
           },
         };
         let mail = MailGenerator.generate(response);
         let message = {
           from: EMAIL,
           to: email,
-          subject: 'Track it',
+          subject: "Track it",
           html: mail,
         };
         transporter
@@ -403,32 +402,33 @@ const updateCostumersEnquiry = async (req, res) => {
             return res.status(500).json({ error });
           });
       }
-      if (status === 'Pending') {
+      if (status === "Pending") {
         let config = {
-          service: 'gmail',
+          service: "gmail",
           auth: {
             user: EMAIL,
             pass: PASSWORD,
           },
         };
         let transporter = nodemailer.createTransport(config);
-  
+
         let MailGenerator = new Mailgen({
-          theme: 'default',
+          theme: "default",
           product: {
-            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
             // Custom logo height
-            logoHeight: '100px',
-            name: 'ProcureN',
-            link: 'https://procuren.in/',
-    
+            logoHeight: "100px",
+            name: "ProcureN",
+            link: "https://procuren.in/",
           },
         });
         let response = {
           body: {
             name: `${name}`,
-            intro: [`Your order with enquiry ${customerEnquiryID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`],
-            outro: 'thank you',
+            intro: [
+              `Your order with enquiry ${customerEnquiryID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`,
+            ],
+            outro: "thank you",
           },
         };
         let mail = MailGenerator.generate(response);
@@ -450,6 +450,196 @@ const updateCostumersEnquiry = async (req, res) => {
           });
       }
     }
+    if (deliveryStatus) { //'processing','shipped','inTransit','delivered',
+      if (deliveryStatus === "processing") {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: [`This is to inform you that your product ${customerEnquiryID} is currently in process. Our team is working hard to ensure its timely completion. We will keep you updated with the progress.`],
+            outro: 'Thank you for your patience.',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: `Product is being processed`,
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+
+      }
+      if (deliveryStatus === "shipped") {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: [`We are pleased to inform you that your order has been shipped. Your tracking number is ${customerEnquiryID}.`],
+            outro: 'Thank you for choosing our service.',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: `Product Has Shipped!`,
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+
+      }
+      if (deliveryStatus === "inTransit") {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: [`We are pleased to inform you that your product is now in transit. You can track your shipment using the tracking ID provided: ${customerEnquiryID}`],
+            outro: 'Thank you for choosing our service.',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: `Product in Transit`,
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+
+      }
+      if (deliveryStatus === "delivered") {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: [`We're happy to inform you that your order has been delivered today. Please let us know if you have any questions or concerns regarding the delivery.`],
+            outro: 'Thank you for choosing our service.',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: `Delivery Confirmation`,
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+
+      }
+    }
     let userData = await CostumerEnquiryModel.findOneAndUpdate(
       { _id: customerEnquiryID },
       data,
@@ -458,11 +648,11 @@ const updateCostumersEnquiry = async (req, res) => {
     if (!userData) {
       return res
         .status(404)
-        .send({ status: false, message: 'no user found to update' });
+        .send({ status: false, message: "no user found to update" });
     }
     return res
       .status(200)
-      .send({ status: true, message: 'success', data: userData });
+      .send({ status: true, message: "success", data: userData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -471,19 +661,19 @@ const updateCostumersEnquiry = async (req, res) => {
 //=========================================get individual costumer enquiry================================
 
 const IndividualCostumerEnquiry = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let customerID = req.params.customerID;
 
     if (!validator.isValid1(customerID)) {
       return res
         .status(400)
-        .send({ status: false, message: 'costumerID is required' });
+        .send({ status: false, message: "costumerID is required" });
     }
     if (!validator.isValidObjectId(customerID)) {
       return res
         .status(400)
-        .send({ status: false, message: 'costumerID not valid' });
+        .send({ status: false, message: "costumerID not valid" });
     }
 
     // if(!getData){
@@ -491,14 +681,18 @@ const IndividualCostumerEnquiry = async (req, res) => {
     // }
     let filter = { isDeleted: false };
     const resultsPerPage =
-      req.params.limit === ':limit' ? 10 : req.params.limit;
+      req.params.limit === ":limit" ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
     page = page - 1;
     //const query = req.query.search;
-    let CountOfData = await CostumerEnquiryModel.find({isDeleted: false,
+    let CountOfData = await CostumerEnquiryModel.find({
+      isDeleted: false,
       customerID: customerID,
     }).countDocuments();
-    let getData = await CostumerEnquiryModel.find({isDeleted: false, customerID: customerID })
+    let getData = await CostumerEnquiryModel.find({
+      isDeleted: false,
+      customerID: customerID,
+    })
       .sort({ status: 1, createdAt: -1, deliveryStatus: 1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
@@ -514,13 +708,13 @@ const IndividualCostumerEnquiry = async (req, res) => {
 //==============================delete costumer enquiry =====================================
 
 const deleteCostumerEnquiry = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let customerEnquiryId = req.params.customerEnquiryId;
     if (!validator.isValidObjectId(customerEnquiryId)) {
       res.status(400).send({
         status: false,
-        message: 'Please provide valid costumerEnquiryId',
+        message: "Please provide valid costumerEnquiryId",
       });
     }
     let getcustomerEnquiryId = await CostumerEnquiryModel.findOne({
@@ -529,13 +723,13 @@ const deleteCostumerEnquiry = async (req, res) => {
     if (!getcustomerEnquiryId) {
       return res.status(404).send({
         status: false,
-        message: 'customerEnquiry  Not Found for the request id',
+        message: "customerEnquiry  Not Found for the request id",
       });
     }
     if (getcustomerEnquiryId.isDeleted == true) {
       return res.status(404).send({
         status: false,
-        message: 'CostumerEnquiry is already deleted not found',
+        message: "CostumerEnquiry is already deleted not found",
       });
     }
 
@@ -545,7 +739,7 @@ const deleteCostumerEnquiry = async (req, res) => {
     );
     return res
       .status(200)
-      .send({ status: true, message: 'customerEnquiryId is deleted' });
+      .send({ status: true, message: "customerEnquiryId is deleted" });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -553,7 +747,7 @@ const deleteCostumerEnquiry = async (req, res) => {
 //==========================count of enquire====================================================
 
 const countData = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let data = await CostumerEnquiryModel.find({
       isDeleted: false,
@@ -566,13 +760,13 @@ const countData = async (req, res) => {
 //==========================tracking customer enquiry====================================
 
 const trackEnquiry = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let customerEnquiryId = req.params.enquireId;
     if (!validator.isValidObjectId(customerEnquiryId)) {
       res.status(400).send({
         status: false,
-        message: 'Please provide valid id',
+        message: "Please provide valid id",
       });
     }
     let getcustomerEnquiryId = await CostumerEnquiryModel.findOne({
@@ -581,13 +775,13 @@ const trackEnquiry = async (req, res) => {
     if (!getcustomerEnquiryId) {
       return res.status(404).send({
         status: false,
-        message: 'id  Not Found',
+        message: "id  Not Found",
       });
     }
     if (getcustomerEnquiryId.isDeleted == true) {
       return res.status(404).send({
         status: false,
-        message: 'id is already deleted not found',
+        message: "id is already deleted not found",
       });
     }
 
@@ -608,18 +802,38 @@ const allData = async (req, res) => {
         {
           $group: {
             _id: null,
-            pendingData: { $sum: { $cond: [{ $eq: ['$status', 'Pending'] }, 1, 0] } },
-            rejectedData: { $sum: { $cond: [{ $eq: ['$status', 'Rejected'] }, 1, 0] } },
-            approvedData: { $sum: { $cond: [{ $eq: ['$status', 'Approved'] }, 1, 0] } },
-            countOfInprocessingDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'processing'] }, 1, 0] } },
-            countOfinTransitDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'inTransit'] }, 1, 0] } },
-            countOfinshippedDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'shipped'] }, 1, 0] } },
-            countOfindeliveredDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'delivered'] }, 1, 0] } }
-          }
+            pendingData: {
+              $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
+            },
+            rejectedData: {
+              $sum: { $cond: [{ $eq: ["$status", "Rejected"] }, 1, 0] },
+            },
+            approvedData: {
+              $sum: { $cond: [{ $eq: ["$status", "Approved"] }, 1, 0] },
+            },
+            countOfInprocessingDelivery: {
+              $sum: {
+                $cond: [{ $eq: ["$deliveryStatus", "processing"] }, 1, 0],
+              },
+            },
+            countOfinTransitDelivery: {
+              $sum: {
+                $cond: [{ $eq: ["$deliveryStatus", "inTransit"] }, 1, 0],
+              },
+            },
+            countOfinshippedDelivery: {
+              $sum: { $cond: [{ $eq: ["$deliveryStatus", "shipped"] }, 1, 0] },
+            },
+            countOfindeliveredDelivery: {
+              $sum: {
+                $cond: [{ $eq: ["$deliveryStatus", "delivered"] }, 1, 0],
+              },
+            },
+          },
         },
-        { $project: { _id: 0 } }
+        { $project: { _id: 0 } },
       ]),
-      CostumerEnquiryModel.countDocuments({ isDeleted: false })
+      CostumerEnquiryModel.countDocuments({ isDeleted: false }),
     ]);
 
     res.status(200).send({ status: true, data: data[0], count });
@@ -632,39 +846,55 @@ const allData = async (req, res) => {
 const IndividualCostumerEnquiryCounts = async (req, res) => {
   try {
     const data = await CostumerEnquiryModel.aggregate([
-      { $match: { isDeleted: false, customerID: new mongoose.Types.ObjectId(req.params.customerID) } },
+      {
+        $match: {
+          isDeleted: false,
+          customerID: new mongoose.Types.ObjectId(req.params.customerID),
+        },
+      },
       {
         $group: {
           _id: null,
-          pendingData: { $sum: { $cond: [{ $eq: ['$status', 'Pending'] }, 1, 0] } },
-          rejectedData: { $sum: { $cond: [{ $eq: ['$status', 'Rejected'] }, 1, 0] } },
-          approvedData: { $sum: { $cond: [{ $eq: ['$status', 'Approved'] }, 1, 0] } },
-          countOfInprocessingDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'processing'] }, 1, 0] } },
-          countOfinTransitDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'inTransit'] }, 1, 0] } },
-          countOfinshippedDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'shipped'] }, 1, 0] } },
-          countOfindeliveredDelivery: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'delivered'] }, 1, 0] } }
-        }
+          pendingData: {
+            $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
+          },
+          rejectedData: {
+            $sum: { $cond: [{ $eq: ["$status", "Rejected"] }, 1, 0] },
+          },
+          approvedData: {
+            $sum: { $cond: [{ $eq: ["$status", "Approved"] }, 1, 0] },
+          },
+          countOfInprocessingDelivery: {
+            $sum: { $cond: [{ $eq: ["$deliveryStatus", "processing"] }, 1, 0] },
+          },
+          countOfinTransitDelivery: {
+            $sum: { $cond: [{ $eq: ["$deliveryStatus", "inTransit"] }, 1, 0] },
+          },
+          countOfinshippedDelivery: {
+            $sum: { $cond: [{ $eq: ["$deliveryStatus", "shipped"] }, 1, 0] },
+          },
+          countOfindeliveredDelivery: {
+            $sum: { $cond: [{ $eq: ["$deliveryStatus", "delivered"] }, 1, 0] },
+          },
+        },
       },
       {
         $group: {
           _id: "$customerID",
           count: { $sum: 1 },
-          data: { $first: "$$ROOT" }
-        }
+          data: { $first: "$$ROOT" },
+        },
       },
-      { $project: { _id: 0, count: 1, data: 1 } }
+      { $project: { _id: 0, count: 1, data: 1 } },
     ]);
-    const count = await CostumerEnquiryModel.find({customerID: req.params.customerID}).countDocuments({ isDeleted: false });
+    const count = await CostumerEnquiryModel.find({
+      customerID: req.params.customerID,
+    }).countDocuments({ isDeleted: false });
     res.send({ status: true, count: count, data: data[0].data });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }
 };
-
-
-
-
- 
 
 module.exports = {
   EnquiryForm,
@@ -672,8 +902,8 @@ module.exports = {
   IndividualCostumerEnquiry,
   deleteCostumerEnquiry,
   countData,
-  updateCostumersEnquiry, 
+  updateCostumersEnquiry,
   trackEnquiry,
   allData,
-  IndividualCostumerEnquiryCounts
+  IndividualCostumerEnquiryCounts,
 };

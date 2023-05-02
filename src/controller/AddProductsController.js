@@ -649,15 +649,156 @@ const updateProduct = async (req, res) => {
         let response = {
           body: {
             name: `${name}`,
-            intro: [`Your order with product ${productID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`],
-            outro: 'thank you',
+            intro: [`This is to inform you that your product ${productID} is currently in process. Our team is working hard to ensure its timely completion. We will keep you updated with the progress.`],
+            outro: 'Thank you for your patience.',
           },
         };
         let mail = MailGenerator.generate(response);
         let message = {
           from: EMAIL,
           to: email,
-          subject: ` Product processing`,
+          subject: `Product is being processed`,
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+
+      }
+      if (deliveryStatus === "shipped") {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: [`We are pleased to inform you that your order has been shipped. Your tracking number is ${productID}.`],
+            outro: 'Thank you for choosing our service.',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: `Product Has Shipped!`,
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+
+      }
+      if (deliveryStatus === "inTransit") {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: [`We are pleased to inform you that your product is now in transit. You can track your shipment using the tracking ID provided: ${productID}`],
+            outro: 'Thank you for choosing our service.',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: `Product in Transit`,
+          html: mail,
+        };
+        transporter
+          .sendMail(message)
+          .then(() => {
+            // return res.status(201).json({
+            //     message: "you should receive an email"
+            // })
+          })
+          .catch((error) => {
+            return res.status(500).json({ error });
+          });
+
+      }
+      if (deliveryStatus === "delivered") {
+        let config = {
+          service: 'gmail',
+          auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+          },
+        };
+        let transporter = nodemailer.createTransport(config);
+
+        let MailGenerator = new Mailgen({
+          theme: 'default',
+          product: {
+            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+            // Custom logo height
+            logoHeight: '100px',
+            name: 'ProcureN',
+            link: 'https://procuren.in/',
+
+          },
+        });
+        let response = {
+          body: {
+            name: `${name}`,
+            intro: [`We're happy to inform you that your order has been delivered today. Please let us know if you have any questions or concerns regarding the delivery.`],
+            outro: 'Thank you for choosing our service.',
+          },
+        };
+        let mail = MailGenerator.generate(response);
+        let message = {
+          from: EMAIL,
+          to: email,
+          subject: `Delivery Confirmation`,
           html: mail,
         };
         transporter

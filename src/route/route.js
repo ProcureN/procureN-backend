@@ -8,10 +8,11 @@ const { requestAdmin } = require("../controller/requestAdminController")
 const { otpVerification, resendOtp,forgetPassword } = require("../controller/otpController")
 const { contactform, getcontactform, deleteContactForm, countOfContactForm } = require("../controller/contactUsController")
 const {addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProducts,getproductnames,countProduct,pending,rejected,approved,countOfInprocessing,countOfinTransit,countOfinshipped,countOfindelivered ,productsByStatus,getCounts ,individualProductsCount} = require("../controller/AddProductsController")
+
+
 router.get("/test-me", function (req, res) {
   res.send("this is successfully created");
 });
-
 //=============================costumer==================================
 
 router.post("/UniqueEmail",UniqueEmail)
