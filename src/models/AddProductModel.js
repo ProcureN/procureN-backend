@@ -97,7 +97,11 @@ const AddProductsSchema = new mongoose.Schema({
     },
     time:{
         type:String
+    },
+    trackingID:{
+        type:String
     }
+
 
 }, { timestamps: true })
 module.exports = mongoose.model('AddProducts', AddProductsSchema)

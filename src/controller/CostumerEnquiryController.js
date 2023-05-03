@@ -15,20 +15,7 @@ const EnquiryForm = async (req, res) => {
   try {
     //   let costumerId = req.params.customerID
     let data = req.body;
-    const {
-      productName,
-      otherProduct,
-      // name,
-      contact,
-      alternativeNumber,
-      //email,
-      state,
-      billingAddress,
-      shippingPincode,
-      quantity,
-      city,
-      customerID,
-    } = data;
+    const {customerID, } = data;
 
     if (!validator.isValid1(customerID)) {
       return res
@@ -54,7 +41,7 @@ const EnquiryForm = async (req, res) => {
     let time = moment().format("HH:mm:ss");
 
     let timestamp = Date.now();
-    console.log(timestamp)
+   // console.log(timestamp)
     let randomNum = Math.floor(Math.random() * 100); // Generate a 10-digit random number
     let trackingID = timestamp.toString() + randomNum.toString();
     data.date = date;
@@ -448,7 +435,7 @@ const updateCostumersEnquiry = async (req, res) => {
             body: {
               name: `${name}`,
               intro: [
-                `We're happy to inform you that your order ${trackingID} has been delivered today. Please let us know if you have any questions or concerns regarding the delivery.`,
+                `We're happy to inform you that your order ${trackingID} has been delivered. Please let us know if you have any questions or concerns regarding the delivery.`,
               ],
               outro: "Thank you for choosing our service.",
             },
@@ -498,7 +485,7 @@ const updateCostumersEnquiry = async (req, res) => {
             intro: [
               `Your order with enquiry ${trackingID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`,
             ],
-            outro: "thank you",
+            outro: "Thank you",
           },
         };
         let mail = MailGenerator.generate(response);
@@ -520,56 +507,6 @@ const updateCostumersEnquiry = async (req, res) => {
           });
       }
     }
-    // if (deliveryStatus) { //'processing','shipped','inTransit','delivered',
-    //   if (deliveryStatus === "processing") {
-    //     let config = {
-    //       service: 'gmail',
-    //       auth: {
-    //         user: EMAIL,
-    //         pass: PASSWORD,
-    //       },
-    //     };
-    //     let transporter = nodemailer.createTransport(config);
-
-    //     let MailGenerator = new Mailgen({
-    //       theme: 'default',
-    //       product: {
-    //         logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
-    //         // Custom logo height
-    //         logoHeight: '100px',
-    //         name: 'ProcureN',
-    //         link: 'https://procuren.in/',
-
-    //       },
-    //     });
-    //     let response = {
-    //       body: {
-    //         name: `${name}`,
-    //         intro: [`This is to inform you that your product ${customerEnquiryID} is currently in process. Our team is working hard to ensure its timely completion. We will keep you updated with the progress.`],
-    //         outro: 'Thank you for your patience.',
-    //       },
-    //     };
-    //     let mail = MailGenerator.generate(response);
-    //     let message = {
-    //       from: EMAIL,
-    //       to: email,
-    //       subject: `Product is being processed`,
-    //       html: mail,
-    //     };
-    //     transporter
-    //       .sendMail(message)
-    //       .then(() => {
-    //         // return res.status(201).json({
-    //         //     message: "you should receive an email"
-    //         // })
-    //       })
-    //       .catch((error) => {
-    //         return res.status(500).json({ error });
-    //       });
-
-    //   }
-
-    // }
     let userData = await CostumerEnquiryModel.findOneAndUpdate(
       { _id: customerEnquiryID },
       data,
