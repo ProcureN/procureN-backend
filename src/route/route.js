@@ -36,7 +36,7 @@ router.get("/IndividualcustomerEnquiry/:customerID/:page/:limit",authentication,
 router.delete("/deleteCostumerEnquiry/:customerEnquiryId", authentication, authorization2, deleteCostumerEnquiry)  // by admin
 router.put("/updateCostumersEnquiry/:customerEnquiryId", authentication, authorization2, updateCostumersEnquiry)
 router.get("/countData", countData)
- router.get("/trackEnquiry/:enquireId",trackEnquiry)
+ router.get("/trackEnquiry/:trackingID",trackEnquiry)
 router.get("/allDataOfEnquiries",allData)
 router.get("/individualcostumerenquirycounts/:customerID",IndividualCostumerEnquiryCounts)
 //=======================Add products===================================

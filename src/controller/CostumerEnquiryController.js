@@ -2,7 +2,7 @@ const AddProductModel = require("../models/AddProductModel");
 const CostumerEnquiryModel = require("../models/CostomerEnquiryForm");
 const CostumerModel = require("../models/CostumerModel");
 const validator = require("../validation/validations");
-const moment = require('moment');
+const moment = require("moment");
 
 const Mail = require("nodemailer/lib/mailer");
 const mongoose = require("mongoose");
@@ -18,7 +18,7 @@ const EnquiryForm = async (req, res) => {
     const {
       productName,
       otherProduct,
-     // name,
+      // name,
       contact,
       alternativeNumber,
       //email,
@@ -28,14 +28,8 @@ const EnquiryForm = async (req, res) => {
       quantity,
       city,
       customerID,
-     
     } = data;
 
-    // if (validator.isValidBody(data))
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: 'Enter details to create your account',
-    //   });
     if (!validator.isValid1(customerID)) {
       return res
         .status(400)
@@ -55,128 +49,17 @@ const EnquiryForm = async (req, res) => {
         .status(404)
         .send({ status: false, message: "user not found or already deleted" });
     }
-    //ProductName
-    // if (!productName)
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'ProductName is required' });
-    // if (validator.isValid(productName))
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'name should not be an empty string' });
 
-    //OtherProduct
-    //  if (!OtherProduct) return res.status(400).send({ status: false, message: "OtherProduct is required" });
-    // if (otherProduct) {
-    //   if (validator.isValid(otherProduct))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: 'OtherProduct should not be an empty string',
-    //     });
-    // }
-    //Name
-    // if (!name)
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'name is required' });
-    // if (validator.isValid(name))
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'name should not be an empty string' });
+    let date = moment().format("DD-MM-YYYY");
+    let time = moment().format("HH:mm:ss");
 
-    // //Contact
-    // if (!contact)
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'Contact is required' });
-    // if (validator.isValid(contact))
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: 'Contact should not be an empty string',
-    //   });
-    // if (!validator.isValidPhone(contact.trim()))
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'Please Enter a valid Phone number' });
-
-    //AlternativeNumber
-    // if (alternativeNumber) {
-    //   if (validator.isValid(alternativeNumber))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: 'alternativeNumber should not be an empty string',
-    //     });
-    //   if (!validator.isValidPhone(alternativeNumber.trim()))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: 'Please Enter a valid alternativeNumber',
-    //     });
-    // }
-
-    //Email
-    // if (!email)
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'User email-id is required' });
-    // //validating user email-id
-    // if (!validator.isValidEmail(email.trim()))
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'Please Enter a valid email-id' });
-
-    //state
-    // if (!state)
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'State is required' });
-    // if (validator.isValid(state))
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: 'State should not be an empty string',
-    //   });
-
-    // BillingAddress
-    // if (!billingAddress)
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'BillingAddress is required' });
-    // if (validator.isValid(billingAddress))
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: 'BillingAddress should not be an empty string',
-    //   });
-
-    //ShippingPincode
-    // if (!shippingPincode)
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'BillingAddress is required' });
-    // if (validator.isValid(shippingPincode)) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'Pincode is in wrong format' });
-    // }
-
-    //quantity
-    // if (!quantity)
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'quantity is required' });
-    // if (validator.isValid(quantity)) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'quantity must be string' });
-    // }
-    // if (!validator.isValidPincode(shippingPincode)) {
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'Please Provide valid Pincode' });
-    // }
-    
-    let date = moment().format('DD-MM-YYYY');
-    let time = moment().format('HH:mm:ss');
+    let timestamp = Date.now();
+    console.log(timestamp)
+    let randomNum = Math.floor(Math.random() * 100); // Generate a 10-digit random number
+    let trackingID = timestamp.toString() + randomNum.toString();
     data.date = date;
     data.time = time;
+    data.trackingID = trackingID;
     
     let email = getCostumers.email?.toString();
     let name = getCostumers.name?.toString();
@@ -204,13 +87,13 @@ const EnquiryForm = async (req, res) => {
         greeting: "Dear",
         name: `${name}`,
         intro: [
-          `Your enquiry has been registered successfully.Please find your tracking ID below: `,
+          `Your enquiry has been registered successfully.Your tracking ID is ${trackingID} `,
         ],
         action: {
           instructions: "",
           button: {
             color: "#5c67f5", // Optional action button color
-            text: `${customerEnquiryID}`,
+            text: `Track Now`,
             link: "https://procuren.in/",
           },
         },
@@ -221,7 +104,7 @@ const EnquiryForm = async (req, res) => {
     let message = {
       from: EMAIL,
       to: email,
-      subject: `Your Enquiry Registration with Tracking ID ${customerEnquiryID}`,
+      subject: `Your Enquiry Registration with Tracking ID ${trackingID}`,
       html: mail,
     };
     transporter
@@ -234,8 +117,7 @@ const EnquiryForm = async (req, res) => {
       .catch((error) => {
         return res.status(500).json({ error });
       });
-  
-    let saveData = await CostumerEnquiryModel.create(data);
+      let saveData = await CostumerEnquiryModel.create(data);
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
@@ -300,7 +182,7 @@ const updateCostumersEnquiry = async (req, res) => {
     let data = req.body;
     const customerEnquiryID = req.params.customerEnquiryId;
     let { status, deliveryStatus } = data;
-   
+
     let getcustomerEnquiryData = await CostumerEnquiryModel.findById(
       customerEnquiryID
     );
@@ -310,6 +192,7 @@ const updateCostumersEnquiry = async (req, res) => {
         .send({ status: false, message: "no customer enquiry found" });
     }
     let customerId = getcustomerEnquiryData.customerID?.toString();
+    let trackingID = getcustomerEnquiryData.trackingID
     if (!customerId) {
       return res
         .status(404)
@@ -349,7 +232,7 @@ const updateCostumersEnquiry = async (req, res) => {
             greeting: "Dear",
             name: `${name}`,
             intro: [
-              `We regret to inform you that your Enquiry ${customerEnquiryID} has been rejected. We have reviewed it thoroughly, and it does not meet our requirements. We understand that this may be disappointing news, but we assure you that we have taken every possible step to ensure fairness in our decision.`,
+              `We regret to inform you that your Enquiry ${trackingID} has been rejected. We have reviewed it thoroughly, and it does not meet our requirements. We understand that this may be disappointing news, but we assure you that we have taken every possible step to ensure fairness in our decision.`,
             ],
             outro: "Thank you for your understanding.",
           },
@@ -358,7 +241,7 @@ const updateCostumersEnquiry = async (req, res) => {
         let message = {
           from: EMAIL,
           to: email,
-          subject: ` Rejection of enquiry ${customerEnquiryID}`,
+          subject: ` Rejection of enquiry ${trackingID}`,
           html: mail,
         };
         transporter
@@ -372,222 +255,223 @@ const updateCostumersEnquiry = async (req, res) => {
             return res.status(500).json({ error });
           });
       }
-      if (status === "Approved") { //"processing", "shipped", "inTransit", "delivered"
-        if(deliveryStatus =="processing"){
-        let config = {
-          service: "gmail",
-          auth: {
-            user: EMAIL,
-            pass: PASSWORD,
-          },
-        };
-        let transporter = nodemailer.createTransport(config);
-
-        let MailGenerator = new Mailgen({
-          theme: "default",
-          product: {
-            logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
-            // Custom logo height
-            logoHeight: "100px",
-            name: "ProcureN",
-            link: "https://procuren.in/",
-          },
-        });
-        let response = {
-          body: {
-            greeting: "Dear",
-            name: `${name}`,
-            intro: [
-              `We are pleased to inform you that your enquiry has been approved and is ready for dispatch. Please find your tracking ID below: `,
-            ],
-            action: {
-              instructions: "",
-              button: {
-                color: "#5c67f5", // Optional action button color
-                text: `${customerEnquiryID}`,
-                link: "https://procuren.in/",
-              },
+      if (status === "Approved") {
+        //"processing", "shipped", "inTransit", "delivered"
+        if (deliveryStatus == "processing") {
+          let config = {
+            service: "gmail",
+            auth: {
+              user: EMAIL,
+              pass: PASSWORD,
             },
-            outro: "Thank you for choosing our services.",
-          },
-        };
-        let mail = MailGenerator.generate(response);
-        let message = {
-          from: EMAIL,
-          to: email,
-          subject: "Track it",
-          html: mail,
-        };
-        transporter
-          .sendMail(message)
-          .then(() => {
-            // return res.status(201).json({
-            //     message: "you should receive an email"
-            // })
-          })
-          .catch((error) => {
-            return res.status(500).json({ error });
-          });
-      }
-      //
-      if (deliveryStatus === "shipped") {
-        let config = {
-          service: 'gmail',
-          auth: {
-            user: EMAIL,
-            pass: PASSWORD,
-          },
-        };
-        let transporter = nodemailer.createTransport(config);
+          };
+          let transporter = nodemailer.createTransport(config);
 
-        let MailGenerator = new Mailgen({
-          theme: 'default',
-          product: {
-            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
-            // Custom logo height
-            logoHeight: '100px',
-            name: 'ProcureN',
-            link: 'https://procuren.in/',
-
-          },
-        });
-        let response = {
-          body: {
-            name: `${name}`,
-            intro: [`We are pleased to inform you that your order has been shipped.Please find your tracking ID below: `],
-            action: {
-              instructions: "",
-              button: {
-                color: "#5c67f5", // Optional action button color
-                text: `${customerEnquiryID}`,
-                link: "https://procuren.in/",
-              },
+          let MailGenerator = new Mailgen({
+            theme: "default",
+            product: {
+              logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
+              // Custom logo height
+              logoHeight: "100px",
+              name: "ProcureN",
+              link: "https://procuren.in/",
             },
-            outro: 'Thank you for choosing our service.',
-          },
-        };
-        let mail = MailGenerator.generate(response);
-        let message = {
-          from: EMAIL,
-          to: email,
-          subject: `Product Has Shipped!`,
-          html: mail,
-        };
-        transporter
-          .sendMail(message)
-          .then(() => {
-            // return res.status(201).json({
-            //     message: "you should receive an email"
-            // })
-          })
-          .catch((error) => {
-            return res.status(500).json({ error });
           });
-
-      }
-      if (deliveryStatus === "inTransit") {
-        let config = {
-          service: 'gmail',
-          auth: {
-            user: EMAIL,
-            pass: PASSWORD,
-          },
-        };
-        let transporter = nodemailer.createTransport(config);
-
-        let MailGenerator = new Mailgen({
-          theme: 'default',
-          product: {
-            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
-            // Custom logo height
-            logoHeight: '100px',
-            name: 'ProcureN',
-            link: 'https://procuren.in/',
-
-          },
-        });
-        let response = {
-          body: {
-            name: `${name}`,
-            intro: [`We are pleased to inform you that your product is now in transit. You can track your shipment using the tracking ID provided: `],
-            action: {
-              instructions: "",
-              button: {
-                color: "#5c67f5", // Optional action button color
-                text: `${customerEnquiryID}`,
-                link: "https://procuren.in/",
+          let response = {
+            body: {
+              greeting: "Dear",
+              name: `${name}`,
+              intro: [
+                `We are pleased to inform you that your enquiry has been approved and is ready for dispatch.Your tracking ID is: ${trackingID} `,
+              ],
+              action: {
+                instructions: "",
+                button: {
+                  color: "#5c67f5", // Optional action button color
+                  text: `Track Now`,
+                  link: "https://procuren.in/",
+                },
               },
+              outro: "Thank you for choosing our services.",
             },
-            outro: 'Thank you for choosing our service.',
-          },
-        };
-        let mail = MailGenerator.generate(response);
-        let message = {
-          from: EMAIL,
-          to: email,
-          subject: `Product in Transit`,
-          html: mail,
-        };
-        transporter
-          .sendMail(message)
-          .then(() => {
-            // return res.status(201).json({
-            //     message: "you should receive an email"
-            // })
-          })
-          .catch((error) => {
-            return res.status(500).json({ error });
+          };
+          let mail = MailGenerator.generate(response);
+          let message = {
+            from: EMAIL,
+            to: email,
+            subject: "Track it",
+            html: mail,
+          };
+          transporter
+            .sendMail(message)
+            .then(() => {
+              // return res.status(201).json({
+              //     message: "you should receive an email"
+              // })
+            })
+            .catch((error) => {
+              return res.status(500).json({ error });
+            });
+        }
+        //
+        if (deliveryStatus === "shipped") {
+          let config = {
+            service: "gmail",
+            auth: {
+              user: EMAIL,
+              pass: PASSWORD,
+            },
+          };
+          let transporter = nodemailer.createTransport(config);
+
+          let MailGenerator = new Mailgen({
+            theme: "default",
+            product: {
+              logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
+              // Custom logo height
+              logoHeight: "100px",
+              name: "ProcureN",
+              link: "https://procuren.in/",
+            },
           });
+          let response = {
+            body: {
+              name: `${name}`,
+              intro: [
+                `We are pleased to inform you that your order has been shipped.Your tracking ID is: ${trackingID} `,
+              ],
+              action: {
+                instructions: "",
+                button: {
+                  color: "#5c67f5", // Optional action button color
+                  text: `Track Now`,
+                  link: "https://procuren.in/",
+                },
+              },
+              outro: "Thank you for choosing our service.",
+            },
+          };
+          let mail = MailGenerator.generate(response);
+          let message = {
+            from: EMAIL,
+            to: email,
+            subject: `Product Has Shipped!`,
+            html: mail,
+          };
+          transporter
+            .sendMail(message)
+            .then(() => {
+              // return res.status(201).json({
+              //     message: "you should receive an email"
+              // })
+            })
+            .catch((error) => {
+              return res.status(500).json({ error });
+            });
+        }
+        if (deliveryStatus === "inTransit") {
+          let config = {
+            service: "gmail",
+            auth: {
+              user: EMAIL,
+              pass: PASSWORD,
+            },
+          };
+          let transporter = nodemailer.createTransport(config);
 
-      }
-      if (deliveryStatus === "delivered") {
-        let config = {
-          service: 'gmail',
-          auth: {
-            user: EMAIL,
-            pass: PASSWORD,
-          },
-        };
-        let transporter = nodemailer.createTransport(config);
-
-        let MailGenerator = new Mailgen({
-          theme: 'default',
-          product: {
-            logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
-            // Custom logo height
-            logoHeight: '100px',
-            name: 'ProcureN',
-            link: 'https://procuren.in/',
-
-          },
-        });
-        let response = {
-          body: {
-            name: `${name}`,
-            intro: [`We're happy to inform you that your order has been delivered today. Please let us know if you have any questions or concerns regarding the delivery.`],
-            outro: 'Thank you for choosing our service.',
-          },
-        };
-        let mail = MailGenerator.generate(response);
-        let message = {
-          from: EMAIL,
-          to: email,
-          subject: `Delivery Confirmation`,
-          html: mail,
-        };
-        transporter
-          .sendMail(message)
-          .then(() => {
-            // return res.status(201).json({
-            //     message: "you should receive an email"
-            // })
-          })
-          .catch((error) => {
-            return res.status(500).json({ error });
+          let MailGenerator = new Mailgen({
+            theme: "default",
+            product: {
+              logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
+              // Custom logo height
+              logoHeight: "100px",
+              name: "ProcureN",
+              link: "https://procuren.in/",
+            },
           });
+          let response = {
+            body: {
+              name: `${name}`,
+              intro: [
+                `We are pleased to inform you that your product is now in transit. You can track your shipment using the tracking ID provided: ${trackingID}`,
+              ],
+              action: {
+                instructions: "",
+                button: {
+                  color: "#5c67f5", // Optional action button color
+                  text: `Track Now`,
+                  link: "https://procuren.in/",
+                },
+              },
+              outro: "Thank you for choosing our service.",
+            },
+          };
+          let mail = MailGenerator.generate(response);
+          let message = {
+            from: EMAIL,
+            to: email,
+            subject: `Product in Transit`,
+            html: mail,
+          };
+          transporter
+            .sendMail(message)
+            .then(() => {
+              // return res.status(201).json({
+              //     message: "you should receive an email"
+              // })
+            })
+            .catch((error) => {
+              return res.status(500).json({ error });
+            });
+        }
+        if (deliveryStatus === "delivered") {
+          let config = {
+            service: "gmail",
+            auth: {
+              user: EMAIL,
+              pass: PASSWORD,
+            },
+          };
+          let transporter = nodemailer.createTransport(config);
 
+          let MailGenerator = new Mailgen({
+            theme: "default",
+            product: {
+              logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
+              // Custom logo height
+              logoHeight: "100px",
+              name: "ProcureN",
+              link: "https://procuren.in/",
+            },
+          });
+          let response = {
+            body: {
+              name: `${name}`,
+              intro: [
+                `We're happy to inform you that your order ${trackingID} has been delivered today. Please let us know if you have any questions or concerns regarding the delivery.`,
+              ],
+              outro: "Thank you for choosing our service.",
+            },
+          };
+          let mail = MailGenerator.generate(response);
+          let message = {
+            from: EMAIL,
+            to: email,
+            subject: `Delivery Confirmation`,
+            html: mail,
+          };
+          transporter
+            .sendMail(message)
+            .then(() => {
+              // return res.status(201).json({
+              //     message: "you should receive an email"
+              // })
+            })
+            .catch((error) => {
+              return res.status(500).json({ error });
+            });
+        }
       }
-    }
       if (status === "Pending") {
         let config = {
           service: "gmail",
@@ -612,7 +496,7 @@ const updateCostumersEnquiry = async (req, res) => {
           body: {
             name: `${name}`,
             intro: [
-              `Your order with enquiry ${customerEnquiryID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`,
+              `Your order with enquiry ${trackingID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`,
             ],
             outro: "thank you",
           },
@@ -684,7 +568,7 @@ const updateCostumersEnquiry = async (req, res) => {
     //       });
 
     //   }
-     
+
     // }
     let userData = await CostumerEnquiryModel.findOneAndUpdate(
       { _id: customerEnquiryID },
@@ -808,15 +692,9 @@ const countData = async (req, res) => {
 const trackEnquiry = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let customerEnquiryId = req.params.enquireId;
-    if (!validator.isValidObjectId(customerEnquiryId)) {
-      res.status(400).send({
-        status: false,
-        message: "Please provide valid id",
-      });
-    }
+    let trackingID = req.params.trackingID;
     let getcustomerEnquiryId = await CostumerEnquiryModel.findOne({
-      _id: customerEnquiryId,
+      trackingID: trackingID,
     });
     if (!getcustomerEnquiryId) {
       return res.status(404).send({
@@ -830,11 +708,7 @@ const trackEnquiry = async (req, res) => {
         message: "id is already deleted not found",
       });
     }
-
-    let getEnquiries = await CostumerEnquiryModel.find({
-      _id: customerEnquiryId,
-    });
-    res.status(200).send({ status: true, data: getEnquiries });
+    res.status(200).send({ status: true, data: getcustomerEnquiryId });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
