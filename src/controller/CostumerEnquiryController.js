@@ -18,10 +18,10 @@ const EnquiryForm = async (req, res) => {
     const {
       productName,
       otherProduct,
-      name,
+     // name,
       contact,
       alternativeNumber,
-      email,
+      //email,
       state,
       billingAddress,
       shippingPincode,
@@ -172,10 +172,69 @@ const EnquiryForm = async (req, res) => {
     //     .status(400)
     //     .send({ status: false, message: 'Please Provide valid Pincode' });
     // }
+    
     let date = moment().format('DD-MM-YYYY');
     let time = moment().format('HH:mm:ss');
     data.date = date;
     data.time = time;
+    
+    let email = getCostumers.email?.toString();
+    let name = getCostumers.name?.toString();
+    let config = {
+      service: "gmail",
+      auth: {
+        user: EMAIL,
+        pass: PASSWORD,
+      },
+    };
+    let transporter = nodemailer.createTransport(config);
+
+    let MailGenerator = new Mailgen({
+      theme: "default",
+      product: {
+        logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
+        // Custom logo height
+        logoHeight: "100px",
+        name: "ProcureN",
+        link: "https://procuren.in/",
+      },
+    });
+    let response = {
+      body: {
+        greeting: "Dear",
+        name: `${name}`,
+        intro: [
+          `Your enquiry has been registered successfully.Please find your tracking ID below: `,
+        ],
+        action: {
+          instructions: "",
+          button: {
+            color: "#5c67f5", // Optional action button color
+            text: `${customerEnquiryID}`,
+            link: "https://procuren.in/",
+          },
+        },
+        outro: "Thank you.",
+      },
+    };
+    let mail = MailGenerator.generate(response);
+    let message = {
+      from: EMAIL,
+      to: email,
+      subject: `Your Enquiry Registration with Tracking ID ${customerEnquiryID}`,
+      html: mail,
+    };
+    transporter
+      .sendMail(message)
+      .then(() => {
+        // return res.status(201).json({
+        //     message: "you should receive an email"
+        // })
+      })
+      .catch((error) => {
+        return res.status(500).json({ error });
+      });
+  
     let saveData = await CostumerEnquiryModel.create(data);
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
