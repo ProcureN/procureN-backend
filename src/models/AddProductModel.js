@@ -89,8 +89,8 @@ const AddProductsSchema = new mongoose.Schema({
     },
     deliveryStatus:{
         type: String,
-        enum:["processing","shipped","inTransit","delivered"],
-        default:"processing"
+        enum:["Processing","Shipped","InTransit","Delivered"],
+        default:"Processing"
     },
     date: {
         type: String

@@ -125,7 +125,6 @@ const getEnquiries = async (req, res) => {
     page = page - 1;
     let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments();
 
-    
     let data = await CostumerEnquiryModel.find(filter)
     .sort({ status: 1, createdAt: -1, deliveryStatus: 1 })
     .limit(resultsPerPage)
@@ -226,7 +225,7 @@ const updateCostumersEnquiry = async (req, res) => {
       }
       if (status === "Approved") {
         //"processing", "shipped", "inTransit", "delivered"
-        if (deliveryStatus == "processing") {
+        if (deliveryStatus == "Processing") {
           let config = {
             service: "gmail",
             auth: {
@@ -283,7 +282,7 @@ const updateCostumersEnquiry = async (req, res) => {
             });
         }
         //
-        if (deliveryStatus === "shipped") {
+        if (deliveryStatus === "Shipped") {
           let config = {
             service: "gmail",
             auth: {
@@ -338,7 +337,7 @@ const updateCostumersEnquiry = async (req, res) => {
               return res.status(500).json({ error });
             });
         }
-        if (deliveryStatus === "inTransit") {
+        if (deliveryStatus === "InTransit") {
           let config = {
             service: "gmail",
             auth: {
@@ -393,7 +392,7 @@ const updateCostumersEnquiry = async (req, res) => {
               return res.status(500).json({ error });
             });
         }
-        if (deliveryStatus === "delivered") {
+        if (deliveryStatus === "Delivered") {
           let config = {
             service: "gmail",
             auth: {
@@ -524,7 +523,7 @@ const IndividualCostumerEnquiry = async (req, res) => {
         .status(400)
         .send({ status: false, message: "costumerID not valid" });
     }
-
+    
     // if(!getData){
     //     return res.status(404).send({ status: false, message: "not enquiries found" })
     // }
@@ -680,20 +679,20 @@ const allData = async (req, res) => {
             },
             countOfInprocessingDelivery: {
               $sum: {
-                $cond: [{ $eq: ["$deliveryStatus", "processing"] }, 1, 0],
+                $cond: [{ $eq: ["$deliveryStatus", "Processing"] }, 1, 0],
               },
             },
             countOfinTransitDelivery: {
               $sum: {
-                $cond: [{ $eq: ["$deliveryStatus", "inTransit"] }, 1, 0],
+                $cond: [{ $eq: ["$deliveryStatus", "InTransit"] }, 1, 0],
               },
             },
             countOfinshippedDelivery: {
-              $sum: { $cond: [{ $eq: ["$deliveryStatus", "shipped"] }, 1, 0] },
+              $sum: { $cond: [{ $eq: ["$deliveryStatus", "Shipped"] }, 1, 0] },
             },
             countOfindeliveredDelivery: {
               $sum: {
-                $cond: [{ $eq: ["$deliveryStatus", "delivered"] }, 1, 0],
+                $cond: [{ $eq: ["$deliveryStatus", "Delivered"] }, 1, 0],
               },
             },
           },
@@ -732,16 +731,16 @@ const IndividualCostumerEnquiryCounts = async (req, res) => {
             $sum: { $cond: [{ $eq: ["$status", "Approved"] }, 1, 0] },
           },
           countOfInprocessingDelivery: {
-            $sum: { $cond: [{ $eq: ["$deliveryStatus", "processing"] }, 1, 0] },
+            $sum: { $cond: [{ $eq: ["$deliveryStatus", "Processing"] }, 1, 0] },
           },
           countOfinTransitDelivery: {
-            $sum: { $cond: [{ $eq: ["$deliveryStatus", "inTransit"] }, 1, 0] },
+            $sum: { $cond: [{ $eq: ["$deliveryStatus", "InTransit"] }, 1, 0] },
           },
           countOfinshippedDelivery: {
-            $sum: { $cond: [{ $eq: ["$deliveryStatus", "shipped"] }, 1, 0] },
+            $sum: { $cond: [{ $eq: ["$deliveryStatus", "Shipped"] }, 1, 0] },
           },
           countOfindeliveredDelivery: {
-            $sum: { $cond: [{ $eq: ["$deliveryStatus", "delivered"] }, 1, 0] },
+            $sum: { $cond: [{ $eq: ["$deliveryStatus", "Delivered"] }, 1, 0] },
           },
         },
       },

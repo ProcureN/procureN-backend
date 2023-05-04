@@ -222,7 +222,7 @@ const updateProduct = async (req, res) => {
           });
       }
       if (status === 'Approved') {
-        if (deliveryStatus === "processing") {
+        if (deliveryStatus === "Processing") {
           let config = {
             service: 'gmail',
             auth: {
@@ -277,7 +277,7 @@ const updateProduct = async (req, res) => {
             });
   
         }
-        if (deliveryStatus === "shipped") {
+        if (deliveryStatus === "Shipped") {
           let config = {
             service: 'gmail',
             auth: {
@@ -332,7 +332,7 @@ const updateProduct = async (req, res) => {
             });
   
         }
-        if (deliveryStatus === "inTransit") {
+        if (deliveryStatus === "InTransit") {
           let config = {
             service: 'gmail',
             auth: {
@@ -387,7 +387,7 @@ const updateProduct = async (req, res) => {
             });
   
         }
-        if (deliveryStatus === "delivered") {
+        if (deliveryStatus === "Delivered") {
           let config = {
             service: 'gmail',
             auth: {
@@ -551,9 +551,7 @@ const getProducts = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let filter = { isDeleted: false };
-    let sortStatus = req.query.status
-    let delivery = req.query.deliveryStatus
-    let created = req.query.createdAt
+   
     const resultsPerPage =
       req.params.limit === ':limit' ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
@@ -562,37 +560,19 @@ const getProducts = async (req, res) => {
     page = page - 1;
     let CountOfData = await AddProductsModel.find(filter).countDocuments();
 
-    if (sortStatus) {
       let data = await AddProductsModel.find(filter)
-        .sort({ createdAt: created, status: sortStatus })
+      .sort({ status: 1, createdAt: -1, deliveryStatus: 1 })
         .limit(resultsPerPage)
         .skip(resultsPerPage * page);
       if (!data)
-        return res
-          .status(404)
-          .send({ status: false, message: 'no enquiries found' });
+        return res.status(404).send({ status: false, message: 'no products found' });
+        
+      res.status(200).send({
+        status: true,
+        data: data,
+        count: CountOfData,
+      });
 
-      res.status(200).send({
-        status: true,
-        data: data,
-        count: CountOfData,
-      });
-    }
-    else {
-      let data = await AddProductsModel.find(filter)
-        .sort({ deliveryStatus: delivery, createdAt: created })
-        .limit(resultsPerPage)
-        .skip(resultsPerPage * page);
-      if (!data)
-        return res
-          .status(404)
-          .send({ status: false, message: 'no enquiries found' });
-      res.status(200).send({
-        status: true,
-        data: data,
-        count: CountOfData,
-      });
-    }
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -712,7 +692,7 @@ const countOfInprocessing = async (req, res) => {
   try {
     //"processing","shipped","inTransit","delivered"
     let data = await AddProductsModel.find({
-      deliveryStatus: 'processing',
+      deliveryStatus: 'Processing',
       isDeleted: false,
     }).countDocuments();
     res.status(200).send({ status: true, data: data });
@@ -726,7 +706,7 @@ const countOfinTransit = async (req, res) => {
   try {
     //"processing","shipped","inTransit","delivered"
     let data = await AddProductsModel.find({
-      deliveryStatus: 'inTransit',
+      deliveryStatus: 'InTransit',
       isDeleted: false,
     }).countDocuments();
     res.status(200).send({ status: true, data: data });
@@ -740,7 +720,7 @@ const countOfinshipped = async (req, res) => {
   try {
     //"processing","shipped","inTransit","delivered"
     let data = await AddProductsModel.find({
-      deliveryStatus: 'shipped',
+      deliveryStatus: 'Shipped',
       isDeleted: false,
     }).countDocuments();
     res.status(200).send({ status: true, data: data });
@@ -754,7 +734,7 @@ const countOfindelivered = async (req, res) => {
   try {
     //"processing","shipped","inTransit","delivered"
     let data = await AddProductsModel.find({
-      deliveryStatus: 'delivered',
+      deliveryStatus: 'Delivered',
       isDeleted: false,
     }).countDocuments();
     res.status(200).send({ status: true, data: data });
@@ -779,10 +759,10 @@ const getCounts = async (req, res) => {
           pending: { $sum: { $cond: [{ $eq: ['$status', 'Pending'] }, 1, 0] } },
           rejected: { $sum: { $cond: [{ $eq: ['$status', 'Rejected'] }, 1, 0] } },
           approved: { $sum: { $cond: [{ $eq: ['$status', 'Approved'] }, 1, 0] } },
-          inprocessing: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'processing'] }, 1, 0] } },
-          inTransit: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'inTransit'] }, 1, 0] } },
-          shipped: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'shipped'] }, 1, 0] } },
-          delivered: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'delivered'] }, 1, 0] } }
+          inprocessing: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'Processing'] }, 1, 0] } },
+          inTransit: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'InTransit'] }, 1, 0] } },
+          shipped: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'Shipped'] }, 1, 0] } },
+          delivered: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'Delivered'] }, 1, 0] } }
         }
       },
       {
@@ -815,10 +795,10 @@ const individualProductsCount = async (req, res) => {
           pending: { $sum: { $cond: [{ $eq: ['$status', 'Pending'] }, 1, 0] } },
           rejected: { $sum: { $cond: [{ $eq: ['$status', 'Rejected'] }, 1, 0] } },
           approved: { $sum: { $cond: [{ $eq: ['$status', 'Approved'] }, 1, 0] } },
-          inprocessing: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'processing'] }, 1, 0] } },
-          inTransit: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'inTransit'] }, 1, 0] } },
-          shipped: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'shipped'] }, 1, 0] } },
-          delivered: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'delivered'] }, 1, 0] } },
+          inprocessing: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'Processing'] }, 1, 0] } },
+          inTransit: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'InTransit'] }, 1, 0] } },
+          shipped: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'Shipped'] }, 1, 0] } },
+          delivered: { $sum: { $cond: [{ $eq: ['$deliveryStatus', 'Delivered'] }, 1, 0] } },
           total: { $sum: 1 }
         }
       },
