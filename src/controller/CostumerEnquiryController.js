@@ -15,7 +15,7 @@ const EnquiryForm = async (req, res) => {
   try {
     //   let costumerId = req.params.customerID
     let data = req.body;
-    const {customerID, } = data;
+    const { customerID } = data;
 
     if (!validator.isValid1(customerID)) {
       return res
@@ -41,13 +41,13 @@ const EnquiryForm = async (req, res) => {
     let time = moment().format("HH:mm:ss");
 
     let timestamp = Date.now();
-   // console.log(timestamp)
+    // console.log(timestamp)
     let randomNum = Math.floor(Math.random() * 100); // Generate a 10-digit random number
     let trackingID = timestamp.toString() + randomNum.toString();
     data.date = date;
     data.time = time;
     data.trackingID = trackingID;
-    
+
     let email = getCostumers.email?.toString();
     let name = getCostumers.name?.toString();
     let config = {
@@ -104,7 +104,7 @@ const EnquiryForm = async (req, res) => {
       .catch((error) => {
         return res.status(500).json({ error });
       });
-      let saveData = await CostumerEnquiryModel.create(data);
+    let saveData = await CostumerEnquiryModel.create(data);
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
@@ -179,7 +179,7 @@ const updateCostumersEnquiry = async (req, res) => {
         .send({ status: false, message: "no customer enquiry found" });
     }
     let customerId = getcustomerEnquiryData.customerID?.toString();
-    let trackingID = getcustomerEnquiryData.trackingID
+    let trackingID = getcustomerEnquiryData.trackingID;
     if (!customerId) {
       return res
         .status(404)
@@ -633,19 +633,48 @@ const trackEnquiry = async (req, res) => {
     let getcustomerEnquiryId = await CostumerEnquiryModel.findOne({
       trackingID: trackingID,
     });
-    if (!getcustomerEnquiryId) {
-      return res.status(404).send({
-        status: false,
-        message: "id  Not Found",
-      });
+    let getProductData = await AddProductModel.findOne({
+      trackingID: trackingID,
+    });
+    // if (!getcustomerEnquiryId || !getProductData ) {
+    //   return res.status(404).send({
+    //     status: false,
+    //     message: "id  Not Found",
+    //   });
+    // }
+    // if (getcustomerEnquiryId.isDeleted == true ) {
+    //   return res.status(404).send({
+    //     status: false,
+    //     message: "id is already deleted not found",
+    //   });
+    // }
+    // res.status(200).send({ status: true, data: getcustomerEnquiryId });
+
+    if (getcustomerEnquiryId || getProductData) {
+      if (getcustomerEnquiryId) {
+        if (getcustomerEnquiryId.isDeleted == true) {
+          return res
+            .status(404)
+            .send({ status: false, message: "tracking ID is deleted" });
+        } else {
+          return res
+            .status(200)
+            .send({ status: true, data: getcustomerEnquiryId });
+        }
+      } else if (getProductData) {
+        if (getProductData.isDeleted == true) {
+          return res.status(404)
+          .send({ status: false, message: "tracking ID is deleted" });
+        } else
+          return res.status(200)
+          .send({ status: true, data: getProductData });
+      }
+    } else {
+      if (!getcustomerEnquiryId || !getProductData) {
+        return res.status(404)
+        .send({ status: false, message: "Not Found" });
+      }
     }
-    if (getcustomerEnquiryId.isDeleted == true) {
-      return res.status(404).send({
-        status: false,
-        message: "id is already deleted not found",
-      });
-    }
-    res.status(200).send({ status: true, data: getcustomerEnquiryId });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
