@@ -1,36 +1,121 @@
 const contactformModel = require("../models/contactUsModel")
 const validator = require("../validation/validations")
+const nodemailer = require('nodemailer');
+const Mailgen = require('mailgen');
+const moment = require('moment');
+const { EMAIL, PASSWORD } = require('../env');
 const contactform =async (req,res)=>{
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
     let data = req.body
-    let {name,email,subject,message,phone}= data
-    
-    // if (validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Enter details to create your account" });
- 
-    // if (!name) return res.status(400).send({ status: false, message: "name is required" });
-    // if (validator.isValid(name)) return res.status(400).send({ status: false, message: "name should not be an empty string" });
+   // let {name,email,subject,message,phone}= data
+  
+let date = moment().format('DD-MM-YYYY');
+let time = moment().format('HH:mm:ss');
+data.date = date;
+data.time = time;
 
-//     if (!email) return res.status(400).send({ status: false, message: "email is required" });
-//     if (!validator.isValidEmail(email.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Email-id" });
-// if(subject){
-//     if (validator.isValid(subject)) return res.status(400).send({ status: false, message: "subject should not be an empty string" });
-// }
-// if(message){
-//     if (validator.isValid(message)) return res.status(400).send({ status: false, message: "message should not be an empty string" });
-// }
-// if(phone){
-//     if (!validator.isValidPhone(phone.trim())) return res.status(400).send({ status: false, message: "Please Enter a valid Phone number" });
-// }
-var currentdate = new Date();
-var datetime = currentdate.getDate() + "-" + (currentdate.getMonth()+1)
-    + "-" + currentdate.getFullYear()
-    //adding time
-let time = + currentdate.getHours() + ":"
-    + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-data.date = datetime
-data.time = time
 let saveData = await contactformModel.create(data)
+
+let config = {
+    service: 'gmail',
+    auth: {
+      user: EMAIL,
+      pass: PASSWORD,
+    },
+  };
+  let transporter = nodemailer.createTransport(config);
+
+  let MailGenerator = new Mailgen({
+    theme: 'default',
+    // Custom text direction
+   // textDirection: 'rtl',
+    color: '#48cfad',
+    product: {
+      logo: 'https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png',
+      // Custom logo height
+      logoHeight: '100px',
+      name: 'ProcureN', 
+      link: 'https://procuren.in/',
+     
+    },
+  });
+  let response = {
+    body: {
+        name: "ProcureN",
+        intro: [`You got a Bussiness Proposal from ${data.name}`, ],
+        table: {
+            data: [ 
+                { //name,email,subject,message,phone
+                    Email:data.email,
+                    Phone: data.phone,
+                    Message:data.message
+
+                },
+               
+            ],
+            columns: {
+                // Optionally, customize the column widths
+                customWidth: {
+                    // Name: '15%',
+                     Email: '20%',
+                    Phone:'10%' ,
+                    
+                    message: '70%',
+                   
+                },
+                // Optionally, change column text alignment
+                customAlignment: {
+                    subject: 'right'
+                }
+            }
+        },
+        action: {
+            instructions: "",
+            button: {
+              color: '#5c67f5', // Optional action button color
+              text: `Home`,
+              link: 'https://procuren.in/'
+  
+            }
+          }
+    }
+
+  };
+  let mail = MailGenerator.generate(response);
+
+  let message = {
+    from: EMAIL,
+    to:  "veronicamiryala001@gmail.com",
+    subject: `Bussiness proposal for ProcureN from ${data.name}`,
+    html: mail,
+  };
+  transporter
+    .sendMail(message)
+    .then(() => {
+      // return res.status(201).json({
+      //     message: "you should receive an email"
+      // })
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+    let messages = {
+        from: EMAIL,
+        to: `${data.email}`,
+        subject: `Bussiness proposal for ProcureN from ${data.name}`,
+        html: mail,
+      };
+      transporter
+        .sendMail(messages)
+        .then(() => {
+          // return res.status(201).json({
+          //     message: "you should receive an email"
+          // })
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
 res.status(201).send({ status: true, data: saveData })
 } catch (error) {
     return res.status(500).send({ status: false, message: error.message });

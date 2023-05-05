@@ -104,7 +104,9 @@ const EnquiryForm = async (req, res) => {
       .catch((error) => {
         return res.status(500).json({ error });
       });
+
     let saveData = await CostumerEnquiryModel.create(data);
+     
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });

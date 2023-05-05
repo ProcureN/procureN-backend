@@ -69,7 +69,7 @@ router.post("/admin", requestAdmin) // by admin
 //======================contactform================================
 router.post("/contactform", contactform)
 router.get("/getcontactform/:page/:limit", getcontactform)//by admin
-router.delete("/deleteContactForm/:contactUsId", deleteContactForm) // by admin
+router.delete("/deleteContactForm/:contactUsId",authentication, authorization3 ,deleteContactForm) // by admin
 router.get("/countOfContactForm", countOfContactForm)
 
 module.exports = router  
