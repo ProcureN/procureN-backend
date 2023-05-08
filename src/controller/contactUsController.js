@@ -3,6 +3,8 @@ const validator = require("../validation/validations")
 const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
 const moment = require('moment');
+require('moment-timezone');
+
 const { EMAIL, PASSWORD } = require('../env');
 const contactform =async (req,res)=>{
     res.setHeader('Access-Control-Allow-Origin', '*')

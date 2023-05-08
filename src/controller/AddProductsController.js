@@ -2,7 +2,8 @@ const AddProductsModel = require('../models/AddProductModel');
 const validator = require('../validation/validations');
 const costumerModel = require('../models/CostumerModel');
 const aws = require('../aws/aws');
-const moment = require("moment");
+const moment = require('moment');
+require('moment-timezone');
 
 const uploadFile = require('../middleware/uploads');
 const fs = require('fs');
@@ -50,10 +51,11 @@ const addProdcts = async (req, res) => {
     // if (req.file == undefined) {
     //   return res.status(400).send({ message: "Please upload a file!" });
     // }
-    // data.selectImage1 = req.file.originalname
-    let date = moment().format("DD-MM-YYYY");
-    let time = moment().format("HH:mm:ss");
-
+    moment.tz.setDefault('Asia/Kolkata');
+  
+   // Get the current date and time
+   let date = moment().format('DD-MM-YYYY');
+   let time = moment().format('HH:mm:ss');
     let timestamp = Date.now();
    // console.log(timestamp)
     let randomNum = Math.floor(Math.random() * 100); // Generate a 10-digit random number

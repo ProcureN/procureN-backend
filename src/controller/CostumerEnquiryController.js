@@ -2,7 +2,9 @@ const AddProductModel = require("../models/AddProductModel");
 const CostumerEnquiryModel = require("../models/CostomerEnquiryForm");
 const CostumerModel = require("../models/CostumerModel");
 const validator = require("../validation/validations");
-const moment = require("moment");
+const moment = require('moment');
+require('moment-timezone');
+
 
 const Mail = require("nodemailer/lib/mailer");
 const mongoose = require("mongoose");
@@ -37,8 +39,11 @@ const EnquiryForm = async (req, res) => {
         .send({ status: false, message: "user not found or already deleted" });
     }
 
-    let date = moment().format("DD-MM-YYYY");
-    let time = moment().format("HH:mm:ss");
+    moment.tz.setDefault('Asia/Kolkata');
+  
+    // Get the current date and time
+    let date = moment().format('DD-MM-YYYY');
+    let time = moment().format('HH:mm:ss');
 
     let timestamp = Date.now();
     // console.log(timestamp)
