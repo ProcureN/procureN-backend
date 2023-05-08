@@ -15,17 +15,7 @@ const register = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     let data = req.body;
-    const {
-      name,
-      email,
-      password,
-      selectRole,
-      company,
-      jobTitle,
-      phone,
-      state,
-      city,
-    } = data;
+    const {name,email,password, } = data;
     data.password = await bcrypt.hash(password, 10);
     let digits = '0123456789';
     let limit = 6;
@@ -60,13 +50,13 @@ const register = async (req, res) => {
       body: {
         greeting: 'Dear',
         name: `${name}`,
-        intro:  [`Thank you for choosing ProcureN! Your One-Time Password (OTP) has been generated. Please find your OTP below:`],
+        intro:  [`Thank you for choosing ProcureN! Your One-Time Password (OTP) has been generated. Your OTP is ${otp}`],
        //outro: 'thank you',
        action: {
         instructions: "",
         button: {
             color: '#5c67f5', // Optional action button color
-            text: `${otp}`,
+            text: `verify`,
             link: 'https://procuren.in/otp/signup'
 
         }
@@ -91,22 +81,7 @@ const register = async (req, res) => {
       .catch((error) => {
         return res.status(500).json({ error });
       });
-    // var currentdate = new Date();
-    // var datetime =
-    //   currentdate.getDate() +
-    //   '-' +
-    //   (currentdate.getMonth() + 1) +
-    //   '-' +
-    //   currentdate.getFullYear();
-    // //adding time
-    // let time =
-    //   +currentdate.getHours() +
-    //   ':' +
-    //   currentdate.getMinutes() +
-    //   ':' +
-    //   currentdate.getSeconds();
-    // data.date = datetime;
-    // data.time = time;
+    
     moment.tz.setDefault('Asia/Kolkata');
   
     // Get the current date and time

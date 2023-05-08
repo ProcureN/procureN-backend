@@ -35,15 +35,72 @@ const otpVerification = async (req, res) => {
         { $set: { verified: true } },
         {new:true}
       );
+
+      let config = {
+        service: "gmail",
+        auth: {
+          user: EMAIL,
+          pass: PASSWORD,
+        },
+      };
+      let transporter = nodemailer.createTransport(config);
+  
+      let MailGenerator = new Mailgen({
+        theme: "default",
+        product: {
+          logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
+          // Custom logo height
+          logoHeight: "100px",
+          name: "ProcureN",
+          link: "https://procuren.in/",
+        },
+      });
+      let response = {
+        body: {
+          greeting: "Hi",
+          name: `procureN team`,
+          intro: [ `New User ${costumerData.name} has been registered on our platform. Please take the necessary steps to welcome and onboard the new user.`,` `,
+          `User Details:`,` Name:  ${costumerData.name}`,`Email:  ${costumerData.email}`,` Phone:  ${costumerData.phone}`,` JobTitle: ${costumerData.jobTitle}`,` Company: ${costumerData.company} `,  ``,
+          `To access further details, kindly proceed to log in to the portal.`
+       ],
+      //  outro: "To access further details, kindly proceed to log in to the portal.",
+          action: {
+            instructions: "",
+            button: {
+              color: "#5c67f5", // Optional action button color
+              text: `check`,
+              link: "https://procuren.in/login",
+            },
+          },
+         
+        },
+      };
+      let mail = MailGenerator.generate(response);
+      let message = {
+        from: EMAIL,
+        to: "nar.procuren@gmail.com",
+        subject: ` ProcureN - New ${costumerData.selectRole} Registered `,
+        html: mail,
+      };
+      transporter
+        .sendMail(message)
+        .then(() => {
+          // return res.status(201).json({
+          //     message: "you should receive an email"
+          // })
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
       const token = jwt.sign(
         { customerID: costumerData._id.toString() },
         'procure-n secret key',
         { expiresIn: '24h' }
       );
+
       return res
         .status(200)
-        .send({
-          status: true,
+        .send({status: true,
           message: 'login successful',
           selectRole: costumerData.selectRole.toString(),
           verifiedOtp: customerVerification.verified,
