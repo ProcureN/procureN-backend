@@ -561,7 +561,7 @@ const getProducts = async (req, res) => {
     let CountOfData = await AddProductsModel.find(filter).countDocuments();
 
       let data = await AddProductsModel.find(filter)
-      .sort({ status: 1, createdAt: -1, deliveryStatus: 1 })
+      .sort([['status', 1], ['createdAt', -1], ['deliveryStatus', 1]])
         .limit(resultsPerPage)
         .skip(resultsPerPage * page);
       if (!data)
@@ -584,16 +584,16 @@ const getManufactureProducts = async (req, res) => {
   try {
     let customerID = req.params.customerID;
     let filter = { isDeleted: false };
-    if (!validator.isValid1(customerID)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'costumerID is required' });
-    }
-    if (!validator.isValidObjectId(customerID)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'costumerID not valid' });
-    }
+    // if (!validator.isValid1(customerID)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'costumerID is required' });
+    // }
+    // if (!validator.isValidObjectId(customerID)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'costumerID not valid' });
+    // }
     const resultsPerPage =
       req.params.limit === ':limit' ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
@@ -607,7 +607,7 @@ const getManufactureProducts = async (req, res) => {
       return res.status(400).send({ status: false, message: 'No data found.' });
     }
     let getData = await AddProductsModel.find({ costumerID: customerID })
-      .sort({ status: 1, createdAt: -1, deliveryStatus: 1 })
+    .sort([ ['createdAt', -1], ['status', 1],['deliveryStatus', 1]])
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
     return res

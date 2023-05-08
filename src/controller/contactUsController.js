@@ -139,7 +139,7 @@ const getcontactform = async (req, res) => {
         .status(400)
         .send({ status: false, message: 'No data found.' });
     }
-        let data = await contactformModel.find(filter).limit(resultsPerPage)
+        let data = await contactformModel.find(filter).sort({ createdAt: -1}).limit(resultsPerPage)
         .skip(resultsPerPage * page);
         return res.status(200).send({ status: true, data: data, count:CountOfData});
     } catch (error) {

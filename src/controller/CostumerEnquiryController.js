@@ -128,7 +128,7 @@ const getEnquiries = async (req, res) => {
     let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments();
 
     let data = await CostumerEnquiryModel.find(filter)
-    .sort({ status: 1, createdAt: -1, deliveryStatus: 1 })
+    .sort([['status', 1], ['createdAt', -1], ['deliveryStatus', 1]])
     .limit(resultsPerPage)
     .skip(resultsPerPage * page); //.countDocuments().exec()
   if (!data)
@@ -543,7 +543,7 @@ const IndividualCostumerEnquiry = async (req, res) => {
       isDeleted: false,
       customerID: customerID,
     })
-      .sort({ status: 1, createdAt: -1, deliveryStatus: 1 })
+    .sort([ ['createdAt', -1], ['status', 1],['deliveryStatus', 1]])
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
 
