@@ -10,8 +10,11 @@ const contactform =async (req,res)=>{
     let data = req.body
    // let {name,email,subject,message,phone}= data
   
-let date = moment().format('DD-MM-YYYY');
-let time = moment().format('HH:mm:ss');
+   moment.tz.setDefault('Asia/Kolkata');
+  
+   // Get the current date and time
+   let date = moment().format('DD-MM-YYYY');
+   let time = moment().format('HH:mm:ss');
 data.date = date;
 data.time = time;
 
