@@ -76,8 +76,8 @@ const EnquiryForm = async (req, res) => {
     });
     let response = {
       body: {
-        greeting: "Dear",
-        name: `${name}`,
+        greeting: "Hi procureN team",
+        
         intro: [
           `Your enquiry has been registered successfully.Your tracking ID is ${trackingID} `,
         ],
@@ -109,6 +109,45 @@ const EnquiryForm = async (req, res) => {
       .catch((error) => {
         return res.status(500).json({ error });
       });
+//=================================2=========================================
+let response2 = {
+  body: {
+    greeting: "Dear Admin",
+    
+    intro: [
+      `We are pleased to inform you that a new Business Proposal has been received on our platform.`,
+
+      `Please log in to the portal to view and respond to the enquiry.
+       `,
+    ],
+    action: {
+      instructions: "",
+      button: {
+        color: "#5c67f5", // Optional action button color
+        text: `Login`,
+        link: "https://procuren.in/login",
+      },
+    },
+    outro: "Thank you.",
+  },
+};
+let mail2 = MailGenerator.generate(response2);
+let message2 = {
+  from: EMAIL,
+  to: "nar.procuren@gmail.com",
+  subject: `ProcureN - New Business Proposal Received`,
+  html: mail2,
+};
+transporter
+  .sendMail(message2)
+  .then(() => {
+    // return res.status(201).json({
+    //     message: "you should receive an email"
+    // })
+  })
+  .catch((error) => {
+    return res.status(500).json({ error });
+  });
 
     let saveData = await CostumerEnquiryModel.create(data);
      

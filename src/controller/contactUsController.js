@@ -84,7 +84,7 @@ const contactform = async (req, res) => {
     let message = {
       from: EMAIL,
       to: "nar.procuren@gmail.com",
-      subject: `Bussiness proposal for ProcureN from ${data.name}`,
+      subject: ` ProcureN - New Enquiry from ${data.name}`,
       html: mail,
     };
     transporter
@@ -97,22 +97,7 @@ const contactform = async (req, res) => {
       .catch((error) => {
         return res.status(500).json({ error });
       });
-    let messages = {
-      from: EMAIL,
-      to: `${data.email}`,
-      subject: `Bussiness proposal for ProcureN from ${data.name}`,
-      html: mail,
-    };
-    transporter
-      .sendMail(messages)
-      .then(() => {
-        // return res.status(201).json({
-        //     message: "you should receive an email"
-        // })
-      })
-      .catch((error) => {
-        return res.status(500).json({ error });
-      });
+    
 
     let saveData = await contactformModel.create(data);
     res.status(201).send({ status: true, data: saveData });

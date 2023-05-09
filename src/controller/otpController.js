@@ -59,8 +59,11 @@ const otpVerification = async (req, res) => {
         body: {
           greeting: "Hi",
           name: `procureN team`,
-          intro: [ `New User ${costumerData.name} has been registered on our platform. Please take the necessary steps to welcome and onboard the new user.`,` `,
-          `User Details:`,` Name:  ${costumerData.name}`,`Email:  ${costumerData.email}`,` Phone:  ${costumerData.phone}`,` JobTitle: ${costumerData.jobTitle}`,` Company: ${costumerData.company} `,  ``,
+          intro: [ `New User ${costumerData.name} has been registered on our platform. Please take the necessary steps to welcome and onboard the new user.`,
+        "    ",
+          `User Details:`,` Name:  ${costumerData.name}`,`Email:  ${costumerData.email}`,` Phone:  ${costumerData.phone}`,` JobTitle: ${costumerData.jobTitle}`,` Company: ${costumerData.company}`,
+         "       ", 
+         "     ",
           `To access further details, kindly proceed to log in to the portal.`
        ],
       //  outro: "To access further details, kindly proceed to log in to the portal.",
