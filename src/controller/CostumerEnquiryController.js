@@ -76,7 +76,7 @@ const EnquiryForm = async (req, res) => {
     });
     let response = {
       body: {
-        greeting: "Hi procureN team",
+        greeting: `Hi ${name}`,
         
         intro: [
           `Your enquiry has been registered successfully.Your tracking ID is ${trackingID} `,
@@ -90,13 +90,15 @@ const EnquiryForm = async (req, res) => {
           },
         },
         outro: "Thank you.",
+        signature: 'Best regards'
+        
       },
     };
     let mail = MailGenerator.generate(response);
     let message = {
       from: EMAIL,
       to: email,
-      subject: `Your Enquiry Registration with Tracking ID ${trackingID}`,
+      subject: `ProcureN - Your Bussiness Proposal has been received`,
       html: mail,
     };
     transporter
@@ -129,6 +131,7 @@ let response2 = {
       },
     },
     outro: "Thank you.",
+    signature: 'Best regards'
   },
 };
 let mail2 = MailGenerator.generate(response2);
@@ -246,16 +249,18 @@ const updateCostumersEnquiry = async (req, res) => {
             greeting: "Dear",
             name: `${name}`,
             intro: [
-              `We regret to inform you that your Enquiry ${trackingID} has been rejected. We have reviewed it thoroughly, and it does not meet our requirements. We understand that this may be disappointing news, but we assure you that we have taken every possible step to ensure fairness in our decision.`,
+              `We regret to inform you that your Enquiry ${trackingID} has been rejected.`,
+              `Please contact us if you have any questions.`
             ],
             outro: "Thank you for your understanding.",
+            signature: 'Best regards'
           },
         };
         let mail = MailGenerator.generate(response);
         let message = {
           from: EMAIL,
           to: email,
-          subject: ` Rejection of enquiry ${trackingID}`,
+          subject: `ProcureN - Your enquiry is rejected`,
           html: mail,
         };
         transporter
@@ -293,10 +298,11 @@ const updateCostumersEnquiry = async (req, res) => {
           });
           let response = {
             body: {
-              greeting: "Dear",
+            
               name: `${name}`,
               intro: [
-                `We are pleased to inform you that your enquiry has been approved and is ready for dispatch.Your tracking ID is: ${trackingID} `,
+                `We are pleased to inform you that your enquiry has been approved and is ready for dispatch.`,
+                `Your tracking ID : ${trackingID} `,
               ],
               action: {
                 instructions: "",
@@ -307,13 +313,14 @@ const updateCostumersEnquiry = async (req, res) => {
                 },
               },
               outro: "Thank you for choosing our services.",
+              signature: 'Best regards'
             },
           };
           let mail = MailGenerator.generate(response);
           let message = {
             from: EMAIL,
             to: email,
-            subject: "Track it",
+            subject: "ProcureN - Your Enquiry has been Approved!",
             html: mail,
           };
           transporter
@@ -352,7 +359,8 @@ const updateCostumersEnquiry = async (req, res) => {
             body: {
               name: `${name}`,
               intro: [
-                `We are pleased to inform you that your order has been shipped.Your tracking ID is: ${trackingID} `,
+                `We are pleased to inform you that your order has been shipped.`,`
+                Your tracking ID : ${trackingID} `,
               ],
               action: {
                 instructions: "",
@@ -363,13 +371,14 @@ const updateCostumersEnquiry = async (req, res) => {
                 },
               },
               outro: "Thank you for choosing our service.",
+              signature: 'Best regards'
             },
           };
           let mail = MailGenerator.generate(response);
           let message = {
             from: EMAIL,
             to: email,
-            subject: `Product Has Shipped!`,
+            subject: `ProcureN - Product has Shipped!`,
             html: mail,
           };
           transporter
@@ -407,7 +416,8 @@ const updateCostumersEnquiry = async (req, res) => {
             body: {
               name: `${name}`,
               intro: [
-                `We are pleased to inform you that your product is now in transit. You can track your shipment using the tracking ID provided: ${trackingID}`,
+                `We are pleased to inform you that your product is now in transit.`,
+                ` Your tracking ID: ${trackingID}`,
               ],
               action: {
                 instructions: "",
@@ -418,13 +428,14 @@ const updateCostumersEnquiry = async (req, res) => {
                 },
               },
               outro: "Thank you for choosing our service.",
+              signature: 'Best regards'
             },
           };
           let mail = MailGenerator.generate(response);
           let message = {
             from: EMAIL,
             to: email,
-            subject: `Product in Transit`,
+            subject: `ProcureN - Product is in Transit`,
             html: mail,
           };
           transporter
@@ -462,16 +473,18 @@ const updateCostumersEnquiry = async (req, res) => {
             body: {
               name: `${name}`,
               intro: [
-                `We're happy to inform you that your order ${trackingID} has been delivered. Please let us know if you have any questions or concerns regarding the delivery.`,
+                `We're happy to inform you that your order ${trackingID} has been delivered.`,
               ],
               outro: "Thank you for choosing our service.",
+              signature: 'Best regards'
+
             },
           };
           let mail = MailGenerator.generate(response);
           let message = {
             from: EMAIL,
             to: email,
-            subject: `Delivery Confirmation`,
+            subject: `ProcureN - Delivery Confirmation`,
             html: mail,
           };
           transporter
@@ -510,16 +523,26 @@ const updateCostumersEnquiry = async (req, res) => {
           body: {
             name: `${name}`,
             intro: [
-              `Your order with enquiry ${trackingID} is pending. We are working to resolve it and will keep you updated. Contact us if you have any questions.`,
+              `Your order with enquiry ${trackingID} is pending. We are working on it and will keep you updated.`,
+              `Please contact us if you have any questions.`,
             ],
+            action: {
+              instructions: "",
+              button: {
+                color: "#5c67f5", // Optional action button color
+                text: `Track Now`,
+                link: "https://procuren.in/",
+              },
+            },
             outro: "Thank you",
+            signature: 'Best regards'
           },
         };
         let mail = MailGenerator.generate(response);
         let message = {
           from: EMAIL,
           to: email,
-          subject: `Pending  of enquiry `,
+          subject: `ProcureN - Pending of an enquiry `,
           html: mail,
         };
         transporter

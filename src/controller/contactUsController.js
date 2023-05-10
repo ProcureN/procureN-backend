@@ -45,7 +45,7 @@ const contactform = async (req, res) => {
     let response = {
       body: {
         name: "ProcureN",
-        intro: [`You got a Bussiness Proposal from ${data.name}`],
+        intro: [`You got an enquiry from ${data.name}`],
         table: {
           data: [
             {
@@ -77,6 +77,7 @@ const contactform = async (req, res) => {
             link: "https://procuren.in/",
           },
         },
+        signature: 'Best regards'
       },
     };
     let mail = MailGenerator.generate(response);
@@ -84,7 +85,7 @@ const contactform = async (req, res) => {
     let message = {
       from: EMAIL,
       to: "nar.procuren@gmail.com",
-      subject: ` ProcureN - New Enquiry from ${data.name}`,
+      subject: ` ProcureN - New enquiry from ${data.name}`,
       html: mail,
     };
     transporter
