@@ -60,7 +60,8 @@ const register = async (req, res) => {
             link: 'https://procuren.in/otp/signup'
 
         }
-    }
+    },
+    signature: 'Best regards'
       },
     };
     let mail = MailGenerator.generate(response);
@@ -369,7 +370,7 @@ const getDetails = async (req, res) => {
     let CountOfData = await costumerModel
       .find({ selectRole: selectRole, isDeleted: false }).countDocuments();
     let getdata = await costumerModel.find({ selectRole: selectRole, isDeleted: false })
-      .sort({ selectRole: 1, createdAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
     res.status(200).send({ status: true, data: getdata, count: CountOfData });
@@ -402,7 +403,7 @@ const getAllDetails = async (req, res) => {
           $ne: 'admin',
         },
       })
-      .sort({ selectRole: -1, createdAt: -1 })
+      .sort({  createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
 

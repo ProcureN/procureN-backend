@@ -588,7 +588,7 @@ const getProducts = async (req, res) => {
     let CountOfData = await AddProductsModel.find(filter).countDocuments();
 
       let data = await AddProductsModel.find(filter)
-      .sort([['status', 1], ['createdAt', -1], ['deliveryStatus', 1]])
+      .sort([['createdAt', -1],])
         .limit(resultsPerPage)
         .skip(resultsPerPage * page);
       if (!data)
@@ -634,7 +634,7 @@ const getManufactureProducts = async (req, res) => {
       return res.status(400).send({ status: false, message: 'No data found.' });
     }
     let getData = await AddProductsModel.find({ costumerID: customerID })
-    .sort([ ['createdAt', -1], ['status', 1],['deliveryStatus', 1]])
+    .sort([['status', 1]])
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
     return res

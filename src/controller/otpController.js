@@ -75,7 +75,7 @@ const otpVerification = async (req, res) => {
               link: "https://procuren.in/login",
             },
           },
-         
+          signature: 'Best regards'
         },
       };
       let mail = MailGenerator.generate(response);
@@ -183,8 +183,9 @@ const resendOtp = async (req, res) => {
             link: 'https://procuren.in/'
 
           }
-        }
+        },
         //outro: ,
+        signature: 'Best regards'
       },
     };
     let mail = MailGenerator.generate(response);
