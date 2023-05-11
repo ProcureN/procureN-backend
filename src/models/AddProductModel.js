@@ -29,7 +29,7 @@ const AddProductsSchema = new mongoose.Schema({
     },
     priceBeforeDiscount: {
         type: Number,
-        require: true,
+       // require: true,
         trime: true
     },
     price: {
@@ -39,7 +39,7 @@ const AddProductsSchema = new mongoose.Schema({
     },
     withGST: {
         type: Number,
-        require: true,
+      //  require: true,
         trim: true
     },
     description: {
@@ -49,7 +49,7 @@ const AddProductsSchema = new mongoose.Schema({
     },
     shippingCharges: {
         type: Number,
-        require: true,
+       // require: true,
         trim: true
     },
     sizeUnit: {

@@ -45,10 +45,15 @@ const EnquiryForm = async (req, res) => {
     let date = moment().format('DD-MM-YYYY');
     let time = moment().format('HH:mm:ss');
 
-    let timestamp = Date.now();
-    // console.log(timestamp)
-    let randomNum = Math.floor(Math.random() * 100); // Generate a 10-digit random number
-    let trackingID = timestamp.toString() + randomNum.toString();
+    let lastTracking = await CostumerEnquiryModel.findOne({}, {}, { sort: { 'createdAt' : -1 } });
+    let lastTrackingNumber = lastTracking.trackingID
+    
+    // Generate the new tracking number by adding 1 to the last tracking number
+    let newTrackingNumber = lastTrackingNumber.substring(2)
+   let addOne =  parseInt(newTrackingNumber) +1
+    // Generate the tracking ID
+    let trackingID = `PN${addOne}`;
+    
     data.date = date;
     data.time = time;
     data.trackingID = trackingID;

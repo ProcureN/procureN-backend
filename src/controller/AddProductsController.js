@@ -24,12 +24,9 @@ const addProdcts = async (req, res) => {
         .status(400)
         .send({ status: false, message: 'Enter details to create Product' });
     }
-    // if (!validator.isValidFiles(files)) {
-    //     return res.status(400).send({ status: false, message: "productImage is required" })
-    // }
-    const {costumerID,} = data;
 
-    
+    const { costumerID } = data;
+
     if (!validator.isValid1(costumerID)) {
       return res
         .status(400)
@@ -46,89 +43,30 @@ const addProdcts = async (req, res) => {
         .status(201)
         .send({ status: false, message: 'costumer not found' });
 
-    // let uploadImg = await uploadFile(req, res);
-
-    // if (req.file == undefined) {
-    //   return res.status(400).send({ message: "Please upload a file!" });
-    // }
     moment.tz.setDefault('Asia/Kolkata');
   
-   // Get the current date and time
-   let date = moment().format('DD-MM-YYYY');
-   let time = moment().format('HH:mm:ss');
-    let timestamp = Date.now();
-   // console.log(timestamp)
-    let randomNum = Math.floor(Math.random() * 100); // Generate a 10-digit random number
-    let trackingID = timestamp.toString() + randomNum.toString();
-    data.trackingID = trackingID;
+    // Get the current date and time
+    let date = moment().format('DD-MM-YYYY');
+    let time = moment().format('HH:mm:ss');
+
+    let lastTracking = await AddProductsModel.findOne({}, {}, { sort: { 'createdAt' : -1 } });
+    let lastTrackingNumber = lastTracking.trackingID
+    
+    // Generate the new tracking number by adding 1 to the last tracking number
+    let newTrackingNumber = lastTrackingNumber.substring(2)
+   let addOne =  parseInt(newTrackingNumber) +1
+    // Generate the tracking ID
+    let trackingID = `PN${addOne}`;
+    
     data.date = date;
     data.time = time;
     let email = checkdata.email?.toString();
     let name = checkdata.name?.toString();
-    // let config = {
-    //   service: "gmail",
-    //   auth: {
-    //     user: EMAIL,
-    //     pass: PASSWORD,
-    //   },
-    // };
-    // let transporter = nodemailer.createTransport(config);
+    data.trackingID = trackingID;
 
-    // let MailGenerator = new Mailgen({
-    //   theme: "default",
-    //   product: {
-    //     logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
-    //     // Custom logo height
-    //     logoHeight: "100px",
-    //     name: "ProcureN",
-    //     link: "https://procuren.in/",
-    //   },
-    // });
-    // let response = {
-    //   body: {
-    //     greeting: "Hi",
-    //     name: `${name}`,
-    //     intro: [
-    //       `Your  Product enquiry has been registered successfully.`,
-    //       `Your tracking ID : ${trackingID} `,
-    //     ],
-    //     action: {
-    //       instructions: "",
-    //       button: {
-    //         color: "#5c67f5", // Optional action button color
-    //         text: `Track Now`,
-    //         link: "https://procuren.in/",
-    //       },
-    //     },
-    //     outro: "Thank you.",
-    //     signature: 'Best regards'
-    //   },
-    // };
-    // let mail = MailGenerator.generate(response);
-    // let message = {
-    //   from: EMAIL,
-    //   to: email,
-    //   subject: `ProcureN - Your Product Enquiry has been received`,
-    //   html: mail,
-    // };
-    // transporter
-    //   .sendMail(message)
-    //   .then(() => {
-    //     // return res.status(201).json({
-    //     //     message: "you should receive an email"
-    //     // })
-    //   })
-    //   .catch((error) => {
-    //     return res.status(500).json({ error });
-    //   });
     let saveData = await AddProductsModel.create(data);
     res.status(201).send({ status: true, data: saveData });
   } catch (error) { 
-    // if (error.code == 'LIMIT_FILE_SIZE') {
-    //   return res.status(500).send({
-    //     message: 'File size cannot be larger than 2MB!',
-    //   });
-    // }
     return res.status(500).send({ status: false, message: error.message });
   }
 };
