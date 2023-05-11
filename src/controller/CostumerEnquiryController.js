@@ -615,7 +615,7 @@ const IndividualCostumerEnquiry = async (req, res) => {
       isDeleted: false,
       customerID: customerID,
     })
-    .sort([['status', 1]])
+    .sort({ createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
 

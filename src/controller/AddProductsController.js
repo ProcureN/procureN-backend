@@ -572,7 +572,7 @@ const getManufactureProducts = async (req, res) => {
       return res.status(400).send({ status: false, message: 'No data found.' });
     }
     let getData = await AddProductsModel.find({ costumerID: customerID })
-    .sort([['status', 1]])
+    .sort({createdAt:-1})
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
     return res
