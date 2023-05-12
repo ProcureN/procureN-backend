@@ -8,25 +8,29 @@ const requestAdmin = async (req, res) => {
     let data = req.body;
     let { productId, Description, ApprovealStatus } = data;
     if (!validator.isValid1(productId)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'ProductId is required' });
+      return res.status(400).send({
+         status: false,
+          message: 'ProductId is required' 
+        });
     }
     if (!validator.isValidObjectId(productId)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'ProductId not valid' });
+      return res.status(400).send({ 
+        status: false, 
+        message: 'ProductId not valid' 
+      });
     }
     if (!validator.isValid1(Description)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'Description is required' });
+      return res.status(400).send({
+         status: false,
+          message: 'Description is required' 
+        });
     }
     let productData = await productModel.findOne({ _id: productId });
     if (!productData) {
-      return res
-        .status(404)
-        .send({ status: false, message: 'product is not found' });
+      return res.status(404).send({ 
+        status: false, 
+        message: 'product is not found'
+       });
     }
 
     let saveData = await RequestAdminModel.create(data);

@@ -16,19 +16,18 @@ const otpVerification = async (req, res) => {
     let { email, otp } = data;
     let costumerData = await costumerModel.findOne({ email: email });
     if (!costumerData) {
-      return res
-      .status(404)
-      .send({ status: false, Message: 'user not found' });
+      return res.status(404).send({ 
+        status: false,
+         Message: 'user not found'
+         });
     }
     let otpData = await optModel.findOne({ email: email });
     if (!otpData) {
-      return res
-      .status(400)
-      .send('incorrect Email');
+      return res.status(400).send('incorrect Email');
     }
     let otpverify = otpData.toObject();
     costumerData.toObject();
-    console.log(otpverify.otp, costumerData.selectRole);
+ //   console.log(otpverify.otp, costumerData.selectRole);
     if (otp == otpverify.otp) {
       let customerVerification = await costumerModel.findOneAndUpdate(
         { email: email },
@@ -118,7 +117,7 @@ const otpVerification = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-
+//==============================================================================================================
 const resendOtp = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   try {
@@ -128,9 +127,10 @@ const resendOtp = async (req, res) => {
       return res.status(400).json({ message: "Please provide a valid email" });
     }
     if (!validator.isValidEmail(email.trim()))
-      return res
-        .status(400)
-        .send({ status: false, message: 'Please Enter a valid Email-id' });
+      return res.status(400).send({ 
+        status: false, 
+        message: 'Please Enter a valid Email-id'
+       });
     let digits = '1234567890';
     let limit = 6;
     let otp = '';
@@ -139,7 +139,10 @@ const resendOtp = async (req, res) => {
     }
     let checkdata = await costumerModel.findOne({ email: email })
     if (!checkdata) {
-      return res.status(400).send({ status: false, message: "email is not register" })
+      return res.status(400).send({
+         status: false, 
+         message: "email is not register" 
+        })
     }
     let name = checkdata.name
     let updateotp = await optModel.findOneAndUpdate(
@@ -217,13 +220,15 @@ const forgetPassword = async (req, res) => {
     if (!password)
       return res
         .status(400)
-        .send({ status: false, message: 'Password is required' });
+        .send({ 
+          status: false,
+           message: 'Password is required' 
+          });
     //validating user password
     if (!validator.isValidPassword(password))
       return res.status(400).send({
         status: false,
-        message:
-          'Password should be between 8 and 15 character and it should be alpha numeric',
+        message:'Password should be between 8 and 15 character and it should be alpha numeric',
       });
     if (validator.isValid(password))
       return res.status(400).send({

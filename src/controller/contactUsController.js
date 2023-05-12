@@ -120,16 +120,21 @@ const getcontactform = async (req, res) => {
     page = page - 1;
     let CountOfData = await contactformModel.find(filter).countDocuments();
     if (CountOfData.length === 0) {
-      return res.status(400).send({ status: false, message: "No data found." });
+      return res.status(400).send({ 
+        status: false, 
+        message: "No data found." 
+      });
     }
     let data = await contactformModel
       .find(filter)
       .sort({ createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
-    return res
-      .status(200)
-      .send({ status: true, data: data, count: CountOfData });
+    return res.status(200).send({ 
+      status: true, 
+      data: data,
+       count: CountOfData
+       });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -141,23 +146,20 @@ const deleteContactForm = async (req, res) => {
     const contactUsId = req.params.contactUsId;
     //let error =[]
     if (!validator.isValidObjectId(contactUsId)) {
-      res
-        .status(400)
-        .send({ status: false, message: "Please provide valid costumer Id" });
+      res.status(400).send({
+         status: false,
+          message: "Please provide valid costumer Id" 
+        });
     }
     let getID = await contactformModel.findById(contactUsId);
     if (!getID) {
-      return res
-        .status(404)
-        .send({
+      return res.status(404).send({
           status: false,
           message: "contactUs Id Not Found for the request id",
         });
     }
     if (getID.isDeleted == true) {
-      return res
-        .status(404)
-        .send({
+      return res.status(404).send({
           status: false,
           message: "contactUs id is already deleted not found",
         });
@@ -167,9 +169,9 @@ const deleteContactForm = async (req, res) => {
       { _id: contactUsId },
       { isDeleted: true, deletedAt: Date.now() }
     );
-    return res
-      .status(200)
-      .send({ status: true, message: "contactUs Id is deleted succesfully" });
+    return res.status(200).send({ 
+      status: true,
+       message: "contactUs Id is deleted succesfully" });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }

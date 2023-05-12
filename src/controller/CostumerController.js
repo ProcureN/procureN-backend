@@ -50,7 +50,8 @@ const register = async (req, res) => {
       body: {
         greeting: 'Dear',
         name: `${name}`,
-        intro:  [`Thank you for choosing ProcureN! Your One-Time Password (OTP) has been generated. Your OTP is ${otp}`],
+        intro:  [`Thank you for choosing ProcureN! Your One-Time Password (OTP) has been generated.`,
+        `Your OTP is ${otp}`],
        //outro: 'thank you',
        action: {
         instructions: "",
@@ -69,7 +70,7 @@ const register = async (req, res) => {
     let message = {
       from: EMAIL,
       to: email,
-      subject: `${otp} is the OTP to sign in to your ProcureN account `,
+      subject: `ProcureN - OTP is ${otp} `,
       html: mail,
     };
     transporter
@@ -106,127 +107,39 @@ const updateCostumer = async (req, res) => {
   try {
     let data = req.body;
     let customerID = req.params.customerID;
-    const {
-      name,
-      email,
-      password,
-      selectRole,
-      company,
-      jobTitle,
-      phone,
-      state,
-      city,
-    } = data;
-    // if (Name) {
-    //   if (!Name)
-    //     return res
-    //       .status(400)
-    //       .send({ status: false, message: 'name is required' });
-    //   if (validator.isValid(Name))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: 'name should not be an empty string',
-    //     });
-    // }
+    const {name,email, password,selectRole,company,jobTitle,phone,state,city,} = data;
+
     if (email) {
-      // if (!email)
-      //   return res
-      //     .status(400)
-      //     .send({ status: false, message: 'User Email-id is required' });
-      // //validating user email-id
-      // if (!validator.isValidEmail(email.trim()))
-      //   return res
-      //     .status(400)
-      //     .send({ status: false, message: 'Please Enter a valid Email-id' });
-      //checking if email already exist or not
       let duplicateEmail = await costumerModel.findOne({ email: email });
       if (duplicateEmail)
-        return res
-          .status(400)
-          .send({ status: false, message: 'Email already exist' });
+        return res.status(400).send({
+           status: false,
+            message: 'Email already exist' 
+          });
     }
     if (password) {
     data.password = await bcrypt.hash(password, 10);
      }
-    // if (Company) {
-    //   if (!Company)
-    //     return res
-    //       .status(400)
-    //       .send({ status: false, message: 'Company is required' });
-    //   if (validator.isValid(Company))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: 'Company should not be an empty string',
-    //     });
-    // }
-    // if (JobTitle) {
-    //   if (!JobTitle)
-    //     return res
-    //       .status(400)
-    //       .send({ status: false, message: 'JobTitle is required' });
-    //   if (validator.isValid(JobTitle))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: 'JobTitle should not be an empty string',
-    //     });
-    // }
+   
     if (phone) {
-      // if (!phone)
-      //   return res
-      //     .status(400)
-      //     .send({ status: false, message: 'User Phone number is required' });
-      // //validating user phone
-      // if (!validator.isValidPhone(phone.trim()))
-      //   return res.status(400).send({
-      //     status: false,
-      //     message: 'Please Enter a valid Phone number',
-      //   });
-      // checking if phone already exist or not
       let duplicatePhone = await costumerModel.findOne({ phone: phone });
       if (duplicatePhone)
-        return res
-          .status(400)
-          .send({ status: false, message: 'Phone already exist' });
+        return res.status(400).send({
+           status: false,
+            message: 'Phone already exist' 
+          });
     }
-    // if (State) {
-    //   if (!State)
-    //     return res
-    //       .status(400)
-    //       .send({ status: false, message: 'State is required' });
-    //   if (validator.isValid(State))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: 'State should not be an empty string',
-    //     });
-    // }
-    // if (city) {
-    //   if (!city)
-    //     return res
-    //       .status(400)
-    //       .send({ status: false, message: 'city is required' });
-    //   if (validator.isValid(city))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: 'city should not be an empty string',
-    //     });
-    // }
-    // if (SelectRole) {
-    //   let Role = ['Retailer', 'Manufacturer'];
-    //   if (!Role.includes(SelectRole))
-    //     return res.status(400).send({
-    //       status: false,
-    //       message: `role must be slected among ${Role}`,
-    //     });
-    // }
     let userData = await costumerModel.findOneAndUpdate(
       { _id: customerID },
       data,
       { new: true }
     ).sort({createdAt:-1});
+
     if (!userData) {
-      return res
-        .status(404)
-        .send({ status: false, message: 'no user found to update' });
+      return res.status(404).send({ 
+        status: false, 
+        message: 'no user found to update' 
+      });
     }
     return res
       .status(200)
@@ -242,50 +155,27 @@ const login = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
     Data = req.body;
-    // if (validator.isValidBody(Data))
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: 'Enter details to create your account',
-    //   });
     const { email, password } = Data;
-    // if (!email) 
-    //   return res
-    //     .status(400) 
-    //     .send({ status: false, message: 'User Email-id is required' });
-
-    // if (!validator.isValidEmail(email.trim()))
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'Please Enter a valid Email-id' });
-
+    
     const isEmailExists = await costumerModel.findOne({ email: email });
     if (!isEmailExists)
-      return res
-        .status(401)
-        .send({ status: false, message: 'User not found.' });
-
-
+      return res.status(401).send({ 
+        status: false,
+         message: 'User not found.' 
+        });
         const isPasswordMatch =   await bcrypt.compare(
           password,
           isEmailExists.password
         );
         if (!isPasswordMatch)
-          return res
-            .status(401)
-            .send({ status: false, message: 'Email or Password is Incorrect' });
+          return res.status(401).send({
+             status: false,
+              message: 'Email or Password is Incorrect'
+             });
     
     if (isEmailExists.verified === false) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'you are not verified' });
+      return res.status(400).send({ status: false, message: 'you are not verified' });
     }
-    //  Password Validation
-    // if (validator.isValid(password))
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: 'Password should not be an empty string',
-    //   });
-
     // > Create Jwt Token
     const token = jwt.sign(
       { customerID: isEmailExists._id.toString() },
@@ -300,9 +190,10 @@ const login = async (req, res) => {
       token: token,
     };
    // console.log('Login done');
-    res
-      .status(200)
-      .send({ status: true, message: 'Login Successful', data: result });
+    res.status(200).send({ status: true,
+       message: 'Login Successful', 
+       data: result 
+      });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -314,9 +205,10 @@ const deleteCostumers = async (req, res) => {
     const deleteCostumerID = req.params.customerID;
     //let error =[]
     if (!validator.isValidObjectId(deleteCostumerID)) {
-      res
-        .status(400)
-        .send({ status: false, message: 'Please provide valid costumer Id' });
+      res.status(400).send({ 
+        status: false, 
+        message: 'Please provide valid costumer Id' 
+      });
     }
     let getID = await costumerModel.findById(deleteCostumerID);
     if (!getID) {
@@ -336,9 +228,10 @@ const deleteCostumers = async (req, res) => {
       { _id: deleteCostumerID },
       { isDeleted: true, deletedAt: Date.now() }
     );
-    return res
-      .status(200)
-      .send({ status: true, message: 'costumer Id is deleted succesfully' });
+    return res.status(200).send({
+       status: true,
+        message: 'costumer Id is deleted succesfully' 
+      });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -352,15 +245,15 @@ const getDetails = async (req, res) => {
     let data = req.query;
     let { selectRole } = data;
 
-    let Role = ['Retailer', 'Manufacturer'];
-    if (!Role.includes(selectRole))
-      return res
-        .status(400)
-        .send({ status: false, message: `role must be slected among ${Role}` });
-    if (Object.keys(data).length == 0)
-      return res
-        .status(400)
-        .send({ status: false, message: 'Enter the key and value to filter' });
+    // let Role = ['Retailer', 'Manufacturer'];
+    // if (!Role.includes(selectRole))
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: `role must be slected among ${Role}` });
+    // if (Object.keys(data).length == 0)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: 'Enter the key and value to filter' });
 
     const resultsPerPage =
       req.params.limit === ':limit' ? 10 : req.params.limit;
@@ -368,9 +261,14 @@ const getDetails = async (req, res) => {
     //const query = req.query.search;
     page = page - 1;
     let CountOfData = await costumerModel
-      .find({ selectRole: selectRole, isDeleted: false }).countDocuments();
-    let getdata = await costumerModel.find({ selectRole: selectRole, isDeleted: false })
-      .sort({ createdAt: -1 })
+      .find({
+         selectRole: selectRole,
+          isDeleted: false
+         }).countDocuments();
+    let getdata = await costumerModel.find({
+       selectRole: selectRole,
+        isDeleted: false 
+      }).sort({ createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
     res.status(200).send({ status: true, data: getdata, count: CountOfData });
@@ -391,22 +289,15 @@ const getAllDetails = async (req, res) => {
     let CountOfData = await costumerModel
       .find({
         isDeleted: false,
-        selectRole: {
-          $ne: 'admin',
-        },
-      })
-      .countDocuments();
+        selectRole: {$ne: 'admin',},
+      }).countDocuments();
     let data = await costumerModel
       .find({
         isDeleted: false,
-        selectRole: {
-          $ne: 'admin',
-        },
-      })
-      .sort({  createdAt: -1 })
+        selectRole: { $ne: 'admin'},
+      }).sort({  createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
-
     res.status(200).send({ status: true, data: data, count: CountOfData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
@@ -419,24 +310,26 @@ const Individualprofiles = async (req, res) => {
   try {
     let customerID = req.params.customerID;
     if (!validator.isValid1(customerID)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'costumerID is required' });
+      return res.status(400).send({
+         status: false,
+          message: 'costumerID is required'
+         });
     }
     if (!validator.isValidObjectId(customerID)) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'costumerID not valid' });
+      return res.status(400).send({ 
+        status: false,
+         message: 'costumerID not valid'
+        });
     }
-
     let getData = await costumerModel.findOne({
       _id: customerID,
       isDeleted: false,
     });
     if (!getData) {
-      return res
-        .status(400)
-        .send({ status: false, message: 'not enquiries found' });
+      return res.status(400).send({ 
+        status: false,
+         message: 'not enquiries found'
+         });
     }
     return res.status(200).send({ status: true, data: getData });
   } catch (error) {
@@ -480,9 +373,11 @@ const updatePassword = async (req, res) => {
       { password: data.password },
       { new: true }
     );
-    return res
-      .status(200)
-      .send({ status: true, message: 'success', data: userData });
+    return res.status(200).send({ 
+      status: true, 
+      message: 'success',
+       data: userData
+       });
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }
@@ -495,9 +390,15 @@ const UniqueEmail = async (req,res)=>{
     let email = req.body.email
     let checkdata = await costumerModel.find({email:email})
     if(!checkdata || checkdata.length ===0){
-       return res.status(200).send({status:true,message:"email is unique"})
+       return res.status(200).send({
+        status:true,
+        message:"email is unique"
+      })
     }else
-    return res.status(400).send({status:false,message:"email already existing"})
+    return res.status(400).send({
+      status:false,
+      message:"email already existing"
+    })
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }

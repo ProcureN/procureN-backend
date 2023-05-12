@@ -2,9 +2,8 @@ const AddProductModel = require("../models/AddProductModel");
 const CostumerEnquiryModel = require("../models/CostomerEnquiryForm");
 const CostumerModel = require("../models/CostumerModel");
 const validator = require("../validation/validations");
-const moment = require('moment');
-require('moment-timezone');
-
+const moment = require("moment");
+require("moment-timezone");
 
 const Mail = require("nodemailer/lib/mailer");
 const mongoose = require("mongoose");
@@ -20,40 +19,47 @@ const EnquiryForm = async (req, res) => {
     const { customerID } = data;
 
     if (!validator.isValid1(customerID)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "costumerID is required" });
+      return res.status(400).send({
+        status: false,
+        message: "costumerID is required",
+      });
     }
     if (!validator.isValidObjectId(customerID)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "costumerID not valid" });
+      return res.status(400).send({
+        status: false,
+        message: "costumerID not valid",
+      });
     }
     let getCostumers = await CostumerModel.findOne({
       _id: customerID,
       isDeleted: false,
     });
     if (!getCostumers) {
-      return res
-        .status(404)
-        .send({ status: false, message: "user not found or already deleted" });
+      return res.status(404).send({
+        status: false,
+        message: "user not found or already deleted",
+      });
     }
 
-    moment.tz.setDefault('Asia/Kolkata');
-  
-    // Get the current date and time
-    let date = moment().format('DD-MM-YYYY');
-    let time = moment().format('HH:mm:ss');
+    moment.tz.setDefault("Asia/Kolkata");
 
-    let lastTracking = await CostumerEnquiryModel.findOne({}, {}, { sort: { 'createdAt' : -1 } });
-    let lastTrackingNumber = lastTracking.trackingID
-    
+    // Get the current date and time
+    let date = moment().format("DD-MM-YYYY");
+    let time = moment().format("HH:mm:ss");
+
+    let lastTracking = await CostumerEnquiryModel.findOne(
+      {},
+      {},
+      { sort: { createdAt: -1 } }
+    );
+    let lastTrackingNumber = lastTracking.trackingID;
+
     // Generate the new tracking number by adding 1 to the last tracking number
-    let newTrackingNumber = lastTrackingNumber.substring(2)
-   let addOne =  parseInt(newTrackingNumber) +1
+    let newTrackingNumber = lastTrackingNumber.substring(2);
+    let addOne = parseInt(newTrackingNumber) + 1;
     // Generate the tracking ID
     let trackingID = `PN${addOne}`;
-    
+
     data.date = date;
     data.time = time;
     data.trackingID = trackingID;
@@ -82,7 +88,7 @@ const EnquiryForm = async (req, res) => {
     let response = {
       body: {
         greeting: `Hi ${name}`,
-        
+
         intro: [
           `Your enquiry has been registered successfully.Your tracking ID is ${trackingID} `,
         ],
@@ -95,8 +101,7 @@ const EnquiryForm = async (req, res) => {
           },
         },
         outro: "Thank you.",
-        signature: 'Best regards'
-        
+        signature: "Best regards",
       },
     };
     let mail = MailGenerator.generate(response);
@@ -116,49 +121,49 @@ const EnquiryForm = async (req, res) => {
       .catch((error) => {
         return res.status(500).json({ error });
       });
-//=================================2=========================================
-let response2 = {
-  body: {
-    greeting: "Dear Admin",
-    
-    intro: [
-      `We are pleased to inform you that a new Business Proposal has been received on our platform.`,
+    //=================================2=========================================
+    let response2 = {
+      body: {
+        greeting: "Dear Admin",
 
-      `Please log in to the portal to view and respond to the enquiry.
+        intro: [
+          `We are pleased to inform you that a new Business Proposal has been received on our platform.`,
+
+          `Please log in to the portal to view and respond to the enquiry.
        `,
-    ],
-    action: {
-      instructions: "",
-      button: {
-        color: "#5c67f5", // Optional action button color
-        text: `Login`,
-        link: "https://procuren.in/login",
+        ],
+        action: {
+          instructions: "",
+          button: {
+            color: "#5c67f5", // Optional action button color
+            text: `Login`,
+            link: "https://procuren.in/login",
+          },
+        },
+        outro: "Thank you.",
+        signature: "Best regards",
       },
-    },
-    outro: "Thank you.",
-    signature: 'Best regards'
-  },
-};
-let mail2 = MailGenerator.generate(response2);
-let message2 = {
-  from: EMAIL,
-  to: "nar.procuren@gmail.com",
-  subject: `ProcureN - New Business Proposal Received`,
-  html: mail2,
-};
-transporter
-  .sendMail(message2)
-  .then(() => {
-    // return res.status(201).json({
-    //     message: "you should receive an email"
-    // })
-  })
-  .catch((error) => {
-    return res.status(500).json({ error });
-  });
+    };
+    let mail2 = MailGenerator.generate(response2);
+    let message2 = {
+      from: EMAIL,
+      to: "nar.procuren@gmail.com",
+      subject: `ProcureN - New Business Proposal Received`,
+      html: mail2,
+    };
+    transporter
+      .sendMail(message2)
+      .then(() => {
+        // return res.status(201).json({
+        //     message: "you should receive an email"
+        // })
+      })
+      .catch((error) => {
+        return res.status(500).json({ error });
+      });
 
     let saveData = await CostumerEnquiryModel.create(data);
-     
+
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
@@ -170,7 +175,7 @@ const getEnquiries = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let filter = { isDeleted: false };
-    
+
     const resultsPerPage =
       req.params.limit === ":limit" ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
@@ -180,18 +185,20 @@ const getEnquiries = async (req, res) => {
     let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments();
 
     let data = await CostumerEnquiryModel.find(filter)
-    .sort([ ['createdAt', -1]])
-    .limit(resultsPerPage)
-    .skip(resultsPerPage * page); //.countDocuments().exec()
-  if (!data)
-    return res
-      .status(404)
-      .send({ status: false, message: 'no enquiries found' });
-      res.status(200).send({
-        status: true,
-        data: data,
-        count: CountOfData,
+      .sort([["createdAt", -1]])
+      .limit(resultsPerPage)
+      .skip(resultsPerPage * page); //.countDocuments().exec()
+    if (!data) {
+      return res.status(404).send({
+        status: false,
+        message: "no enquiries found",
       });
+    }
+    res.status(200).send({
+      status: true,
+      data: data,
+      count: CountOfData,
+    });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -209,16 +216,18 @@ const updateCostumersEnquiry = async (req, res) => {
       customerEnquiryID
     );
     if (!getcustomerEnquiryData) {
-      return res
-        .status(404)
-        .send({ status: false, message: "no customer enquiry found" });
+      return res.status(404).send({
+        status: false,
+        message: "no customer enquiry found",
+      });
     }
     let customerId = getcustomerEnquiryData.customerID?.toString();
     let trackingID = getcustomerEnquiryData.trackingID;
     if (!customerId) {
-      return res
-        .status(404)
-        .send({ status: false, message: "customerID not found" });
+      return res.status(404).send({
+        status: false,
+        message: "customerID not found",
+      });
     }
     let customerData = await CostumerModel.findById(customerId);
     if (!customerData) {
@@ -255,10 +264,10 @@ const updateCostumersEnquiry = async (req, res) => {
             name: `${name}`,
             intro: [
               `We regret to inform you that your Enquiry ${trackingID} has been rejected.`,
-              `Please contact us if you have any questions.`
+              `Please contact us if you have any questions.`,
             ],
             outro: "Thank you for your understanding.",
-            signature: 'Best regards'
+            signature: "Best regards",
           },
         };
         let mail = MailGenerator.generate(response);
@@ -303,7 +312,6 @@ const updateCostumersEnquiry = async (req, res) => {
           });
           let response = {
             body: {
-            
               name: `${name}`,
               intro: [
                 `We are pleased to inform you that your enquiry has been approved and is ready for dispatch.`,
@@ -318,7 +326,7 @@ const updateCostumersEnquiry = async (req, res) => {
                 },
               },
               outro: "Thank you for choosing our services.",
-              signature: 'Best regards'
+              signature: "Best regards",
             },
           };
           let mail = MailGenerator.generate(response);
@@ -364,7 +372,8 @@ const updateCostumersEnquiry = async (req, res) => {
             body: {
               name: `${name}`,
               intro: [
-                `We are pleased to inform you that your order has been shipped.`,`
+                `We are pleased to inform you that your order has been shipped.`,
+                `
                 Your tracking ID : ${trackingID} `,
               ],
               action: {
@@ -376,7 +385,7 @@ const updateCostumersEnquiry = async (req, res) => {
                 },
               },
               outro: "Thank you for choosing our service.",
-              signature: 'Best regards'
+              signature: "Best regards",
             },
           };
           let mail = MailGenerator.generate(response);
@@ -433,7 +442,7 @@ const updateCostumersEnquiry = async (req, res) => {
                 },
               },
               outro: "Thank you for choosing our service.",
-              signature: 'Best regards'
+              signature: "Best regards",
             },
           };
           let mail = MailGenerator.generate(response);
@@ -481,8 +490,7 @@ const updateCostumersEnquiry = async (req, res) => {
                 `We're happy to inform you that your order ${trackingID} has been delivered.`,
               ],
               outro: "Thank you for choosing our service.",
-              signature: 'Best regards'
-
+              signature: "Best regards",
             },
           };
           let mail = MailGenerator.generate(response);
@@ -540,7 +548,7 @@ const updateCostumersEnquiry = async (req, res) => {
               },
             },
             outro: "Thank you",
-            signature: 'Best regards'
+            signature: "Best regards",
           },
         };
         let mail = MailGenerator.generate(response);
@@ -568,9 +576,10 @@ const updateCostumersEnquiry = async (req, res) => {
       { new: true }
     );
     if (!userData) {
-      return res
-        .status(404)
-        .send({ status: false, message: "no user found to update" });
+      return res.status(404).send({
+        status: false,
+        message: "no user found to update",
+      });
     }
     return res
       .status(200)
@@ -588,20 +597,18 @@ const IndividualCostumerEnquiry = async (req, res) => {
     let customerID = req.params.customerID;
 
     if (!validator.isValid1(customerID)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "costumerID is required" });
+      return res.status(400).send({
+        status: false,
+        message: "costumerID is required",
+      });
     }
     if (!validator.isValidObjectId(customerID)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "costumerID not valid" });
+      return res.status(400).send({
+        status: false,
+        message: "costumerID not valid",
+      });
     }
-    
-    // if(!getData){
-    //     return res.status(404).send({ status: false, message: "not enquiries found" })
-    // }
-    let filter = { isDeleted: false };
+
     const resultsPerPage =
       req.params.limit === ":limit" ? 10 : req.params.limit;
     let page = req.params.page >= 1 ? req.params.page : 1;
@@ -615,7 +622,7 @@ const IndividualCostumerEnquiry = async (req, res) => {
       isDeleted: false,
       customerID: customerID,
     })
-    .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
 
@@ -659,9 +666,10 @@ const deleteCostumerEnquiry = async (req, res) => {
       { _id: customerEnquiryId },
       { isDeleted: true, deletedAt: Date.now() }
     );
-    return res
-      .status(200)
-      .send({ status: true, message: "customerEnquiryId is deleted" });
+    return res.status(200).send({
+      status: true,
+      message: "customerEnquiryId is deleted",
+    });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -686,47 +694,43 @@ const trackEnquiry = async (req, res) => {
   try {
     let trackingID = req.params.trackingID;
     let getcustomerEnquiryId = await CostumerEnquiryModel.findOne({
-      trackingID: trackingID,}).select({status:1,deliveryStatus:1});
+      trackingID: trackingID,
+    }).select({ status: 1, deliveryStatus: 1 });
     let getProductData = await AddProductModel.findOne({
       trackingID: trackingID,
     });
-    // if (!getcustomerEnquiryId || !getProductData ) {
-    //   return res.status(404).send({
-    //     status: false,
-    //     message: "id  Not Found",
-    //   });
-    // }
-    // if (getcustomerEnquiryId.isDeleted == true ) {
-    //   return res.status(404).send({
-    //     status: false,
-    //     message: "id is already deleted not found",
-    //   });
-    // }
-    // res.status(200).send({ status: true, data: getcustomerEnquiryId });
 
     if (getcustomerEnquiryId || getProductData) {
       if (getcustomerEnquiryId) {
         if (getcustomerEnquiryId.isDeleted == true) {
-          return res
-            .status(404)
-            .send({ status: false, message: "tracking ID is deleted" });
+          return res.status(404).send({
+            status: false,
+            message: "tracking ID is deleted",
+          });
         } else {
-          return res
-            .status(200)
-            .send({ status: true, data: getcustomerEnquiryId });
+          return res.status(200).send({
+            status: true,
+            data: getcustomerEnquiryId,
+          });
         }
       } else if (getProductData) {
         if (getProductData.isDeleted == true) {
-          return res.status(404)
-          .send({ status: false, message: "tracking ID is deleted" });
+          return res.status(404).send({
+            status: false,
+            message: "tracking ID is deleted",
+          });
         } else
-          return res.status(200)
-          .send({ status: true, data: getProductData });
+          return res.status(200).send({
+            status: true,
+            data: getProductData,
+          });
       }
     } else {
       if (!getcustomerEnquiryId || !getProductData) {
-        return res.status(404)
-        .send({ status: false, message: "Not Found" });
+        return res.status(404).send({
+          status: false,
+          message: "Not Found",
+        });
       }
     }
   } catch (error) {
