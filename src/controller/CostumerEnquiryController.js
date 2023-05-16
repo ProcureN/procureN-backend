@@ -845,6 +845,90 @@ const IndividualCostumerEnquiryCounts = async (req, res) => {
     res.status(500).send({ status: false, message: error.message });
   }
 };
+//=================================================================================================
+const countOfStatusByCustomerId = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  try {
+    const pipeline = [
+      {
+        $match: {
+          isDeleted: false // Add this $match stage to exclude deleted documents
+        }
+      },
+      {
+        $group: {
+          _id: '$customerID',
+          counts: {
+            $push: '$status'
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: 'costumers', // Updated collection name
+          let: { customerId: { $toString: '$_id' } },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$$customerId', { $toString: '$_id' }] } } },
+            { $project: { _id: 0, name: 1 } }
+          ],
+          as: 'customer'
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          name: { $arrayElemAt: ['$customer.name', 0] },
+          Approved: {
+            $size: {
+              $filter: {
+                input: '$counts',
+                as: 'status',
+                cond: { $eq: ['$$status', 'Approved'] }
+              }
+            }
+          },
+          Pending: {
+            $size: {
+              $filter: {
+                input: '$counts',
+                as: 'status',
+                cond: { $eq: ['$$status', 'Pending'] }
+              }
+            }
+          },
+          Rejected: {
+            $size: {
+              $filter: {
+                input: '$counts',
+                as: 'status',
+                cond: { $eq: ['$$status', 'Rejected'] }
+              }
+            }
+          }
+        }
+      }
+    ];
+
+    const result = await CostumerEnquiryModel.aggregate(pipeline);
+
+    const transformedData = result.map((item) => {
+      return {
+        name: item.name,
+        Approved: item.Approved,
+        Pending: item.Pending,
+        Rejected: item.Rejected
+      };
+    });
+
+    res.status(200).send({ status: true, data: transformedData });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+
+
+
 
 module.exports = {
   EnquiryForm,
@@ -856,4 +940,5 @@ module.exports = {
   trackEnquiry,
   allData,
   IndividualCostumerEnquiryCounts,
+  countOfStatusByCustomerId
 };
