@@ -814,12 +814,12 @@ const countOfStatusByCustomerIdOfProducts = async (req, res) => {
     const pipeline = [
       {
         $match: {
-          isDeleted: false // Add this $match stage to exclude deleted documents
+          isDeleted: false
         }
       },
       {
         $group: {
-          _id: '$customerID',
+          _id: { $toObjectId: '$costumerID' }, // Convert costumerID to ObjectId type
           counts: {
             $push: '$status'
           }
@@ -827,13 +827,14 @@ const countOfStatusByCustomerIdOfProducts = async (req, res) => {
       },
       {
         $lookup: {
-          from: 'customers', // Updated collection name
+          from: 'costumers', // Updated collection name
           let: { customerId: { $toString: '$_id' } },
           pipeline: [
             { $match: { $expr: { $eq: ['$$customerId', { $toString: '$_id' }] } } },
             { $project: { _id: 0, name: 1 } }
           ],
           as: 'customer'
+        
         }
       },
       {
@@ -882,11 +883,12 @@ const countOfStatusByCustomerIdOfProducts = async (req, res) => {
       };
     });
 
-    res.status(200).send({ status: true, info: "products", data: transformedData });
+    res.status(200).send({ status: true, info: 'products', data: transformedData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
+;
 
 module.exports = {
   addProdcts,

@@ -289,11 +289,13 @@ const getAllDetails = async (req, res) => {
     let CountOfData = await costumerModel
       .find({
         isDeleted: false,
+        verified:true,
         selectRole: {$ne: 'admin',},
       }).countDocuments();
     let data = await costumerModel
       .find({
         isDeleted: false,
+        verified:true,
         selectRole: { $ne: 'admin'},
       }).sort({  createdAt: -1 })
       .limit(resultsPerPage)
