@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const { register, updateCostumer, login, updatePassword, deleteCostumers, getDetails, getAllDetails, Individualprofiles, countOfManufacturer, countOfRetailer,UniqueEmail,uniquePhone } = require("../controller/CostumerController")
+const { register, updateCostumer, login, updatePassword, deleteCostumers, getDetails, getAllDetails, Individualprofiles, UniqueEmail,uniquePhone ,countOfManufacturerAndRetailer } = require("../controller/CostumerController")
 const { EnquiryForm, getEnquiries, IndividualCostumerEnquiry, deleteCostumerEnquiry, countData,  updateCostumersEnquiry,trackEnquiry ,allData,IndividualCostumerEnquiryCounts} = require("../controller/CostumerEnquiryController")
 const { authentication, authorization, authorization1, authorization2 ,authorization3} = require("../middleware/auth")
 const { requestAdmin } = require("../controller/requestAdminController")
@@ -26,8 +26,9 @@ router.post("/login", login)
 router.get("/getroles/:page/:limit", authentication, getDetails)  // by admin
 router.get("/getAllDetails/:page/:limit", getAllDetails) // by admin
 router.get("/Individualprofiles/:customerID", Individualprofiles)
-router.get("/countOfManufacturer", countOfManufacturer)
-router.get("/countOfRetailer", countOfRetailer)
+// router.get("/countOfManufacturer", countOfManufacturer)
+// router.get("/countOfRetailer", countOfRetailer)
+router.get("/countOfManufacturerAndRetailer",countOfManufacturerAndRetailer)
 
 //============================enquiry form ============================
 router.post("/costumer/enquiryForm", authentication, authorization, EnquiryForm)

@@ -63,16 +63,25 @@ const addProdcts = async (req, res) => {
       { sort: { createdAt: -1 } }
     );
     let lastTrackingNumber = lastTracking.trackingID;
+    if(!lastTrackingNumber){
+       let trackingID =`PN100000`
+       data.trackingID = trackingID;
 
-    let newTrackingNumber = lastTrackingNumber.substring(2); // removes "PN" 
-    let addOne = parseInt(newTrackingNumber) + 1; // convert in number and add one to it
-    let trackingID = `PN${addOne}`; // adding PN to new id
+    }
+else{
+    // Generate the new tracking number by adding 1 to the last tracking number
+    let newTrackingNumber = lastTrackingNumber.substring(2);
+    let addOne = parseInt(newTrackingNumber) + 1;
+    // Generate the tracking ID
+    let trackingID = `PN${addOne}`;
+    data.trackingID = trackingID;
 
+}
     data.date = date;
     data.time = time;
     let email = checkdata.email?.toString();
     let name = checkdata.name?.toString();
-    data.trackingID = trackingID;
+ 
 
     let saveData = await AddProductsModel.create(data);
     res.status(201).send({ 
@@ -742,7 +751,7 @@ const getCounts = async (req, res) => {
     ];
     const data = await AddProductsModel.aggregate(pipeline);
     const count = await AddProductsModel.countDocuments({ isDeleted: false });
-    res.status(200).send({ status: true, data: data[0], count });
+    res.status(200).send({ status: true,info:"products", data: data[0], count });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }

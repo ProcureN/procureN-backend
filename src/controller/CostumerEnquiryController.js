@@ -53,17 +53,23 @@ const EnquiryForm = async (req, res) => {
       { sort: { createdAt: -1 } }
     );
     let lastTrackingNumber = lastTracking.trackingID;
+    if(!lastTrackingNumber){
+       let trackingID =`PN100000`
+       data.trackingID = trackingID;
 
+    }
+else{
     // Generate the new tracking number by adding 1 to the last tracking number
     let newTrackingNumber = lastTrackingNumber.substring(2);
     let addOne = parseInt(newTrackingNumber) + 1;
     // Generate the tracking ID
     let trackingID = `PN${addOne}`;
-
-    data.date = date;
-    data.time = time;
     data.trackingID = trackingID;
 
+}
+    data.date = date;
+    data.time = time;
+    
     let email = getCostumers.email?.toString();
     let name = getCostumers.name?.toString();
     let config = {
@@ -90,7 +96,7 @@ const EnquiryForm = async (req, res) => {
         greeting: `Hi ${name}`,
 
         intro: [
-          `Your enquiry has been registered successfully.Your tracking ID is ${trackingID} `,
+          `Your enquiry has been registered successfully.Your tracking ID is ${data.trackingID} `,
         ],
         action: {
           instructions: "",
@@ -780,7 +786,7 @@ const allData = async (req, res) => {
       CostumerEnquiryModel.countDocuments({ isDeleted: false }),
     ]);
 
-    res.status(200).send({ status: true, data: data[0], count });
+    res.status(200).send({ status: true,info:"enquiries", data: data[0], count });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }
