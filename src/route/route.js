@@ -40,7 +40,7 @@ router.get("/countData", countData)
  router.get("/trackEnquiry/:trackingID",trackEnquiry)
 router.get("/allDataOfEnquiries",allData)
 router.get("/individualcostumerenquirycounts/:customerID",IndividualCostumerEnquiryCounts)
-router.get("/countOfStatusByCustomerId",countOfStatusByCustomerId)
+router.get("/countOfStatusByCustomerId/:limit",countOfStatusByCustomerId)
 //=======================Add products===================================
 router.post("/addProducts", addProdcts)
 router.put("/updateProducts/:productID", authentication, authorization1, updateProduct)
@@ -59,7 +59,7 @@ router.get("/countOfinTransitProducts",countOfinTransit)
 //router.get('/productsByStatus',productsByStatus)
 router.get("/getCountsOfProduct",getCounts)
 router.get('/individualproductscount/:customerID',individualProductsCount)
-router.get("/countOfStatusByCustomerIdOfProducts",countOfStatusByCustomerIdOfProducts)
+router.get("/countOfStatusByCustomerIdOfProducts/:limit",countOfStatusByCustomerIdOfProducts)
 
 //=============================otp verification===================================
 router.post("/otp", otpVerification)

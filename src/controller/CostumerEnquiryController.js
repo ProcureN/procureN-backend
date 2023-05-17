@@ -849,6 +849,12 @@ const IndividualCostumerEnquiryCounts = async (req, res) => {
 const countOfStatusByCustomerId = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
+    let { limit } = req.params; // Get the limit from path parameters
+
+    limit = limit ? parseInt(limit) : 4;
+    if (isNaN(limit)) {
+      limit = 4;
+    }
     const pipeline = [
       {
         $match: {
@@ -906,6 +912,9 @@ const countOfStatusByCustomerId = async (req, res) => {
             }
           }
         }
+      },
+      {
+        $limit: parseInt(limit)
       }
     ];
 

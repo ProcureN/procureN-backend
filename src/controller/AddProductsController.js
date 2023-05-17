@@ -811,6 +811,12 @@ const individualProductsCount = async (req, res) => {
 const countOfStatusByCustomerIdOfProducts = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
+    let { limit } = req.params; 
+    if (!limit) {
+      limit = 4; // Set a default limit value if not provided
+    } else {
+      limit = parseInt(limit); // Convert limit to a number
+    }
     const pipeline = [
       {
         $match: {
@@ -869,6 +875,9 @@ const countOfStatusByCustomerIdOfProducts = async (req, res) => {
             }
           }
         }
+      },
+      {
+        $limit: limit // Apply the limit to the result
       }
     ];
 

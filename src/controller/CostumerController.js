@@ -372,7 +372,8 @@ const countOfManufacturerAndRetailer = async (req, res) => {
       {
         $match: {
           selectRole: { $in: ['Manufacturer', 'Retailer'] },
-          isDeleted: false
+          isDeleted: false,
+          verified :true
         }
       },
       {
