@@ -851,9 +851,9 @@ const countOfStatusByCustomerId = async (req, res) => {
   try {
     let { limit } = req.params; // Get the limit from path parameters
 
-    limit = limit ? parseInt(limit) : 4;
+    limit = limit ? parseInt(limit) : 10;
     if (isNaN(limit)) {
-      limit = 4;
+      limit = 10;
     }
     const pipeline = [
       {

@@ -813,7 +813,7 @@ const countOfStatusByCustomerIdOfProducts = async (req, res) => {
   try {
     let { limit } = req.params; 
     if (!limit) {
-      limit = 4; // Set a default limit value if not provided
+      limit = 10; // Set a default limit value if not provided
     } else {
       limit = parseInt(limit); // Convert limit to a number
     }
