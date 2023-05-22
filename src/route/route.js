@@ -12,6 +12,8 @@ const {addProdcts, updateProduct, DeleteProduct, getProducts, getManufactureProd
 
 router.get("/test-me", function (req, res) {
   res.send("this is successfully created");
+
+  
 });
 //=============================costumer==================================
 
