@@ -10,7 +10,7 @@ app.use(express.json());
 var cors = require('cors');
 app.use(cors());
 
-mongoose.connect("mongodb+srv://miryala-veronica123:1Sz5U9LVS3afd1bB@cluster0.vfkx3.mongodb.net/broaddcast", {
+mongoose.connect("mongodb+srv://narprocuren:procureN123@cluster0.3nsvxkt.mongodb.net/ProcureN", {
     useNewUrlParser: true
 })
     .then(() => console.log("MongoDb is connected"))
