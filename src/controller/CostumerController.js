@@ -23,7 +23,6 @@ const register = async (req, res) => {
     for (i = 1; i < limit; i++) {
       otp += digits[Math.floor(Math.random() * 10)];
     } 
-    
     let config = {
       service: 'gmail',
       auth: {
