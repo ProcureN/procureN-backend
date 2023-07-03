@@ -17,10 +17,10 @@ const register = async (req, res) => {
     let data = req.body;
     const {name,email,password, } = data;
     data.password = await bcrypt.hash(password, 10);
-    let digits = '0123456789';
+    let digits = '1234567890';
     let limit = 6;
     let otp = '';
-    for (i = 0; i < limit; i++) {
+    for (i = 1; i < limit; i++) {
       otp += digits[Math.floor(Math.random() * 10)];
     }
     let config = {
