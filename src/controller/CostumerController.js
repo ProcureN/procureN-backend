@@ -6,7 +6,7 @@ const moment = require('moment');
 require('moment-timezone');
 
 
-const costumerModel = require('../models/CostumerModel');
+const costumerModel = require('../models/UserModel');
 const validator = require('../validation/validations');
 const { EMAIL, PASSWORD } = require('../env');
 const optModel = require('../models/OtpModel');

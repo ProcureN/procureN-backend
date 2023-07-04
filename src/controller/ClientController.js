@@ -1,6 +1,6 @@
-const AddProductModel = require("../models/AddProductModel");
-const CostumerEnquiryModel = require("../models/CostomerEnquiryForm");
-const CostumerModel = require("../models/CostumerModel");
+const AddProductModel = require("../models/VendorModel");
+const clientModel = require("../models/clientModel");
+const CostumerModel = require("../models/UserModel");
 const validator = require("../validation/validations");
 const moment = require("moment");
 require("moment-timezone");
@@ -11,27 +11,27 @@ const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
 const { EMAIL, PASSWORD } = require("../env");
 
-const EnquiryForm = async (req, res) => {
+const client = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     //   let costumerId = req.params.customerID
     let data = req.body;
-    const { customerID } = data;
+    const { userID } = data;
 
-    if (!validator.isValid1(customerID)) {
+    if (!validator.isValid1(userID)) {
       return res.status(400).send({
         status: false,
-        message: "costumerID is required",
+        message: "userID is required",
       });
     }
-    if (!validator.isValidObjectId(customerID)) {
+    if (!validator.isValidObjectId(userID)) {
       return res.status(400).send({
         status: false,
-        message: "costumerID not valid",
+        message: "userID not valid",
       });
     }
     let getCostumers = await CostumerModel.findOne({
-      _id: customerID,
+      _id: userID,
       isDeleted: false,
     });
     if (!getCostumers) {
@@ -47,128 +47,128 @@ const EnquiryForm = async (req, res) => {
     let date = moment().format("DD-MM-YYYY");
     let time = moment().format("HH:mm:ss");
 
-    let lastTracking = await CostumerEnquiryModel.findOne(
-      {},
-      {},
-      { sort: { createdAt: -1 } }
-    );
-    let lastTrackingNumber = lastTracking.trackingID;
-    if(!lastTrackingNumber){
-       let trackingID =`PN100000`
-       data.trackingID = trackingID;
+    // let lastTracking = await CostumerEnquiryModel.findOne(
+    //   {},
+    //   {},
+    //   { sort: { createdAt: -1 } }
+    // );
+ //   let lastTrackingNumber = lastTracking.trackingID;
+//     if(!lastTrackingNumber){
+//        let trackingID =`PN100000`
+//        data.trackingID = trackingID;
 
-    }
-else{
-    // Generate the new tracking number by adding 1 to the last tracking number
-    let newTrackingNumber = lastTrackingNumber.substring(2);
-    let addOne = parseInt(newTrackingNumber) + 1;
-    // Generate the tracking ID
-    let trackingID = `PN${addOne}`;
-    data.trackingID = trackingID;
+//     }
+// else{
+//     // Generate the new tracking number by adding 1 to the last tracking number
+//     let newTrackingNumber = lastTrackingNumber.substring(2);
+//     let addOne = parseInt(newTrackingNumber) + 1;
+//     // Generate the tracking ID
+//     let trackingID = `PN${addOne}`;
+//     data.trackingID = trackingID;
 
-}
+// }
     data.date = date;
-    data.time = time;
+     data.time = time;
     
-    let email = getCostumers.email?.toString();
-    let name = getCostumers.name?.toString();
-    let config = {
-      service: "gmail",
-      auth: {
-        user: EMAIL,
-        pass: PASSWORD,
-      },
-    };
-    let transporter = nodemailer.createTransport(config);
+    // let email = getCostumers.email?.toString();
+    // let name = getCostumers.name?.toString();
+    // let config = {
+    //   service: "gmail",
+    //   auth: {
+    //     user: EMAIL,
+    //     pass: PASSWORD,
+    //   },
+    // };
+    // let transporter = nodemailer.createTransport(config);
 
-    let MailGenerator = new Mailgen({
-      theme: "default",
-      product: {
-        logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
-        // Custom logo height
-        logoHeight: "100px",
-        name: "ProcureN",
-        link: "https://procuren.in/",
-      },
-    });
-    let response = {
-      body: {
-        greeting: `Hi ${name}`,
+    // let MailGenerator = new Mailgen({
+    //   theme: "default",
+    //   product: {
+    //     logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
+    //     // Custom logo height
+    //     logoHeight: "100px",
+    //     name: "ProcureN",
+    //     link: "https://procuren.in/",
+    //   },
+    // });
+    // let response = {
+    //   body: {
+    //     greeting: `Hi ${name}`,
 
-        intro: [
-          `Your enquiry has been registered successfully.Your tracking ID is ${data.trackingID} `,
-        ],
-        action: {
-          instructions: "",
-          button: {
-            color: "#5c67f5", // Optional action button color
-            text: `Track Now`,
-            link: "https://procuren.in/",
-          },
-        },
-        outro: "Thank you.",
-        signature: "Best regards",
-      },
-    };
-    let mail = MailGenerator.generate(response);
-    let message = {
-      from: EMAIL,
-      to: email,
-      subject: `ProcureN - Your Bussiness Proposal has been received`,
-      html: mail,
-    };
-    transporter
-      .sendMail(message)
-      .then(() => {
-        // return res.status(201).json({
-        //     message: "you should receive an email"
-        // })
-      })
-      .catch((error) => {
-        return res.status(500).json({ error });
-      });
-    //=================================2=========================================
-    let response2 = {
-      body: {
-        greeting: "Dear Admin",
+    //     intro: [
+    //       `Your enquiry has been registered successfully.Your tracking ID is ${data.trackingID} `,
+    //     ],
+    //     action: {
+    //       instructions: "",
+    //       button: {
+    //         color: "#5c67f5", // Optional action button color
+    //         text: `Track Now`,
+    //         link: "https://procuren.in/",
+    //       },
+    //     },
+    //     outro: "Thank you.",
+    //     signature: "Best regards",
+    //   },
+    // };
+    // let mail = MailGenerator.generate(response);
+    // let message = {
+    //   from: EMAIL,
+    //   to: email,
+    //   subject: `ProcureN - Your Business Proposal has been received`,
+    //   html: mail,
+    // };
+    // transporter
+    //   .sendMail(message)
+    //   .then(() => {
+    //     // return res.status(201).json({
+    //     //     message: "you should receive an email"
+    //     // })
+    //   })
+    //   .catch((error) => {
+    //     return res.status(500).json({ error });
+    //   });
+    // //=================================2=========================================
+    // let response2 = {
+    //   body: {
+    //     greeting: "Dear Admin",
 
-        intro: [
-          `We are pleased to inform you that a new Business Proposal has been received on our platform.`,
+    //     intro: [
+    //       `We are pleased to inform you that a new Business Proposal has been received on our platform.`,
 
-          `Please log in to the portal to view and respond to the enquiry.
-       `,
-        ],
-        action: {
-          instructions: "",
-          button: {
-            color: "#5c67f5", // Optional action button color
-            text: `Login`,
-            link: "https://procuren.in/login",
-          },
-        },
-        outro: "Thank you.",
-        signature: "Best regards",
-      },
-    };
-    let mail2 = MailGenerator.generate(response2);
-    let message2 = {
-      from: EMAIL,
-      to: "nar.procuren@gmail.com",
-      subject: `ProcureN - New Business Proposal Received`,
-      html: mail2,
-    };
-    transporter
-      .sendMail(message2)
-      .then(() => {
-        // return res.status(201).json({
-        //     message: "you should receive an email"
-        // })
-      })
-      .catch((error) => {
-        return res.status(500).json({ error });
-      });
+    //       `Please log in to the portal to view and respond to the enquiry.
+    //    `,
+    //     ],
+    //     action: {
+    //       instructions: "",
+    //       button: {
+    //         color: "#5c67f5", // Optional action button color
+    //         text: `Login`,
+    //         link: "https://procuren.in/login",
+    //       },
+    //     },
+    //     outro: "Thank you.",
+    //     signature: "Best regards",
+    //   },
+    // };
+    // let mail2 = MailGenerator.generate(response2);
+    // let message2 = {
+    //   from: EMAIL,
+    //   to: "nar.procuren@gmail.com",
+    //   subject: `ProcureN - New Business Proposal Received`,
+    //   html: mail2,
+    // };
+    // transporter
+    //   .sendMail(message2)
+    //   .then(() => {
+    //     // return res.status(201).json({
+    //     //     message: "you should receive an email"
+    //     // })
+    //   })
+    //   .catch((error) => {
+    //     return res.status(500).json({ error });
+    //   });
 
-    let saveData = await CostumerEnquiryModel.create(data);
+    let saveData = await clientModel.create(data);
 
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
@@ -940,7 +940,7 @@ const countOfStatusByCustomerId = async (req, res) => {
 
 
 module.exports = {
-  EnquiryForm,
+  client,
   getEnquiries,
   IndividualCostumerEnquiry,
   deleteCostumerEnquiry,

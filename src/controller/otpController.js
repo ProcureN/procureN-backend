@@ -4,7 +4,7 @@ const Mailgen = require('mailgen');
 const jwt = require('jsonwebtoken');
 
 const optModel = require('../models/OtpModel');
-const costumerModel = require('../models/CostumerModel');
+const costumerModel = require('../models/UserModel');
 const validator = require('../validation/validations');
 const { EMAIL, PASSWORD } = require('../env');
 

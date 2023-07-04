@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('../validation/validations');
 const AddProductsModel = require('../models/AddProductModel');
 const costumerModel = require('../models/CostumerModel');
-const customerEnquiryModel = require('../models/CostomerEnquiryForm');
+const customerEnquiryModel = require('../models/clientModel');
 const authentication = async function (req, res, next) {
   try {
     let token = req.headers['authorization'];

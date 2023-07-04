@@ -1,6 +1,6 @@
-const AddProductsModel = require("../models/AddProductModel");
+const AddProductsModel = require("../models/VendorModel");
 const validator = require("../validation/validations");
-const costumerModel = require("../models/CostumerModel");
+const costumerModel = require("../models/UserModel");
 const aws = require("../aws/aws");
 const moment = require("moment");
 require("moment-timezone");
@@ -26,28 +26,28 @@ const addProdcts = async (req, res) => {
          message: "Enter details to create Product"
          });
     }
-    const { costumerID } = data;
+    const { userID } = data;
 
     //check the costumer id 
-    if (!validator.isValid1(costumerID)) {
+    if (!validator.isValid1(userID)) {
       return res.status(400).send({
          status: false,
-          message: "costumerID is required"
+          message: "userID is required"
          });
     }
     //  check customer id validation
-    if (!validator.isValidObjectId(costumerID)) {
+    if (!validator.isValidObjectId(userID)) {
       return res.status(400).send({ 
         status: false,
-         message: "costumerID not valid" 
+         message: "userID not valid" 
         });
     }
 
-    let checkdata = await costumerModel.findById({ _id: costumerID });
+    let checkdata = await costumerModel.findById({ _id: userID });
     if (!checkdata)
       return res.status(201).send({ 
         status: false,
-         message: "costumer not found"
+         message: "user not found"
          });
 
     moment.tz.setDefault("Asia/Kolkata");// default time zone as india after deploy too

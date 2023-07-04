@@ -11,7 +11,7 @@ app.use(express.json());
 var cors = require('cors');
 app.use(cors());
 
-mongoose.connect("mongodb+srv://narprocuren:procureN123@cluster0.3nsvxkt.mongodb.net/ProcureN", {
+mongoose.connect("mongodb+srv://narprocuren:procureN123@cluster0.3nsvxkt.mongodb.net/ProcureN-Official", {
     useNewUrlParser: true
 })
     .then(() => console.log("MongoDb is connected"))

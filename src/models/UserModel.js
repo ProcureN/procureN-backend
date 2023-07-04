@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const costumerSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     name: {
         type: String,
         require: true,
@@ -19,7 +19,7 @@ const costumerSchema = new mongoose.Schema({
   
     selectRole: {
         type: String,
-        enum: ["Retailer", "Manufacturer"],
+        enum: ["Client", "Vendor"],
         require: true,
         trim: true,
     },
@@ -66,4 +66,4 @@ const costumerSchema = new mongoose.Schema({
         type:String
     }
 }, { timestamps: true })
-module.exports = mongoose.model('costumer', costumerSchema)
+module.exports = mongoose.model('User', UserSchema)
