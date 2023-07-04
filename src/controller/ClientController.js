@@ -1,6 +1,6 @@
 const AddProductModel = require("../models/VendorModel");
 const clientModel = require("../models/clientModel");
-const CostumerModel = require("../models/UserModel");
+const UserModel = require("../models/UserModel");
 const validator = require("../validation/validations");
 const moment = require("moment");
 require("moment-timezone");
@@ -30,7 +30,7 @@ const client = async (req, res) => {
         message: "userID not valid",
       });
     }
-    let getCostumers = await CostumerModel.findOne({
+    let getCostumers = await UserModel.findOne({
       _id: userID,
       isDeleted: false,
     });
@@ -177,7 +177,7 @@ const client = async (req, res) => {
 };
 //==========================================================================================================
 
-const getEnquiries = async (req, res) => {
+const getClientsDetails = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let filter = { isDeleted: false };
@@ -188,9 +188,9 @@ const getEnquiries = async (req, res) => {
     //const query = req.query.search;
 
     page = page - 1;
-    let CountOfData = await CostumerEnquiryModel.find(filter).countDocuments();
+    let CountOfData = await clientModel.find(filter).countDocuments();
 
-    let data = await CostumerEnquiryModel.find(filter)
+    let data = await clientModel.find(filter)
       .sort([["createdAt", -1]])
       .limit(resultsPerPage)
       .skip(resultsPerPage * page); //.countDocuments().exec()
@@ -211,38 +211,38 @@ const getEnquiries = async (req, res) => {
 };
 
 //==========================update costumers =========================================
-const updateCostumersEnquiry = async (req, res) => {
+const updateclient = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let data = req.body;
-    const customerEnquiryID = req.params.customerEnquiryId;
+    const clientId = req.params.clientId;
     let { status, deliveryStatus } = data;
 
-    let getcustomerEnquiryData = await CostumerEnquiryModel.findById(
-      customerEnquiryID
+    let getclient = await clientModel.findById(
+      clientId
     );
-    if (!getcustomerEnquiryData) {
+    if (!getclient) {
       return res.status(404).send({
         status: false,
         message: "no customer enquiry found",
       });
     }
-    let customerId = getcustomerEnquiryData.customerID?.toString();
-    let trackingID = getcustomerEnquiryData.trackingID;
-    if (!customerId) {
+    let userID = getclient.userID?.toString();
+    let trackingID = getclient.trackingID;
+    if (!userID) {
       return res.status(404).send({
         status: false,
-        message: "customerID not found",
+        message: "userID not found",
       });
     }
-    let customerData = await CostumerModel.findById(customerId);
-    if (!customerData) {
+    let user = await UserModel.findById(userID);
+    if (!user) {
       return res
         .status(404)
-        .send({ status: false, message: "customer not found" });
+        .send({ status: false, message: "user not found" });
     }
-    let email = customerData.email?.toString();
-    let name = customerData.name?.toString();
+    let email = user.email?.toString();
+    let name = user.name?.toString();
     if (status) {
       if (status === "Rejected") {
         let config = {
@@ -941,11 +941,11 @@ const countOfStatusByCustomerId = async (req, res) => {
 
 module.exports = {
   client,
-  getEnquiries,
+  getClientsDetails,
   IndividualCostumerEnquiry,
   deleteCostumerEnquiry,
   countData,
-  updateCostumersEnquiry,
+  updateclient,
   trackEnquiry,
   allData,
   IndividualCostumerEnquiryCounts,

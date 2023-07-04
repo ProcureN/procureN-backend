@@ -16,11 +16,11 @@ const {
 } = require("../controller/CostumerController");
 const {
   client,
-  getEnquiries,
+  getClientsDetails,
   IndividualCostumerEnquiry,
   deleteCostumerEnquiry,
   countData,
-  updateCostumersEnquiry,
+  updateclient,
   trackEnquiry,
   allData,
   IndividualCostumerEnquiryCounts,
@@ -54,7 +54,7 @@ const {
   countOfinTransit,
   countOfinshipped,
   countOfindelivered,
-  productsByStatus,
+ // productsByStatus,
   getCounts,
   individualProductsCount,
   countOfStatusByCustomerIdOfProducts,
@@ -96,7 +96,7 @@ router.get("/countOfManufacturerAndRetailer", countOfManufacturerAndRetailer);
 
 //============================enquiry form ============================
 router.post("/client", client);
-router.get("/getenquiries/:page/:limit", getEnquiries); // by admin
+router.get("/getclient/:page/:limit", getClientsDetails); // by admin
 router.get(
   "/IndividualcustomerEnquiry/:customerID/:page/:limit",
   // authentication,
@@ -110,10 +110,10 @@ router.delete(
   deleteCostumerEnquiry
 ); // by admin
 router.put(
-  "/updateCostumersEnquiry/:customerEnquiryId",
+  "/updateclient/:clientId",
   // authentication,
   // authorization2,
-  updateCostumersEnquiry
+  updateclient
 );
 router.get("/countData", countData);
 router.get("/trackEnquiry/:trackingID", trackEnquiry);
