@@ -295,7 +295,7 @@ const updateclient = async (req, res) => {
           });
       }
       if (status === "Approved") {
-        //"processing", "shipped", "inTransit", "delivered"
+        //"processing", "shipped", "delivered"
         if (deliveryStatus == "Processing") {
           let config = {
             service: "gmail",
@@ -412,7 +412,7 @@ const updateclient = async (req, res) => {
               return res.status(500).json({ error });
             });
         }
-        if (deliveryStatus === "InTransit") {
+        if (deliveryStatus === "") {
           let config = {
             service: "gmail",
             auth: {
@@ -576,8 +576,8 @@ const updateclient = async (req, res) => {
           });
       }
     }
-    let userData = await CostumerEnquiryModel.findOneAndUpdate(
-      { _id: customerEnquiryID },
+    let userData = await clientModel.findOneAndUpdate(
+      { _id: clientId },
       data,
       { new: true }
     );
@@ -597,18 +597,18 @@ const updateclient = async (req, res) => {
 
 //=========================================get individual costumer enquiry================================
 
-const IndividualCostumerEnquiry = async (req, res) => {
+const Individualclient = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let customerID = req.params.customerID;
+    let userID = req.params.userID;
 
-    if (!validator.isValid1(customerID)) {
+    if (!validator.isValid1(userID)) {
       return res.status(400).send({
         status: false,
         message: "costumerID is required",
       });
     }
-    if (!validator.isValidObjectId(customerID)) {
+    if (!validator.isValidObjectId(userID)) {
       return res.status(400).send({
         status: false,
         message: "costumerID not valid",
@@ -620,13 +620,13 @@ const IndividualCostumerEnquiry = async (req, res) => {
     let page = req.params.page >= 1 ? req.params.page : 1;
     page = page - 1;
     //const query = req.query.search;
-    let CountOfData = await CostumerEnquiryModel.find({
+    let CountOfData = await clientModel.find({
       isDeleted: false,
-      customerID: customerID,
+      userID: userID,
     }).countDocuments();
-    let getData = await CostumerEnquiryModel.find({
+    let getData = await clientModel.find({
       isDeleted: false,
-      customerID: customerID,
+      userID: userID,
     })
       .sort({ createdAt: -1 })
       .limit(resultsPerPage)
@@ -642,39 +642,39 @@ const IndividualCostumerEnquiry = async (req, res) => {
 
 //==============================delete costumer enquiry =====================================
 
-const deleteCostumerEnquiry = async (req, res) => {
+const deleteClient = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let customerEnquiryId = req.params.customerEnquiryId;
-    if (!validator.isValidObjectId(customerEnquiryId)) {
+    let clientId = req.params.clientId;
+    if (!validator.isValidObjectId(clientId)) {
       res.status(400).send({
         status: false,
-        message: "Please provide valid costumerEnquiryId",
+        message: "Please provide valid clientId",
       });
     }
-    let getcustomerEnquiryId = await CostumerEnquiryModel.findOne({
-      _id: customerEnquiryId,
+    let getclient = await clientModel.findOne({
+      _id: clientId,
     });
-    if (!getcustomerEnquiryId) {
+    if (!getclient) {
       return res.status(404).send({
         status: false,
-        message: "customerEnquiry  Not Found for the request id",
+        message: "clientId  Not Found for the request id",
       });
     }
-    if (getcustomerEnquiryId.isDeleted == true) {
+    if (getclient.isDeleted == true) {
       return res.status(404).send({
         status: false,
-        message: "CostumerEnquiry is already deleted not found",
+        message: "already deleted not found",
       });
     }
 
-    await CostumerEnquiryModel.updateOne(
-      { _id: customerEnquiryId },
+    await clientModel.updateOne(
+      { _id: clientId },
       { isDeleted: true, deletedAt: Date.now() }
     );
     return res.status(200).send({
       status: true,
-      message: "customerEnquiryId is deleted",
+      message: "deleted successfull",
     });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
@@ -766,11 +766,7 @@ const allData = async (req, res) => {
                 $cond: [{ $eq: ["$deliveryStatus", "Processing"] }, 1, 0],
               },
             },
-            countOfinTransitDelivery: {
-              $sum: {
-                $cond: [{ $eq: ["$deliveryStatus", "InTransit"] }, 1, 0],
-              },
-            },
+           
             countOfinshippedDelivery: {
               $sum: { $cond: [{ $eq: ["$deliveryStatus", "Shipped"] }, 1, 0] },
             },
@@ -817,9 +813,7 @@ const IndividualCostumerEnquiryCounts = async (req, res) => {
           countOfInprocessingDelivery: {
             $sum: { $cond: [{ $eq: ["$deliveryStatus", "Processing"] }, 1, 0] },
           },
-          countOfinTransitDelivery: {
-            $sum: { $cond: [{ $eq: ["$deliveryStatus", "InTransit"] }, 1, 0] },
-          },
+         
           countOfinshippedDelivery: {
             $sum: { $cond: [{ $eq: ["$deliveryStatus", "Shipped"] }, 1, 0] },
           },
@@ -942,8 +936,8 @@ const countOfStatusByCustomerId = async (req, res) => {
 module.exports = {
   client,
   getClientsDetails,
-  IndividualCostumerEnquiry,
-  deleteCostumerEnquiry,
+  Individualclient,
+  deleteClient,
   countData,
   updateclient,
   trackEnquiry,

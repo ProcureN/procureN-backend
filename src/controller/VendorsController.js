@@ -1,6 +1,6 @@
-const AddProductsModel = require("../models/VendorModel");
+const VendorModel = require("../models/VendorModel");
 const validator = require("../validation/validations");
-const costumerModel = require("../models/UserModel");
+const UserModel = require("../models/UserModel");
 const aws = require("../aws/aws");
 const moment = require("moment");
 require("moment-timezone");
@@ -13,7 +13,8 @@ const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
 const { EMAIL, PASSWORD } = require("../env");
-const addProdcts = async (req, res) => {
+
+const vendor = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let data = req.body;
@@ -43,7 +44,7 @@ const addProdcts = async (req, res) => {
         });
     }
 
-    let checkdata = await costumerModel.findById({ _id: userID });
+    let checkdata = await UserModel.findById({ _id: userID });
     if (!checkdata)
       return res.status(201).send({ 
         status: false,
@@ -57,33 +58,33 @@ const addProdcts = async (req, res) => {
     let time = moment().format("HH:mm:ss");
 
     //fetch the previous tracking id
-    let lastTracking = await AddProductsModel.findOne(
+    let lastVchNo = await VendorModel.findOne(
       {},
       {},
       { sort: { createdAt: -1 } }
     );
-    let lastTrackingNumber = lastTracking.trackingID;
-    if(!lastTrackingNumber){
-       let trackingID =`PN100000`
-       data.trackingID = trackingID;
+//     let lastTrackingNumber = lastVchNo.vchNo
+//     if(!lastTrackingNumber){
+//        let trackingID =`PN100`
+//        data.trackingID = trackingID;
 
-    }
-else{
-    // Generate the new tracking number by adding 1 to the last tracking number
-    let newTrackingNumber = lastTrackingNumber.substring(2);
-    let addOne = parseInt(newTrackingNumber) + 1;
-    // Generate the tracking ID
-    let trackingID = `PN${addOne}`;
-    data.trackingID = trackingID;
+//     }
+// else{
+//     // Generate the new tracking number by adding 1 to the last tracking number
+//     let newTrackingNumber = lastTrackingNumber.substring(2);
+//     let addOne = parseInt(newTrackingNumber) + 1;
+//     // Generate the tracking ID
+//     let trackingID = `PN${addOne}`;
+//     data.trackingID = trackingID;
 
-}
-    data.date = date;
-    data.time = time;
-    let email = checkdata.email?.toString();
-    let name = checkdata.name?.toString();
+// }
+//     data.date = date;
+//     data.time = time;
+//     let email = checkdata.email?.toString();
+//     let name = checkdata.name?.toString();
  
 
-    let saveData = await AddProductsModel.create(data);
+    let saveData = await VendorModel.create(data);
     res.status(201).send({ 
       status: true,
        data: saveData
@@ -103,7 +104,7 @@ const updateProduct = async (req, res) => {
     const data = req.body;
     let files = req.files;
     let { selectImage1, selectImage2, status, deliveryStatus } = data;
-    let manufacturerData = await AddProductsModel.findById({ _id: productID });
+    let manufacturerData = await VendorModel.findById({ _id: productID });
     if (!manufacturerData) {
       return res.status(404).send({ 
         status: false,
@@ -118,7 +119,7 @@ const updateProduct = async (req, res) => {
           message: "customerID not found"
          });
     }
-    let customerData = await costumerModel.findById(customerId);
+    let customerData = await UserModel.findById(customerId);
     if (!customerData) {
       return res.status(404).send({ 
         status: false,
@@ -295,63 +296,6 @@ const updateProduct = async (req, res) => {
               return res.status(500).json({ error });
             });
         }
-        if (deliveryStatus === "InTransit") {
-          let config = {
-            service: "gmail",
-            auth: {
-              user: EMAIL,
-              pass: PASSWORD,
-            },
-          };
-          let transporter = nodemailer.createTransport(config);
-
-          let MailGenerator = new Mailgen({
-            theme: "default",
-            product: {
-              logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
-              // Custom logo height
-              logoHeight: "100px",
-              name: "ProcureN",
-              link: "https://procuren.in/",
-            },
-          });
-          let response = {
-            body: {
-              name: `${name}`,
-              intro: [
-                `We are pleased to inform you that your product is now in transit.`,
-                ` Your tracking ID: ${trackingID}`,
-              ],
-              action: {
-                instructions: "",
-                button: {
-                  color: "#5c67f5", // Optional action button color
-                  text: `Track Now`,
-                  link: "https://procuren.in/",
-                },
-              },
-              outro: "Thank you for choosing our service.",
-              signature: "Best regards",
-            },
-          };
-          let mail = MailGenerator.generate(response);
-          let message = {
-            from: EMAIL,
-            to: email,
-            subject: `ProcureN - Product in Transit`,
-            html: mail,
-          };
-          transporter
-            .sendMail(message)
-            .then(() => {
-              // return res.status(201).json({
-              //     message: "you should receive an email"
-              // })
-            })
-            .catch((error) => {
-              return res.status(500).json({ error });
-            });
-        }
         if (deliveryStatus === "Delivered") {
           let config = {
             service: "gmail",
@@ -460,7 +404,7 @@ const updateProduct = async (req, res) => {
       }
     }
 
-    let productData = await AddProductsModel.findOneAndUpdate(
+    let productData = await VendorModel.findOneAndUpdate(
       { _id: productID },
       data,
       { new: true }
@@ -494,7 +438,7 @@ const DeleteProduct = async (req, res) => {
         status: false,
          message: "Please provide valid Product Id" });
     }
-    let getId = await AddProductsModel.findOne({ _id: productID });
+    let getId = await VendorModel.findOne({ _id: productID });
     if (!getId) {
       return res.status(404).send({
         status: false,
@@ -508,7 +452,7 @@ const DeleteProduct = async (req, res) => {
       });
     }
 
-    await AddProductsModel.updateOne(
+    await VendorModel.updateOne(
       { _id: productID },
       { isDeleted: true, deletedAt: Date.now() }
     );
@@ -522,7 +466,7 @@ const DeleteProduct = async (req, res) => {
 };
 
 //======================get products=======================================================
-const getProducts = async (req, res) => {
+const getVendor = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let filter = { isDeleted: false };
@@ -533,9 +477,9 @@ const getProducts = async (req, res) => {
     //const query = req.query.search;
 
     page = page - 1;
-    let CountOfData = await AddProductsModel.find(filter).countDocuments();
+    let CountOfData = await VendorModel.find(filter).countDocuments();
 
-    let data = await AddProductsModel.find(filter)
+    let data = await VendorModel.find(filter)
       .sort([["createdAt", -1]])
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
@@ -568,7 +512,7 @@ const getManufactureProducts = async (req, res) => {
     //const query = req.query.search;
 
     page = page - 1;
-    let CountOfData = await AddProductsModel.find({
+    let CountOfData = await VendorModel.find({
       costumerID: customerID,
     }).countDocuments();
 
@@ -578,7 +522,7 @@ const getManufactureProducts = async (req, res) => {
          message: "No data found."
          });
     }
-    let getData = await AddProductsModel.find({ costumerID: customerID })
+    let getData = await VendorModel.find({ costumerID: customerID })
       .sort({ createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
@@ -597,7 +541,7 @@ const getproductnames = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let filter = { isDeleted: false };
-    let data = await AddProductsModel.find(filter).distinct("productName");
+    let data = await VendorModel.find(filter).distinct("productName");
     if (!data)
       return res.status(404).send({ 
         status: false, 
@@ -613,7 +557,7 @@ const countProduct = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     //"Retailer", "Manufacturer"
-    let data = await AddProductsModel.find({
+    let data = await VendorModel.find({
       isDeleted: false,
     }).countDocuments();
     res.status(200).send({ 
@@ -629,7 +573,7 @@ const pending = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     //["pending","approved","rejected"]
-    let data = await AddProductsModel.find({
+    let data = await VendorModel.find({
       status: "pending",
       isDeleted: false,
     }).countDocuments();
@@ -644,7 +588,7 @@ const pending = async (req, res) => {
 const rejected = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let data = await AddProductsModel.find({
+    let data = await VendorModel.find({
       status: "rejected",
       isDeleted: false,
     }).countDocuments();
@@ -657,7 +601,7 @@ const rejected = async (req, res) => {
 const approved = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let data = await AddProductsModel.find({
+    let data = await VendorModel.find({
       status: "approved",
       isDeleted: false,
     }).countDocuments();
@@ -670,8 +614,8 @@ const approved = async (req, res) => {
 const countOfInprocessing = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    //"processing","shipped","inTransit","delivered"
-    let data = await AddProductsModel.find({
+    //"processing","shipped","delivered"
+    let data = await VendorModel.find({
       deliveryStatus: "Processing",
       isDeleted: false,
     }).countDocuments();
@@ -681,25 +625,12 @@ const countOfInprocessing = async (req, res) => {
   }
 };
 //=====================================================================================
-const countOfinTransit = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    //"processing","shipped","inTransit","delivered"
-    let data = await AddProductsModel.find({
-      deliveryStatus: "InTransit",
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
 //==============================================================
 const countOfinshipped = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    //"processing","shipped","inTransit","delivered"
-    let data = await AddProductsModel.find({
+    //"processing","shipped","delivered"
+    let data = await VendorModel.find({
       deliveryStatus: "Shipped",
       isDeleted: false,
     }).countDocuments();
@@ -712,8 +643,8 @@ const countOfinshipped = async (req, res) => {
 const countOfindelivered = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    //"processing","shipped","inTransit","delivered"
-    let data = await AddProductsModel.find({
+    //"processing","shipped","delivered"
+    let data = await VendorModel.find({
       deliveryStatus: "Delivered",
       isDeleted: false,
     }).countDocuments();
@@ -740,7 +671,7 @@ const getCounts = async (req, res) => {
           rejected: {$sum: { $cond: [{ $eq: ["$status", "Rejected"] }, 1, 0] },},
           approved: {$sum: { $cond: [{ $eq: ["$status", "Approved"] }, 1, 0] },},
           inprocessing: { $sum: { $cond: [{ $eq: ["$deliveryStatus", "Processing"] }, 1, 0] },},
-          inTransit: {$sum: { $cond: [{ $eq: ["$deliveryStatus", "InTransit"] }, 1, 0] },},
+        
           shipped: {$sum: { $cond: [{ $eq: ["$deliveryStatus", "Shipped"] }, 1, 0] },},
           delivered: { $sum: { $cond: [{ $eq: ["$deliveryStatus", "Delivered"] }, 1, 0] },},
         },
@@ -749,8 +680,8 @@ const getCounts = async (req, res) => {
         $project: { _id: 0,},
       },
     ];
-    const data = await AddProductsModel.aggregate(pipeline);
-    const count = await AddProductsModel.countDocuments({ isDeleted: false });
+    const data = await VendorModel.aggregate(pipeline);
+    const count = await VendorModel.countDocuments({ isDeleted: false });
     res.status(200).send({ status: true,info:"products", data: data[0], count });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
@@ -774,7 +705,6 @@ const individualProductsCount = async (req, res) => {
           rejected: { $sum: { $cond: [{ $eq: ["$status", "Rejected"] }, 1, 0] },},
           approved: {$sum: { $cond: [{ $eq: ["$status", "Approved"] }, 1, 0] },},
           inprocessing: { $sum: { $cond: [{ $eq: ["$deliveryStatus", "Processing"] }, 1, 0] }, },
-          inTransit: { $sum: { $cond: [{ $eq: ["$deliveryStatus", "InTransit"] }, 1, 0] }, },
           shipped: { $sum: { $cond: [{ $eq: ["$deliveryStatus", "Shipped"] }, 1, 0] },},
           delivered: { $sum: { $cond: [{ $eq: ["$deliveryStatus", "Delivered"] }, 1, 0] },},
           total: { $sum: 1 },
@@ -786,8 +716,8 @@ const individualProductsCount = async (req, res) => {
     ];
 
     const [data, count] = await Promise.all([
-      AddProductsModel.aggregate(pipeline),
-      AddProductsModel.countDocuments({
+      VendorModel.aggregate(pipeline),
+      VendorModel.countDocuments({
         isDeleted: false,
         costumerID: new mongoose.Types.ObjectId(req.params.customerID),
       }),
@@ -881,7 +811,7 @@ const countOfStatusByCustomerIdOfProducts = async (req, res) => {
       }
     ];
 
-    const result = await AddProductsModel.aggregate(pipeline);
+    const result = await VendorModel.aggregate(pipeline);
 
     const transformedData = result.map((item) => {
       return {
@@ -900,10 +830,10 @@ const countOfStatusByCustomerIdOfProducts = async (req, res) => {
 ;
 
 module.exports = {
-  addProdcts,
+ vendor,
   updateProduct,
   DeleteProduct,
-  getProducts,
+   getVendor,
   getManufactureProducts,
   getproductnames,
   countProduct,
@@ -911,7 +841,7 @@ module.exports = {
   rejected,
   approved,
   countOfInprocessing,
-  countOfinTransit,
+
   countOfinshipped,
   countOfindelivered,
   // productsByStatus,

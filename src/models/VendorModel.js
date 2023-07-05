@@ -12,10 +12,10 @@ const VendorSchema = new mongoose.Schema({
         require: true,
         trim: true,
     },
-    costumerID: {
+    userID: {
         type: ObjectId,
         required: true,
-        ref: "costumer",
+        ref: "user",
         trim: true
     },
     vendor: {
@@ -25,12 +25,12 @@ const VendorSchema = new mongoose.Schema({
     },
     quantity: {
         type: String,
-        require: true,
+       // require: true,
         trim: true
     },
     price: {
         type: Number,
-        require: true,
+      //  require: true,
         trime: true
     },
     deletedAt: {
@@ -47,7 +47,7 @@ const VendorSchema = new mongoose.Schema({
     },
     deliveryStatus:{
         type: String,
-        enum:["Processing","Shipped","InTransit","Delivered"],
+        enum:["Processing","Shipped","Delivered"],
         default:"Processing"
     },
    
@@ -110,4 +110,4 @@ const VendorSchema = new mongoose.Schema({
 
 
 }, { timestamps: true })
-module.exports = mongoose.model('Manufacturer', VendorSchema)
+module.exports = mongoose.model('vendor', VendorSchema)

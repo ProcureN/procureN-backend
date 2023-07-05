@@ -17,8 +17,8 @@ const {
 const {
   client,
   getClientsDetails,
-  IndividualCostumerEnquiry,
-  deleteCostumerEnquiry,
+  Individualclient,
+  deleteClient,
   countData,
   updateclient,
   trackEnquiry,
@@ -40,10 +40,10 @@ const {
   countOfContactForm,
 } = require("../controller/contactUsController");
 const {
-  addProdcts,
+  vendor,
   updateProduct,
   DeleteProduct,
-  getProducts,
+  getVendor,
   getManufactureProducts,
   getproductnames,
   countProduct,
@@ -51,7 +51,7 @@ const {
   rejected,
   approved,
   countOfInprocessing,
-  countOfinTransit,
+ 
   countOfinshipped,
   countOfindelivered,
  // productsByStatus,
@@ -94,27 +94,28 @@ router.get("/Individualprofiles/:customerID", Individualprofiles);
 // router.get("/countOfRetailer", countOfRetailer)
 router.get("/countOfManufacturerAndRetailer", countOfManufacturerAndRetailer);
 
-//============================enquiry form ============================
+//============================client ============================
 router.post("/client", client);
 router.get("/getclient/:page/:limit", getClientsDetails); // by admin
-router.get(
-  "/IndividualcustomerEnquiry/:customerID/:page/:limit",
-  // authentication,
-  // authorization,
-  IndividualCostumerEnquiry
-);
-router.delete(
-  "/deleteCostumerEnquiry/:customerEnquiryId",
-  // authentication,
-  // authorization2,
-  deleteCostumerEnquiry
-); // by admin
 router.put(
   "/updateclient/:clientId",
   // authentication,
   // authorization2,
   updateclient
 );
+router.get(
+  "/Individualclient/:userID/:page/:limit",
+  // authentication,
+  // authorization,
+  Individualclient
+);
+router.delete(
+  "/deleteClient/:clientId",
+  // authentication,
+  // authorization2,
+  deleteClient
+); // by admin
+
 router.get("/countData", countData);
 router.get("/trackEnquiry/:trackingID", trackEnquiry);
 router.get("/allDataOfEnquiries", allData);
@@ -123,8 +124,9 @@ router.get(
   IndividualCostumerEnquiryCounts
 );
 router.get("/countOfStatusByCustomerId/:limit", countOfStatusByCustomerId);
-//=======================Add products===================================
-router.post("/addProducts", addProdcts);
+//======================= vendor ===================================
+router.post("/vendor", vendor);
+router.get("/getVendor/:page/:limit", getVendor);
 router.put(
   "/updateProducts/:productID",
   // authentication,
@@ -137,7 +139,7 @@ router.delete(
   // authorization1,
   DeleteProduct
 );
-router.get("/getproducts/:page/:limit", getProducts); // by admin
+ // by admin
 router.get("/getproducts/:customerID/:page/:limit", getManufactureProducts);
 router.get("/getproductnames", getproductnames);
 router.get("/countProduct", countProduct);
@@ -147,7 +149,7 @@ router.get("/rejectedProducts", rejected);
 router.get("/countOfInprocessingProducts", countOfInprocessing);
 router.get("/countOfindeliveredProducts", countOfindelivered);
 router.get("/countOfinshippedProducts", countOfinshipped);
-router.get("/countOfinTransitProducts", countOfinTransit);
+
 //router.get('/productsByStatus',productsByStatus)
 router.get("/getCountsOfProduct", getCounts);
 router.get("/individualproductscount/:customerID", individualProductsCount);

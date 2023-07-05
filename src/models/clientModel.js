@@ -25,12 +25,12 @@ const  ClientSchema= new mongoose.Schema({
     },
     quantity: {
         type: String,
-        require: true,
+       // require: true,
         trim: true
     },
     price: {
         type: Number,
-        require: true,
+   //     require: true,
         trime: true
     },
     deletedAt: {
@@ -50,7 +50,7 @@ const  ClientSchema= new mongoose.Schema({
     },
     deliveryStatus:{
         type: String,
-        enum:["Processing","Shipped","InTransit","Delivered"],
+        enum:["Processing","Shipped","Delivered"],
         default:"Processing"
     },
    
@@ -124,7 +124,7 @@ const  ClientSchema= new mongoose.Schema({
     // },
     // deliveryStatus: {
     //     type: String,
-    //     enum: ["Processing", "Shipped", "InTransit", "Delivered"],
+    //     enum: ["Processing", "Shipped",  "Delivered"],
     //     default: "Processing"
     // },
     // customerID: {
