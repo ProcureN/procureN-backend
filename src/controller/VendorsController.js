@@ -500,10 +500,10 @@ const getVendor = async (req, res) => {
 };
 
 //======================get Individual products=======================================================
-const getManufactureProducts = async (req, res) => {
+const IndividualVendor = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let customerID = req.params.customerID;
+    let userID = req.params.userID;
     let filter = { isDeleted: false };
    
     const resultsPerPage =
@@ -513,7 +513,7 @@ const getManufactureProducts = async (req, res) => {
 
     page = page - 1;
     let CountOfData = await VendorModel.find({
-      costumerID: customerID,
+      userID: userID,
     }).countDocuments();
 
     if (CountOfData.length === 0) {
@@ -522,7 +522,7 @@ const getManufactureProducts = async (req, res) => {
          message: "No data found."
          });
     }
-    let getData = await VendorModel.find({ costumerID: customerID })
+    let getData = await VendorModel.find({ userID: userID })
       .sort({ createdAt: -1 })
       .limit(resultsPerPage)
       .skip(resultsPerPage * page);
@@ -834,7 +834,7 @@ module.exports = {
   updateProduct,
   DeleteProduct,
    getVendor,
-  getManufactureProducts,
+  getManufactureProducts: IndividualVendor,
   getproductnames,
   countProduct,
   pending,
