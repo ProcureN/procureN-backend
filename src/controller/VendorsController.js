@@ -20,10 +20,7 @@ const vendor = async (req, res) => {
     let data = req.body;
     let files = req.files;
 
-<<<<<<< HEAD
    //testing 
-=======
->>>>>>> origin/main
 //checking data is present or not
     if (validator.isValidBody(data)) {
       return res.status(400) .send({ 
