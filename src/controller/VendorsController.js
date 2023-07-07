@@ -98,37 +98,37 @@ const vendor = async (req, res) => {
   }
 };
 //==================================product update======================================
-const updateProduct = async (req, res) => {
+const updateVendor = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    const productID = req.params.productID;
+    const vendorID = req.params.vendorID;
     const data = req.body;
     let files = req.files;
     let { selectImage1, selectImage2, status, deliveryStatus } = data;
-    let manufacturerData = await VendorModel.findById({ _id: productID });
+    let manufacturerData = await VendorModel.findById({ _id: vendorID });
     if (!manufacturerData) {
       return res.status(404).send({ 
         status: false,
          message: "no  manufacturerData found"
          });
     }
-    let customerId = manufacturerData.costumerID?.toString();
+    let userID = manufacturerData.userID?.toString();
     let trackingID = manufacturerData.trackingID;
-    if (!customerId) {
+    if (!userID) {
       return res.status(404).send({
          status: false,
-          message: "customerID not found"
+          message: "user not found"
          });
     }
-    let customerData = await UserModel.findById(customerId);
-    if (!customerData) {
+    let userData = await UserModel.findById(userID);
+    if (!userData) {
       return res.status(404).send({ 
         status: false,
-         message: "customer not found" 
+         message: "user not found" 
         });
     }
-    let email = customerData.email?.toString();
-    let name = customerData.name?.toString();
+    let email = userData.email?.toString();
+    let name = userData.name?.toString();
 
     if (status) {
       if (status === "Rejected") {
@@ -406,7 +406,7 @@ const updateProduct = async (req, res) => {
     }
 
     let productData = await VendorModel.findOneAndUpdate(
-      { _id: productID },
+      { _id: vendorID },
       data,
       { new: true }
     );
@@ -430,20 +430,20 @@ const updateProduct = async (req, res) => {
 
 //=======================product delete================================================
 
-const DeleteProduct = async (req, res) => {
+const DeleteVendor = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let productID = req.params.productID;
-    if (!validator.isValidObjectId(productID)) {
+    let vendorID   = req.params.vendorID;
+    if (!validator.isValidObjectId(vendorID)) {
       res.status(400).send({
         status: false,
-         message: "Please provide valid Product Id" });
+         message: "Please provide valid vendor Id" });
     }
-    let getId = await VendorModel.findOne({ _id: productID });
+    let getId = await VendorModel.findOne({ _id: vendorID });
     if (!getId) {
       return res.status(404).send({
         status: false,
-        message: "Product Not Found for the request id",
+        message: "vendor Not Found for the request id",
       });
     }
     if (getId.isDeleted == true) {
@@ -454,7 +454,7 @@ const DeleteProduct = async (req, res) => {
     }
 
     await VendorModel.updateOne(
-      { _id: productID },
+      { _id: vendorID },
       { isDeleted: true, deletedAt: Date.now() }
     );
     return res.status(200).send({
@@ -832,8 +832,8 @@ const countOfStatusByCustomerIdOfProducts = async (req, res) => {
 
 module.exports = {
  vendor,
-  updateProduct,
-  DeleteProduct,
+   updateVendor,
+ DeleteVendor,
    getVendor,
   getManufactureProducts: IndividualVendor,
   getproductnames,

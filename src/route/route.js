@@ -1,63 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer")
 
 const {
-  register,
-  updateCostumer,
-  login,
-  updatePassword,
-  deleteCostumers,
-  getDetails,
-  getAllDetails,
-  Individualprofiles,
-  UniqueEmail,
-  uniquePhone,
-  countOfManufacturerAndRetailer,
-} = require("../controller/CostumerController");
-const {
-  client,
-  getClientsDetails,
-  Individualclient,
-  deleteClient,
-  countData,
-  updateclient,
-  trackEnquiry,
-  allData,
-  IndividualCostumerEnquiryCounts,
-  countOfStatusByCustomerId,
+  register, updateCostumer, login, updatePassword, deleteCostumers,getDetails,getAllDetails,Individualprofiles,UniqueEmail, uniquePhone, countOfManufacturerAndRetailer,} = require("../controller/CostumerController");
+const { client, getClientsDetails,Individualclient, deleteClient, countData,updateclient,trackEnquiry, allData,IndividualCostumerEnquiryCounts, countOfStatusByCustomerId,
 } = require("../controller/ClientController");
 //const { authentication, authorization, authorization1, authorization2 ,authorization3} = require("../middleware/auth")
 const { requestAdmin } = require("../controller/requestAdminController");
+const {otpVerification, resendOtp, forgetPassword,} = require("../controller/otpController");
+const { contactform, getcontactform, deleteContactForm, countOfContactForm,} = require("../controller/contactUsController");
 const {
-  otpVerification,
-  resendOtp,
-  forgetPassword,
-} = require("../controller/otpController");
-const {
-  contactform,
-  getcontactform,
-  deleteContactForm,
-  countOfContactForm,
-} = require("../controller/contactUsController");
-const {
-  vendor,
-  updateProduct,
-  DeleteProduct,
-  getVendor,
-  getManufactureProducts,
-  getproductnames,
-  countProduct,
-  pending,
-  rejected,
-  approved,
-  countOfInprocessing,
- 
-  countOfinshipped,
-  countOfindelivered,
- // productsByStatus,
-  getCounts,
-  individualProductsCount,
-  countOfStatusByCustomerIdOfProducts,
+  vendor,  updateVendor,  DeleteVendor,  getVendor,  getManufactureProducts, getproductnames, countProduct,  pending,rejected,approved, countOfInprocessing, countOfinshipped, countOfindelivered,
+ getCounts,individualProductsCount,countOfStatusByCustomerIdOfProducts,
 } = require("../controller/VendorsController");
 
 router.get("/test-me", function (req, res) {
@@ -128,16 +83,16 @@ router.get("/countOfStatusByCustomerId/:limit", countOfStatusByCustomerId);
 router.post("/vendor", vendor);
 router.get("/getVendor/:page/:limit", getVendor);
 router.put(
-  "/updateProducts/:productID",
+  "/updateVendor/:vendorID",
   // authentication,
   // authorization1,
-  updateProduct
+  updateVendor
 );
 router.delete(
-  "/products/:productID",
+  "/DeleteVendor/:productID",
   // authentication,
   // authorization1,
-  DeleteProduct
+  DeleteVendor
 );
  // by admin
 router.get("/getproducts/:customerID/:page/:limit", getManufactureProducts);
