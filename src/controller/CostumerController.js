@@ -255,23 +255,22 @@ const getDetails = async (req, res) => {
     //     .status(400)
     //     .send({ status: false, message: 'Enter the key and value to filter' });
 
-    const resultsPerPage =
-      req.params.limit === ':limit' ? 10 : req.params.limit;
-    let page = req.params.page >= 1 ? req.params.page : 1;
-    //const query = req.query.search;
-    page = page - 1;
-    let CountOfData = await costumerModel
-      .find({
-         selectRole: selectRole,
-          isDeleted: false
-         }).countDocuments();
+    // const resultsPerPage =
+    //   req.params.limit === ':limit' ? 10 : req.params.limit;
+    // let page = req.params.page >= 1 ? req.params.page : 1;
+    // //const query = req.query.search;
+    // page = page - 1;
+    // let CountOfData = await costumerModel
+    //   .find({
+    //      selectRole: selectRole,
+    //       isDeleted: false
+    //      }).countDocuments();
     let getdata = await costumerModel.find({
        selectRole: selectRole,
         isDeleted: false 
       }).sort({ createdAt: -1 })
-      .limit(resultsPerPage)
-      .skip(resultsPerPage * page);
-    res.status(200).send({ status: true, data: getdata, count: CountOfData });
+      
+    res.status(200).send({ status: true, data: getdata });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }

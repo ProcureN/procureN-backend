@@ -449,7 +449,7 @@ const DeleteVendor = async (req, res) => {
     if (getId.isDeleted == true) {
       return res.status(404).send({
         status: false,
-        message: "Product is already deleted not found",
+        message: "vendor is already deleted not found",
       });
     }
 

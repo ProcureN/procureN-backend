@@ -45,7 +45,7 @@ router.delete(
 );
 router.post("/login", login);
 router.get(
-  "/getroles/:page/:limit",
+  "/getroles",
   //authentication,
   getDetails
 ); // by admin
