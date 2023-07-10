@@ -154,7 +154,7 @@ const updateCostumer = async (req, res) => {
 const login = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   try {
-    Data = req.body;
+    Data = req.body
     const { email, password } = Data;
     
     const isEmailExists = await costumerModel.findOne({ email: email });

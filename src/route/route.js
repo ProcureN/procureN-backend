@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer")
+const multer = require("multer");
 
+const upload = multer({ dest: 'uploads/' })  
+
+router.post("/upload",upload.single('try'),(req,res)=>{
+  console.log(req.file)
+  console.log(req.body)
+})
 const {
   register, updateCostumer, login, updatePassword, deleteCostumers,getDetails,getAllDetails,Individualprofiles,UniqueEmail, uniquePhone, countOfManufacturerAndRetailer,} = require("../controller/CostumerController");
 const { client, getClientsDetails,Individualclient, deleteClient, countData,updateclient,trackEnquiry, allData,IndividualCostumerEnquiryCounts, countOfStatusByCustomerId,

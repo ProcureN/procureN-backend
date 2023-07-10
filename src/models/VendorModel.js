@@ -34,7 +34,7 @@ const VendorSchema = new mongoose.Schema({
         trime: true
     },
     deletedAt: {
-        type: Date
+        type: Date 
     },
     isDeleted: {
         type: Boolean,
