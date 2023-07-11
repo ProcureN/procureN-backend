@@ -11,6 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: false,
   }));
+
+ 
 var cors = require('cors');
 app.use(cors());
 
