@@ -1,24 +1,23 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-
-const app = express()
-const path = require("path")
-const multer= require("multer");
-const uploadController = require("../controller/uploadController")
-app.use(express.static(path.resolve(__dirname,"src/public")))
+const fs = require('fs');
+const app = express();
+const path = require('path');
+const multer = require('multer');
+const uploadController = require('../controller/uploadController');
+app.use(express.static(path.resolve(__dirname, 'src/public')));
 var storage = multer.diskStorage({
-   destination:(req,file,cb)=>{
-cb(null,"../public/uploads")
-   },
-   filename:(req,file,cb)=>{
-cb(null,file.originalname)
-   }
- });
-
- var upload = multer({storage:storage })
-
-router.post("/importUser",upload.single('file'),uploadController.importUser)
-
+  destination: (req, file, cb) => {
+    const directory = 'src/public/uploads';
+    fs.mkdirSync(directory, { recursive: true }); // Create the directory if it doesn't exist
+    cb(null, directory);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+var upload = multer({ storage: storage });
+router.post('/importUser', upload.single('file'), uploadController.importUser);
 const {
   register, updateCostumer, login, updatePassword, deleteCostumers,getDetails,getAllDetails,Individualprofiles,UniqueEmail, uniquePhone, countOfManufacturerAndRetailer,} = require("../controller/CostumerController");
 const { client, getClientsDetails,Individualclient, deleteClient, countData,updateclient,trackEnquiry, allData,IndividualCostumerEnquiryCounts, countOfStatusByCustomerId,

@@ -1,0 +1,6 @@
+particular,userID,vendor,quantity,price,vchNo,status,deliveryStatus
+(as per details) GST Purchase-RMC@18%,64a3cde307d2cfc0ede77edf,Aparna Enterprises Limited,100,40000,AEL-OO1,Rejected,Processing
+(as per details) GST Purchase-RMC@18%,64a3cde307d2cfc0ede77edf,Aparna Enterprises Limited,100,50000,AEL-OO2,Approved,Processing
+(as per details) GST Purchase-RMC@18%,64a3cde307d2cfc0ede77edf,Aparna enterprises limited,100,20000,AEL-OO1,Pending,Processing
+(as per details) GST Purchase-RMC@18%,64a3cde307d2cfc0ede77edf,Aparna Enterprises Limited,100,20000,AEL-OO2,Pending,Processing
+(as per details) GST Purchase-RMC@18%,64ab86c5ec3352792ffcd39c,Aparna Enterprises Limited,50000,,158,Pending,Processing
