@@ -1,0 +1,9 @@
+particular,userID,vendor,quantity,price,status,deliveryStatus,vchNo,date,time
+(as per details) GST Purchase-RMC@18%,64a50544f7742d4a72718ab5,aparna enterprises limited,100,20000,Pending,Processing,AEL-OO2,,
+(as per details) GST Purchase-RMC@18%,64a50544f7742d4a72718ab5,aparna enterprises limited,100,20000,Rejected,Processing,AEL-OO1,,
+(as per details) GST Purchase-RMC@18%,64a50544f7742d4a72718ab5,aparna enterprises limited,100,20000,Pending,Processing,AEL-OO1,,
+(as per details) GST Purchase-RMC@18%,64ab86c5ec3352792ffcd39c,Aparna Enterprises Limited,50000,,Pending,Processing,158,,
+(as per details) GST Purchase-RMC@18%,64ab86c5ec3352792ffcd39c,Aparna Enterprises Limited,50000,,Approved,Processing,200,,
+(as per details) GST Purchase-RMC@18%  input CGST @9% input SGST @9%,64a50544f7742d4a72718ab5,procureN tech private limited,100,20000,Pending,Processing,AEL-OO1,,
+(as per details) GST Purchase-RMC@18%  input CGST @9% input SGST @9%,64a50544f7742d4a72718ab5,procureN tech private limited,100,20000,Pending,Processing,pn-OO1,,
+(as per details) GST Purchase-RMC@18%  input CGST @9% input SGST @9%,64a50544f7742d4a72718ab5,procureN tech private limited,100,20000,Pending,Processing,pn-OO2,10-07-2023,10:54:13
