@@ -177,34 +177,23 @@ const client = async (req, res) => {
 };
 //==========================================================================================================
 
-const getClientsDetails = async (req, res) => {
+const getclient = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let filter = { isDeleted: false };
 
-    const resultsPerPage =
-      req.params.limit === ":limit" ? 10 : req.params.limit;
-    let page = req.params.page >= 1 ? req.params.page : 1;
-    //const query = req.query.search;
+    let data = await clientModel.aggregate([
+      { $match: { isDeleted: false} },
+      { $group: { _id: "$vchNo", doc: { $first: "$$ROOT" } } },
+      { $replaceRoot: { newRoot: "$doc" } },
+      { $sort: { createdAt: -1 } },
+    ]);
 
-    page = page - 1;
-    let CountOfData = await clientModel.find(filter).countDocuments();
-
-    let data = await clientModel.find(filter)
-      .sort([["createdAt", -1]])
-      .limit(resultsPerPage)
-      .skip(resultsPerPage * page); //.countDocuments().exec()
-    if (!data) {
-      return res.status(404).send({
-        status: false,
-        message: "no enquiries found",
-      });
+    if (!data || data.length === 0) {
+      return res.status(404).send({ status: false, message: "Not found" });
     }
-    res.status(200).send({
-      status: true,
-      data: data,
-      count: CountOfData,
-    });
+
+    res.status(200).send({ status: true, data: data });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -935,7 +924,7 @@ const countOfStatusByCustomerId = async (req, res) => {
 
 module.exports = {
   client,
-  getClientsDetails,
+  getclient,
   Individualclient,
   deleteClient,
   countData,

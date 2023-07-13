@@ -467,38 +467,65 @@ const DeleteVendor = async (req, res) => {
 };
 
 //======================get products=======================================================
+// const getVendor = async (req, res) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   try {
+//     let filter = { isDeleted: false };
+
+//     // const resultsPerPage =
+//     //   req.params.limit === ":limit" ? 10 : req.params.limit;
+//     // let page = req.params.page >= 1 ? req.params.page : 1;
+//     // //const query = req.query.search;
+
+//     // page = page - 1;
+//     // let CountOfData = await VendorModel.find(filter).countDocuments();
+
+//     let data = await VendorModel.find(filter)
+//       .sort([["createdAt", -1]])
+//       .limit(resultsPerPage)
+//       .skip(resultsPerPage * page);
+//     if (!data)
+//       return res.status(404).send({ 
+//         status: false,
+//          message: "no products found" 
+//         });
+
+//     res.status(200).send({
+//       status: true,
+//       data: data,
+//       // count: CountOfData,
+//     });
+//   } catch (error) {
+//     return res.status(500).send({ status: false, message: error.message });
+//   }
+// };
+
 const getVendor = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let filter = { isDeleted: false };
 
-    const resultsPerPage =
-      req.params.limit === ":limit" ? 10 : req.params.limit;
-    let page = req.params.page >= 1 ? req.params.page : 1;
-    //const query = req.query.search;
+    let data = await VendorModel.aggregate([
+      // { $match: filter },
+      // { $group: { _id: "$vchNo", docs: { $first: "$$ROOT" } } },
+      // { $sort: { "docs.createdAt": -1 } },
+      // { $project: { _id: 0, docs: 1 } }
+      { $match: { isDeleted: false} },
+      { $group: { _id: "$vchNo", doc: { $first: "$$ROOT" } } },
+      { $replaceRoot: { newRoot: "$doc" } },
+      { $sort: { createdAt: -1 } },
+    ]);
 
-    page = page - 1;
-    let CountOfData = await VendorModel.find(filter).countDocuments();
+    if (!data || data.length === 0) {
+      return res.status(404).send({ status: false, message: "No products found" });
+    }
 
-    let data = await VendorModel.find(filter)
-      .sort([["createdAt", -1]])
-      .limit(resultsPerPage)
-      .skip(resultsPerPage * page);
-    if (!data)
-      return res.status(404).send({ 
-        status: false,
-         message: "no products found" 
-        });
-
-    res.status(200).send({
-      status: true,
-      data: data,
-      count: CountOfData,
-    });
+    res.status(200).send({ status: true,  data });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
+
 
 //======================get Individual products=======================================================
 const IndividualVendor = async (req, res) => {

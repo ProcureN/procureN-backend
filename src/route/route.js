@@ -23,7 +23,7 @@ router.post('/importVendor', upload.single('file'), uploadController.importVendo
 //=================================================================================================
 const {
   register, updateCostumer, login, updatePassword, deleteCostumers,getDetails,getAllDetails,Individualprofiles,UniqueEmail, uniquePhone, countOfManufacturerAndRetailer,} = require("../controller/CostumerController");
-const { client, getClientsDetails,Individualclient, deleteClient, countData,updateclient,trackEnquiry, allData,IndividualCostumerEnquiryCounts, countOfStatusByCustomerId,
+const { client, getclient,Individualclient, deleteClient, countData,updateclient,trackEnquiry, allData,IndividualCostumerEnquiryCounts, countOfStatusByCustomerId,
 } = require("../controller/ClientController");
 //const { authentication, authorization, authorization1, authorization2 ,authorization3} = require("../middleware/auth")
 const { requestAdmin } = require("../controller/requestAdminController");
@@ -70,7 +70,7 @@ router.get("/countOfManufacturerAndRetailer", countOfManufacturerAndRetailer);
 
 //============================client ============================
 router.post("/client", client);
-router.get("/getclient/:page/:limit", getClientsDetails); // by admin
+router.get("/getclient", getclient); // by admin
 router.put(
   "/updateclient/:clientId",
   // authentication,
@@ -100,7 +100,7 @@ router.get(
 router.get("/countOfStatusByCustomerId/:limit", countOfStatusByCustomerId);
 //======================= vendor ===================================
 router.post("/vendor", vendor);
-router.get("/getVendor/:page/:limit", getVendor);
+router.get("/getVendor", getVendor);
 router.put(
   "/updateVendor/:vendorID",
   // authentication,

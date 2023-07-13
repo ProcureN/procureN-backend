@@ -3,6 +3,12 @@ const VendorModel = require('../models/VendorModel');
 const mongoose = require('mongoose');
 let csv = require('csvtojson');
 const clientModel = require('../models/clientModel');
+
+
+const isValidObjectId = (objectId) => {
+  return mongoose.Types.ObjectId.isValid(objectId)
+  
+}
 const importUser = async (req, res) => {
   try {
     var userData = [];
@@ -42,6 +48,10 @@ const importVendor = async (req, res) => {
       .fromFile(req.file.path)
       .then(async (response) => {
         for (x = 0; x < response.length; x++) {
+          let objectId= response[x].userID
+          if(!isValidObjectId(objectId)){
+            return res.status(400).send({status:false,message:`invalid onjectID ${response[x]}`})
+          }
           userData.push({
             date: response[x].date,
             time: response[x].time,
