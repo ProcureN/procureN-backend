@@ -1,15 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const fs = require('fs');
+const fs = require("fs");
 const app = express();
-const path = require('path');
-const multer = require('multer');
-const uploadController = require('../controller/uploadController');
-app.use(express.static(path.resolve(__dirname, 'src/public')));
+const path = require("path");
+const multer = require("multer");
+const uploadController = require("../controller/uploadController");
+app.use(express.static(path.resolve(__dirname, "src/public")));
 //==================================================================================================
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const directory = 'src/public/uploads';
+    const directory = "src/public/uploads";
     fs.mkdirSync(directory, { recursive: true }); // Create the directory if it doesn't exist
     cb(null, directory);
   },
@@ -18,20 +18,68 @@ var storage = multer.diskStorage({
   },
 });
 var upload = multer({ storage: storage });
-router.post('/importUser', upload.single('file'), uploadController.importUser);
-router.post('/importVendor', upload.single('file'), uploadController.importVendor);
+router.post("/importUser", upload.single("file"), uploadController.importUser);
+router.post(
+  "/importVendor",
+  upload.single("file"),
+  uploadController.importVendor
+);
 //=================================================================================================
 const {
-  register, updateCostumer, login, updatePassword, deleteCostumers,getDetails,getAllDetails,Individualprofiles,UniqueEmail, uniquePhone, countOfManufacturerAndRetailer,} = require("../controller/CostumerController");
-const { client, getclient,Individualclient, deleteClient, countData,updateclient,trackEnquiry, allData,IndividualCostumerEnquiryCounts, countOfStatusByCustomerId,
+  register,
+  updateCostumer,
+  login,
+  updatePassword,
+  deleteCostumers,
+  getDetails,
+  getAllDetails,
+  Individualprofiles,
+  UniqueEmail,
+  uniquePhone,
+  countOfManufacturerAndRetailer,
+} = require("../controller/CostumerController");
+const {
+  client,
+  getclient,
+  Individualclient,
+  deleteClient,
+  //countData,
+  updateclient,
+  trackEnquiry,
+  allData,
+  IndividualCostumerEnquiryCounts,
+  countOfStatusByCustomerId,
 } = require("../controller/ClientController");
 //const { authentication, authorization, authorization1, authorization2 ,authorization3} = require("../middleware/auth")
 const { requestAdmin } = require("../controller/requestAdminController");
-const {otpVerification, resendOtp, forgetPassword,} = require("../controller/otpController");
-const { contactform, getcontactform, deleteContactForm, countOfContactForm,} = require("../controller/contactUsController");
 const {
-  vendor,  updateVendor,  DeleteVendor,  getVendor,  getManufactureProducts, getproductnames, countProduct,  pending,rejected,approved, countOfInprocessing, countOfinshipped, countOfindelivered,
- getCounts,individualProductsCount,countOfStatusByCustomerIdOfProducts,
+  otpVerification,
+  resendOtp,
+  forgetPassword,
+} = require("../controller/otpController");
+const {
+  contactform,
+  getcontactform,
+  deleteContactForm,
+  countOfContactForm,
+} = require("../controller/contactUsController");
+const {
+  vendor,
+  updateVendor,
+  DeleteVendor,
+  getVendor,
+  getManufactureProducts,
+  getproductnames,
+  countProduct,
+  pending,
+  rejected,
+  approved,
+  countOfInprocessing,
+  countOfinshipped,
+  countOfindelivered,
+  getCounts,
+  individualProductsCount,
+  countOfStatusByCustomerIdOfProducts,
 } = require("../controller/VendorsController");
 
 router.get("/test-me", function (req, res) {
@@ -72,7 +120,7 @@ router.get("/countOfManufacturerAndRetailer", countOfManufacturerAndRetailer);
 router.post("/client", client);
 router.get("/getclient", getclient); // by admin
 router.put(
-  "/updateclient/:clientId",
+  "/updateclient/:clientId",  /*  */
   // authentication,
   // authorization2,
   updateclient
@@ -90,7 +138,7 @@ router.delete(
   deleteClient
 ); // by admin
 
-router.get("/countData", countData);
+// router.get("/countData", countData);
 router.get("/trackEnquiry/:trackingID", trackEnquiry);
 router.get("/allDataOfEnquiries", allData);
 router.get(
@@ -113,7 +161,7 @@ router.delete(
   // authorization1,
   DeleteVendor
 );
- // by admin
+// by admin
 router.get("/getproducts/:customerID/:page/:limit", getManufactureProducts);
 router.get("/getproductnames", getproductnames);
 router.get("/countProduct", countProduct);

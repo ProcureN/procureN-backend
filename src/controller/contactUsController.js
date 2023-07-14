@@ -4,29 +4,33 @@ const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
 const moment = require("moment");
 require("moment-timezone");
-
 const { EMAIL, PASSWORD } = require("../env");
+require('dotenv').config();
 const contactform = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let data = req.body;
+    let data = req.body; 
     // let {name,email,subject,message,phone}= data
 
-    moment.tz.setDefault("Asia/Kolkata");
+    moment.tz.setDefault("Asia/Kolkata"); //default india time zone
 
     // Get the current date and time
-    let date = moment().format("DD-MM-YYYY");
+    let date = moment().format("DD/MM/YYYY");
     let time = moment().format("HH:mm:ss");
     data.date = date;
     data.time = time;
 
+
+    console.log(process.cwd()); // Check current working directory
+   
+    
     let config = {
       service: "gmail",
       auth: {
         user: EMAIL,
-        pass: PASSWORD,
+        pass: process.env.PASSWORD,
       },
-    };
+    }; 
     let transporter = nodemailer.createTransport(config);
 
     let MailGenerator = new Mailgen({
@@ -51,8 +55,8 @@ const contactform = async (req, res) => {
             {
               //name,email,subject,message,phone
               Email: data.email,
-              Phone: data.phone,
-              Message: data.message,
+              Contact: data.phone,
+              Subject: data.subject,
             },
           ],
           columns: {
@@ -60,8 +64,8 @@ const contactform = async (req, res) => {
             customWidth: {
               // Name: '15%',
               Email: "20%",
-              Phone: "10%",
-              message: "70%",
+              Contact: "10%",
+              Subject: "70%",
             },
             // Optionally, change column text alignment
             customAlignment: {
@@ -84,24 +88,19 @@ const contactform = async (req, res) => {
 
     let message = {
       from: EMAIL,
-      to: "nar.procuren@gmail.com",
+      to: "veronicamiryala001@gmail.com",
       subject: ` ProcureN - New enquiry from ${data.name}`,
       html: mail,
     };
     transporter
       .sendMail(message)
-      .then(() => {
-        // return res.status(201).json({
-        //     message: "you should receive an email"
-        // })
+      .then(async() => {
+        let saveData = await contactformModel.create(data);
+        res.status(201).send({ status: true, data: saveData });
       })
       .catch((error) => {
         return res.status(500).json({ error });
       });
-    
-
-    let saveData = await contactformModel.create(data);
-    res.status(201).send({ status: true, data: saveData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }

@@ -55,7 +55,7 @@ const vendor = async (req, res) => {
     moment.tz.setDefault("Asia/Kolkata");// default time zone as india after deploy too
 
     // Get the current date and time
-    let date = moment().format("DD-MM-YYYY");
+    let date = moment().format("DD/MM/YYYY");
     let time = moment().format("HH:mm:ss");
 
     //fetch the previous tracking id
@@ -136,7 +136,7 @@ const updateVendor = async (req, res) => {
           service: "gmail",
           auth: {
             user: EMAIL,
-            pass: PASSWORD,
+            pass: process.env.PASSWORD,
           },
         };
         let transporter = nodemailer.createTransport(config);
@@ -188,7 +188,7 @@ const updateVendor = async (req, res) => {
             service: "gmail",
             auth: {
               user: EMAIL,
-              pass: PASSWORD,
+              pass: process.env.PASSWORD,
             },
           };
           let transporter = nodemailer.createTransport(config);
@@ -245,7 +245,7 @@ const updateVendor = async (req, res) => {
             service: "gmail",
             auth: {
               user: EMAIL,
-              pass: PASSWORD,
+              pass: process.env.PASSWORD,
             },
           };
           let transporter = nodemailer.createTransport(config);
@@ -302,7 +302,7 @@ const updateVendor = async (req, res) => {
             service: "gmail",
             auth: {
               user: EMAIL,
-              pass: PASSWORD,
+              pass: process.env.PASSWORD,
             },
           };
           let transporter = nodemailer.createTransport(config);
@@ -351,7 +351,7 @@ const updateVendor = async (req, res) => {
           service: "gmail",
           auth: {
             user: EMAIL,
-            pass: PASSWORD,
+            pass: process.env.PASSWORD,
           },
         };
         let transporter = nodemailer.createTransport(config);

@@ -27,7 +27,8 @@ const register = async (req, res) => {
       service: 'gmail',
       auth: {
         user: EMAIL,
-        pass: PASSWORD,
+        pass: process.env.PASSWORD
+        ,
       },
     };
     let transporter = nodemailer.createTransport(config);
@@ -87,7 +88,7 @@ const register = async (req, res) => {
     moment.tz.setDefault('Asia/Kolkata');
   
     // Get the current date and time
-    let date = moment().format('DD-MM-YYYY');
+    let date = moment().format('DD/MM/YYYY');
     let time = moment().format('HH:mm:ss');
     data.date = date;
     data.time = time;

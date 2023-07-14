@@ -39,7 +39,7 @@ const otpVerification = async (req, res) => {
         service: "gmail",
         auth: {
           user: EMAIL,
-          pass: PASSWORD,
+          pass: process.env.PASSWORD,
         },
       };
       let transporter = nodemailer.createTransport(config);
@@ -153,7 +153,7 @@ const resendOtp = async (req, res) => {
       service: 'gmail',
       auth: {
         user: EMAIL,
-        pass: PASSWORD,
+        pass: process.env.PASSWORD,
       },
     };
     let transporter = nodemailer.createTransport(config);
