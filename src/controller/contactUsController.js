@@ -27,7 +27,7 @@ const contactform = async (req, res) => {
     let config = {
       service: "gmail",
       auth: {
-        user: EMAIL,
+        user: "nar.procuren@gmail.com",
         pass: process.env.PASSWORD,
       },
     }; 
@@ -144,7 +144,7 @@ const deleteContactForm = async (req, res) => {
   try {
     const contactUsId = req.params.contactUsId;
     //let error =[]
-    if (!validator.isValidObjectId(contactUsId)) {
+    if (!validator.isValidObjectId(contactUsId)) {   // checking the object id
       res.status(400).send({
          status: false,
           message: "Please provide valid costumer Id" 
@@ -189,7 +189,7 @@ const countOfContactForm = async (req, res) => {
   }
 };
 
-module.exports = {
+module.exports = {     
   contactform,
   getcontactform,
   deleteContactForm,

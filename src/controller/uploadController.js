@@ -16,18 +16,20 @@ const importUser = async (req, res) => {
       .fromFile(req.file.path)
       .then(async (response) => {
         for (x = 0; x < response.length; x++) {
+          const status = response[x].status ? response[x].status : 'Pending';
+          const deliveryStatus = response[x].deliveryStatus ? response[x].deliveryStatus : "Processing" ;
           userData.push({
             date: response[x].date,
             time: response[x].time,
             particular: response[x].particular,
-            userID: new mongoose.Types.ObjectId(response[x].userID),
+            userID:'64ab86c5ec3352792ffcd39c',
             vendor: response[x].vendor,
             quantity: response[x].quantity,
             price: response[x].price,
-            isDeleted: response[x].isDeleted,
+            isDeleted: false,
             vchNo: response[x].vchNo,
-            status: response[x].status,
-            deliveryStatus: response[x].deliveryStatus,
+            status: status,
+            deliveryStatus: deliveryStatus,
           });
         }
         // console.log(userData)
@@ -48,29 +50,27 @@ const importVendor = async (req, res) => {
       .fromFile(req.file.path)
       .then(async (response) => {
         for (x = 0; x < response.length; x++) {
-          let objectId= response[x].userID
-          if(!isValidObjectId(objectId)){
-            return res.status(400).send({status:false,message:`invalid onjectID ${response[x]}`})
-          }
+          const status = response[x].status ? response[x].status : 'Pending';
+          const deliveryStatus = response[x].deliveryStatus ? response[x].deliveryStatus : "Processing" ;
           userData.push({
             date: response[x].date,
-            time: response[x].time,
+            time: response[x].time, 
             particular: response[x].particular,
-            userID: new mongoose.Types.ObjectId(response[x].userID),
+            userID:'64ab86c5ec3352792ffcd39c',
             vendor: response[x].vendor,
             quantity: response[x].quantity,
             price: response[x].price,
-            isDeleted: response[x].isDeleted,
+            isDeleted: false,
             vchNo: response[x].vchNo,
-            status: response[x].status,
-            deliveryStatus: response[x].deliveryStatus,
+            status: status,
+            deliveryStatus: deliveryStatus,
           });
         }
         // console.log(userData)
         await VendorModel.insertMany(userData);
         // console.log(response)
       });
-    res.status(200).send({ status: true, msg: 'Imported' });
+    res.status(200).send({ status: true, msg: "vendors imported" });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }

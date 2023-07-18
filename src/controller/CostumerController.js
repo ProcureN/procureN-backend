@@ -16,17 +16,17 @@ const register = async (req, res) => {
   try {
     let data = req.body;
     const {name,email,password, } = data;
-    data.password = await bcrypt.hash(password, 10);
-    let digits = '1234567890';
+    data.password = await bcrypt.hash(password, 10);          
+    let digits = '1234567890';                           
     let limit = 6;
-    let otp = '';
+    let otp = '';   //genarating random number for otp
     for (i = 1; i < limit; i++) {
       otp += digits[Math.floor(Math.random() * 10)];
     }
     let config = {
       service: 'gmail',
       auth: {
-        user: EMAIL,
+        user: "nar.procuren@gmail.com",
         pass: process.env.PASSWORD
         ,
       },
@@ -119,7 +119,7 @@ const updateCostumer = async (req, res) => {
           });
     }
     if (password) {
-    data.password = await bcrypt.hash(password, 10);
+    data.password = await bcrypt.hash(password, 10);   //saving  the password in bcrypt form
      }
    
     if (phone) {
@@ -211,7 +211,7 @@ const deleteCostumers = async (req, res) => {
         message: 'Please provide valid costumer Id' 
       });
     }
-    let getID = await costumerModel.findById(deleteCostumerID);
+    let getID = await costumerModel.findById(deleteCostumerID);   
     if (!getID) {
       return res.status(404).send({
         status: false,

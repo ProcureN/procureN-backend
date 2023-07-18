@@ -38,7 +38,7 @@ const otpVerification = async (req, res) => {
       let config = {
         service: "gmail",
         auth: {
-          user: EMAIL,
+          user: "nar.procuren@gmail.com",
           pass: process.env.PASSWORD,
         },
       };
@@ -152,7 +152,7 @@ const resendOtp = async (req, res) => {
     let config = {
       service: 'gmail',
       auth: {
-        user: EMAIL,
+        user: "nar.procuren@gmail.com",
         pass: process.env.PASSWORD,
       },
     };

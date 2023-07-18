@@ -232,7 +232,7 @@ const updateclient = async (req, res) => {
         let config = {
           service: "gmail",
           auth: {
-            user: EMAIL,
+            user: "nar.procuren@gmail.com",
             pass: process.env.PASSWORD,
           },
         };
@@ -284,7 +284,7 @@ const updateclient = async (req, res) => {
           let config = {
             service: "gmail",
             auth: {
-              user: EMAIL,
+              user: "nar.procuren@gmail.com",
               pass: process.env.PASSWORD,
             },
           };
@@ -342,7 +342,7 @@ const updateclient = async (req, res) => {
           let config = {
             service: "gmail",
             auth: {
-              user: EMAIL,
+              user: "nar.procuren@gmail.com",
               pass: process.env.PASSWORD,
             },
           };
@@ -401,7 +401,7 @@ const updateclient = async (req, res) => {
           let config = {
             service: "gmail",
             auth: {
-              user: EMAIL,
+              user: "nar.procuren@gmail.com",
               pass: process.env.PASSWORD,
             },
           };
@@ -450,7 +450,7 @@ const updateclient = async (req, res) => {
         let config = {
           service: "gmail",
           auth: {
-            user: EMAIL,
+            user: "nar.procuren@gmail.com",
             pass: process.env.PASSWORD,
           },
         };

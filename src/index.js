@@ -1,26 +1,29 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const route = require('./route/route');
-// const route = require("./route/route")
+const dotenv = require('dotenv'); // Import dotenv
+
+dotenv.config(); // Load environment variables from .env file
+
 const app = express();
 app.use(express.json());
 app.use(
   express.urlencoded({
     extended: false,
   })
-);
-var cors = require('cors');
+);var cors = require('cors');
 app.use(cors());
+
 mongoose
-  .connect(
-    'mongodb+srv://narprocuren:procureN123@cluster0.3nsvxkt.mongodb.net/ProcureN-Official',
-    {
-      useNewUrlParser: true,
-    }
-  )
+  .connect(process.env.MONGODB_URL, { // Use process.env to access environment variables
+    useNewUrlParser: true,
+  })
   .then(() => console.log('MongoDb is connected'))
   .catch((err) => console.log(err));
+
 app.use('/', route);
-app.listen(process.env.PORT || 3001, function () {
-  console.log('Express app running on port ' + (process.env.PORT || 3001));
+const port = process.env.PORT || 3001; // Use process.env to access environment variables
+
+app.listen(port, function () {
+  console.log('Express app running on port ' + port);
 });
