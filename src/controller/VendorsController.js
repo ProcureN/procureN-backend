@@ -855,7 +855,11 @@ const countOfStatusByCustomerIdOfProducts = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-;
+//======================================================================
+// const graph = async (req,res)=>{
+//    let vendorName = req.params.vendor
+
+// }
 
 module.exports = {
  vendor,
