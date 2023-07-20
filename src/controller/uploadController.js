@@ -11,6 +11,14 @@ const isValidObjectId = (objectId) => {
 }
 const importUser = async (req, res) => {
   try {
+     // Check if the file name is correct (assuming the correct file name is "client.csv")
+     const filename = req.file.filename;
+     if (!filename.toLowerCase().includes('client')) {
+       return res.status(400).json({
+         status: false,
+         message: 'Incorrect file type. Please upload a file named "client.csv".',
+       });
+     }
     const userData = [];
     const response = await csv().fromFile(req.file.path);
     const dupesClients = [];
