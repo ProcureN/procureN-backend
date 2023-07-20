@@ -42,7 +42,10 @@ const client = async (req, res) => {
         message: "user not found or already deleted",
       });
     }
-
+    let findVchNo = await clientModel.findOne({vchNo:data.vchNo})
+    if(findVchNo){
+      return res.status(404).send({status:false,message:"vchNo already exist"})
+    }
     moment.tz.setDefault("Asia/Kolkata"); //default timezone as india
 
     // Get the current date and time

@@ -21,7 +21,7 @@ const importUser = async (req, res) => {
       const deliveryStatus = response[x].deliveryStatus ? response[x].deliveryStatus : 'Processing';
 
       // Check for missing or incorrect keys in the row
-      const requiredKeys = ['date',  'particular', 'vendor', 'quantity', 'price', 'vchNo'];
+      const requiredKeys = ['Date',  'Particular', 'Vendor', 'Quantity', 'Price', 'VchNo'];
       const rowKeys = Object.keys(response[x]);
       const missingKeys = requiredKeys.filter((key) => !rowKeys.includes(key));
 
@@ -32,23 +32,23 @@ const importUser = async (req, res) => {
           invalidRows.push(missingKeys);
         }
       } else {
-        let existingClient = await clientModel.findOne({ vchNo: response[x].vchNo });
+        let existingClient = await clientModel.findOne({ vchNo: response[x]. VchNo });
         if (existingClient) {
           dupesClients.push({
             row: x + 2,
-            VchNo: response[x].vchNo,
+            VchNo: response[x].VchNo,
           });
         } else {
           userData.push({
-            date: response[x].date,
-            time: response[x].time,
-            particular: response[x].particular,
+            date: response[x].Date,
+            time: response[x].Time,
+            particular: response[x].Particular,
             userID: '64ab86c5ec3352792ffcd39c',
-            vendor: response[x].vendor,
-            quantity: response[x].quantity,
-            price: response[x].price,
+            vendor: response[x].Vendor,
+            quantity: response[x].Quantity,
+            price: response[x].Price,
             isDeleted: false,
-            vchNo: response[x].vchNo,
+            vchNo: response[x].VchNo,
             status: status,
             deliveryStatus: deliveryStatus,
           });
@@ -59,10 +59,9 @@ const importUser = async (req, res) => {
     if (invalidRows.length > 0 || dupesClients.length > 0) {
       // If there are invalid rows or duplicate entries, send the response with the errors
       return res.status(400).json({
-        status: false,
-        message: 'Invalid rows or duplicate entries found',
-        invalidRows,
-        dupesClients,
+        status: false, 
+        // message: 'Invalid rows or duplicate entries found',
+        date:{invalidRows,dupesClients}
       });
     }
 
@@ -74,7 +73,7 @@ const importUser = async (req, res) => {
   }
 };
 
-
+//======================================================================================================
 
 
 const importVendor = async (req, res) => {
@@ -89,7 +88,7 @@ const importVendor = async (req, res) => {
       const deliveryStatus = response[i].deliveryStatus ? response[i].deliveryStatus : 'Processing';
 
       // Check for missing or incorrect keys in the row
-      const requiredKeys = ['date',  'particular', 'vendor', 'quantity', 'price', 'vchNo'];
+      const requiredKeys = ['Date',  'Particular', 'Vendor', 'Quantity', 'Price', 'VchNo'];
       const rowKeys = Object.keys(response[i]);
       const missingKeys = requiredKeys.filter((key) => !rowKeys.includes(key));
       if (missingKeys.length > 0) {
@@ -99,24 +98,24 @@ const importVendor = async (req, res) => {
           invalidRows.push(missingKeys);
         }
       }  else{
-      const existingVendor = await VendorModel.findOne({ vchNo: response[i].vchNo });
+      const existingVendor = await VendorModel.findOne({ vchNo: response[i].VchNo });
       if (existingVendor) {
         // VchNo already exists, add to duplicateEntries array
         duplicateEntries.push({
           row: i + 2, // Row number in the Excel sheet (1-indexed)
-          vchNo: response[i].vchNo,
+          vchNo: response[i]. VchNo,
         });
       } else {
         userData.push({
-          date: response[i].date,
-          time: response[i].time,
-          particular: response[i].particular,
+          date: response[i].Date,
+          time: response[i].Time,
+          particular: response[i].Particular,
           userID: '64ab86c5ec3352792ffcd39c',
-          vendor: response[i].vendor,
-          quantity: response[i].quantity,
-          price: response[i].price,
+          vendor: response[i].Vendor,
+          quantity: response[i].Quantity,
+          price: response[i].Price,
           isDeleted: false,
-          vchNo: response[i].vchNo,
+          vchNo: response[i].VchNo,
           status: status,
           deliveryStatus: deliveryStatus,
         });
@@ -128,9 +127,10 @@ const importVendor = async (req, res) => {
       // If there are duplicate entries, send the response with the duplicate entries
       return res.status(400).json({
         status: false,
-        message: 'Invalid rows or duplicate entries found',
-        invalidRows,
+        // message: 'Invalid rows or duplicate entries found',
+        date:{invalidRows,
       duplicateEntries,
+        }
       });
     }
 

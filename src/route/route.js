@@ -71,12 +71,12 @@ const {
   getManufactureProducts,
   getproductnames,
   countProduct,
-  pending,
-  rejected,
-  approved,
-  countOfInprocessing,
-  countOfinshipped,
-  countOfindelivered,
+  // pending,
+  // rejected,
+  // approved,
+  // countOfInprocessing,
+  // countOfinshipped,
+  // countOfindelivered,
   getCounts,
   individualProductsCount,
   countOfStatusByCustomerIdOfProducts,
@@ -165,12 +165,12 @@ router.delete(
 router.get("/getproducts/:customerID/:page/:limit", getManufactureProducts);
 router.get("/getproductnames", getproductnames);
 router.get("/countProduct", countProduct);
-router.get("/pendingProducts", pending);
-router.get("/approvedProducts", approved);
-router.get("/rejectedProducts", rejected);
-router.get("/countOfInprocessingProducts", countOfInprocessing);
-router.get("/countOfindeliveredProducts", countOfindelivered);
-router.get("/countOfinshippedProducts", countOfinshipped);
+// router.get("/pendingProducts", pending);
+// router.get("/approvedProducts", approved);
+// router.get("/rejectedProducts", rejected);
+// router.get("/countOfInprocessingProducts", countOfInprocessing);
+// router.get("/countOfindeliveredProducts", countOfindelivered);
+// router.get("/countOfinshippedProducts", countOfinshipped);
 
 //router.get('/productsByStatus',productsByStatus)
 router.get("/getCountsOfProduct", getCounts);

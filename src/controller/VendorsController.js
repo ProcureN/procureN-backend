@@ -52,18 +52,23 @@ const vendor = async (req, res) => {
          message: "user not found"
          });
 
+         let findVchNo = await VendorModel.findOne({vchNo:data.vchNo})
+         if(findVchNo){
+           return res.status(404).send({status:false,message:"vchNo already exist"})
+         }
     moment.tz.setDefault("Asia/Kolkata");// default time zone as india after deploy too
 
     // Get the current date and time
     let date = moment().format("DD/MM/YYYY");
     let time = moment().format("HH:mm:ss");
-
+    data.date = date;
+    data.time = time;
     //fetch the previous tracking id
-    let lastVchNo = await VendorModel.findOne(
-      {},
-      {},
-      { sort: { createdAt: -1 } }
-    );
+    // let lastVchNo = await VendorModel.findOne(
+    //   {},
+    //   {},
+    //   { sort: { createdAt: -1 } }
+    // );
 //     let lastTrackingNumber = lastVchNo.vchNo
 //     if(!lastTrackingNumber){
 //        let trackingID =`PN100`
@@ -79,8 +84,7 @@ const vendor = async (req, res) => {
 //     data.trackingID = trackingID;
 
 // }
-//     data.date = date;
-//     data.time = time;
+
 //     let email = checkdata.email?.toString();
 //     let name = checkdata.name?.toString();
  
@@ -500,6 +504,7 @@ const DeleteVendor = async (req, res) => {
 //   }
 // };
 
+
 const getVendor = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
@@ -547,7 +552,7 @@ const IndividualVendor = async (req, res) => {
     if (CountOfData.length === 0) {
       return res.status(400).send({ 
         status: false,
-         message: "No data found."
+         message: "No data found"
          });
     }
     let getData = await VendorModel.find({ userID: userID })
@@ -597,90 +602,90 @@ const countProduct = async (req, res) => {
   }
 };
 //==============================================================================
-const pending = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    //["pending","approved","rejected"]
-    let data = await VendorModel.find({
-      status: "pending",
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({
-       status: true, 
-       data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//===============================================================================
-const rejected = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    let data = await VendorModel.find({
-      status: "rejected",
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//=====================================================================================
-const approved = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    let data = await VendorModel.find({
-      status: "approved",
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//==============================================================================
-const countOfInprocessing = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    //"processing","shipped","delivered"
-    let data = await VendorModel.find({
-      deliveryStatus: "Processing",
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//=====================================================================================
-//==============================================================
-const countOfinshipped = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    //"processing","shipped","delivered"
-    let data = await VendorModel.find({
-      deliveryStatus: "Shipped",
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//==============================================================================
-const countOfindelivered = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    //"processing","shipped","delivered"
-    let data = await VendorModel.find({
-      deliveryStatus: "Delivered",
-      isDeleted: false,
-    }).countDocuments();
-    res.status(200).send({ status: true, data: data });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
+// const pending = async (req, res) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   try {
+//     //["pending","approved","rejected"]
+//     let data = await VendorModel.find({
+//       status: "pending",
+//       isDeleted: false,
+//     }).countDocuments();
+//     res.status(200).send({
+//        status: true, 
+//        data: data });
+//   } catch (error) {
+//     return res.status(500).send({ status: false, message: error.message });
+//   }
+// };
+// //===============================================================================
+// const rejected = async (req, res) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   try {
+//     let data = await VendorModel.find({
+//       status: "rejected",
+//       isDeleted: false,
+//     }).countDocuments();
+//     res.status(200).send({ status: true, data: data });
+//   } catch (error) {
+//     return res.status(500).send({ status: false, message: error.message });
+//   }
+// };
+// //=====================================================================================
+// const approved = async (req, res) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   try {
+//     let data = await VendorModel.find({
+//       status: "approved",
+//       isDeleted: false,
+//     }).countDocuments();
+//     res.status(200).send({ status: true, data: data });
+//   } catch (error) {
+//     return res.status(500).send({ status: false, message: error.message });
+//   }
+// };
+// //==============================================================================
+// const countOfInprocessing = async (req, res) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   try {
+//     //"processing","shipped","delivered"
+//     let data = await VendorModel.find({
+//       deliveryStatus: "Processing",
+//       isDeleted: false,
+//     }).countDocuments();
+//     res.status(200).send({ status: true, data: data });
+//   } catch (error) {
+//     return res.status(500).send({ status: false, message: error.message });
+//   }
+// };
+// //=====================================================================================
+// //==============================================================
+// const countOfinshipped = async (req, res) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   try {
+//     //"processing","shipped","delivered"
+//     let data = await VendorModel.find({
+//       deliveryStatus: "Shipped",
+//       isDeleted: false,
+//     }).countDocuments();
+//     res.status(200).send({ status: true, data: data });
+//   } catch (error) {
+//     return res.status(500).send({ status: false, message: error.message });
+//   }
+// };
+// //==============================================================================
+// const countOfindelivered = async (req, res) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   try {
+//     //"processing","shipped","delivered"
+//     let data = await VendorModel.find({
+//       deliveryStatus: "Delivered",
+//       isDeleted: false,
+//     }).countDocuments();
+//     res.status(200).send({ status: true, data: data });
+//   } catch (error) {
+//     return res.status(500).send({ status: false, message: error.message });
+//   }
+// };
 //========================================================================
 
 const getCounts = async (req, res) => {
@@ -869,13 +874,13 @@ module.exports = {
   getManufactureProducts: IndividualVendor,
   getproductnames,
   countProduct,
-  pending,
-  rejected,
-  approved,
-  countOfInprocessing,
+  // pending,
+  // rejected,
+  // approved,
+  // countOfInprocessing,
 
-  countOfinshipped,
-  countOfindelivered,
+  // countOfinshipped,
+  // countOfindelivered,
   // productsByStatus,
   getCounts,
   individualProductsCount,
