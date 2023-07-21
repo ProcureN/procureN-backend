@@ -118,7 +118,7 @@ const importVendor = async (req, res) => {
         if (existingVendor) {
           duplicateEntries.push({
             row: i + 2,
-            "vch-No": response[i]['Vch-No'],
+            "Vch-No": response[i]['Vch-No'],
           });
         } else {
           userData.push({
