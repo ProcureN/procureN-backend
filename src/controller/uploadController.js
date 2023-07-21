@@ -16,7 +16,7 @@ const importUser = async (req, res) => {
      if (!filename.toLowerCase().includes('client')) {
        return res.status(400).json({
          status: false,
-         message: 'Incorrect file type. Please upload a file named "client.csv".',
+         message: 'Incorrect file type. Please upload a file named client.csv.',
        });
      }
     const userData = [];
@@ -91,7 +91,7 @@ const importVendor = async (req, res) => {
     if (!filename.toLowerCase().includes('vendor')) {
       return res.status(400).json({
         status: false,
-        message: 'Incorrect file type. Please upload a file named "vendor.csv".',
+        message: 'Incorrect file type. Please upload a file named vendor.csv.',
       });
     }
 
