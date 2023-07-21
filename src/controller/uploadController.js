@@ -1,8 +1,11 @@
 const { response } = require('express');
 const VendorModel = require('../models/VendorModel');
 const mongoose = require('mongoose');
-let csv = require('csvtojson');
+
 const clientModel = require('../models/clientModel');
+const fs = require('fs');
+const xlsx = require('xlsx');
+const csv = require('csvtojson');
 
 
 const isValidObjectId = (objectId) => {
@@ -11,14 +14,23 @@ const isValidObjectId = (objectId) => {
 }
 const importUser = async (req, res) => {
   try {
-     // Check if the file name is correct (assuming the correct file name is "client.csv")
-     const filename = req.file.filename;
-     if (!filename.toLowerCase().includes('client')) {
-       return res.status(400).json({
-         status: false,
-         message: 'Incorrect file type. Please upload a file named client.csv.',
-       });
-     }
+    // Check if the file name is correct (assuming the correct file name is "client.csv")
+    const filename = req.file.filename;
+    if (!filename.toLowerCase().includes('client')) {
+      return res.status(400).json({
+        status: false,
+        message: 'Incorrect file type. Please upload a filename contains text CLIENT',
+      });
+    }
+
+    // If the file is in XLSX format, convert it to CSV before proceeding
+    if (req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      const workbook = xlsx.readFile(req.file.path);
+      const sheetName = workbook.SheetNames[0];
+      const csvData = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+      fs.writeFileSync(req.file.path, csvData);
+    }
+
     const userData = [];
     const response = await csv().fromFile(req.file.path);
     const duplicateEntries = [];
@@ -29,18 +41,17 @@ const importUser = async (req, res) => {
       const deliveryStatus = response[x].deliveryStatus ? response[x].deliveryStatus : 'Processing';
 
       // Check for missing or incorrect keys in the row
-      const requiredKeys = ['Date',  'Particular', 'Vendor', 'Quantity', 'Price', 'Vch-No'];
+      const requiredKeys = ['Date', 'Particular', 'Vendor', 'Quantity', 'Price', 'Vch-No'];
       const rowKeys = Object.keys(response[x]);
       const missingKeys = requiredKeys.filter((key) => !rowKeys.includes(key));
 
       if (missingKeys.length > 0) {
-        // Check if the missing keys are already present in invalidRows
         const existingMissingKeys = invalidRows.find((row) => row.every((key) => missingKeys.includes(key)));
         if (!existingMissingKeys) {
           invalidRows.push(missingKeys);
         }
       } else {
-        let existingClient = await clientModel.findOne({ vchNo: response[x]["Vch-No"] });
+        const existingClient = await clientModel.findOne({ vchNo: response[x]['Vch-No'] });
         if (existingClient) {
           duplicateEntries.push({
             row: x + 2,
@@ -56,7 +67,7 @@ const importUser = async (req, res) => {
             quantity: response[x].Quantity,
             price: response[x].Price,
             isDeleted: false,
-            vchNo: response[x]["Vch-No"] ,
+            vchNo: response[x]['Vch-No'],
             status: status,
             deliveryStatus: deliveryStatus,
           });
@@ -67,9 +78,9 @@ const importUser = async (req, res) => {
     if (invalidRows.length > 0 || duplicateEntries.length > 0) {
       // If there are invalid rows or duplicate entries, send the response with the errors
       return res.status(400).json({
-        status: false, 
-        // message: 'Invalid rows or duplicate entries found',
-        data:{invalidRows, duplicateEntries}
+        status: false,
+        message: 'Invalid rows or duplicate entries found',
+        data: { invalidRows, duplicateEntries },
       });
     }
 
@@ -81,8 +92,11 @@ const importUser = async (req, res) => {
   }
 };
 
+module.exports = importUser;
 //======================================================================================================
 
+
+; // Replace this with the correct path to the VendorModel
 
 const importVendor = async (req, res) => {
   try {
@@ -91,8 +105,16 @@ const importVendor = async (req, res) => {
     if (!filename.toLowerCase().includes('vendor')) {
       return res.status(400).json({
         status: false,
-        message: 'Incorrect file type. Please upload a file named vendor.csv.',
+        message: 'Incorrect file type. Please upload a filename contains text VENDOR',
       });
+    }
+
+    // If the file is in XLSX format, convert it to CSV before proceeding
+    if (req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      const workbook = xlsx.readFile(req.file.path);
+      const sheetName = workbook.SheetNames[0];
+      const csvData = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+      fs.writeFileSync(req.file.path, csvData);
     }
 
     const userData = [];
@@ -114,11 +136,11 @@ const importVendor = async (req, res) => {
           invalidRows.push(missingKeys);
         }
       } else {
-        const existingVendor = await VendorModel.findOne({ vchNo: response[i]['Vch-No'] });
+        const existingVendor = await VendorModel.findOne({ vchNo: response[i]['Vch-No'] }); 
         if (existingVendor) {
           duplicateEntries.push({
             row: i + 2,
-            "Vch-No": response[i]['Vch-No'],
+            'Vch-No': response[i]['Vch-No'],
           });
         } else {
           userData.push({
@@ -154,6 +176,8 @@ const importVendor = async (req, res) => {
     res.status(500).send({ status: false, message: error.message });
   }
 };
+
+
 
 
 module.exports = { importUser , importVendor};
