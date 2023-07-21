@@ -21,7 +21,7 @@ const importUser = async (req, res) => {
      }
     const userData = [];
     const response = await csv().fromFile(req.file.path);
-    const dupesClients = [];
+    const duplicateEntries = [];
     const invalidRows = [];
 
     for (let x = 0; x < response.length; x++) {
@@ -42,7 +42,7 @@ const importUser = async (req, res) => {
       } else {
         let existingClient = await clientModel.findOne({ vchNo: response[x]["Vch-No"] });
         if (existingClient) {
-          dupesClients.push({
+          duplicateEntries.push({
             row: x + 2,
             'Vch-No': response[x]['Vch-No'],
           });
@@ -64,12 +64,12 @@ const importUser = async (req, res) => {
       }
     }
 
-    if (invalidRows.length > 0 || dupesClients.length > 0) {
+    if (invalidRows.length > 0 || duplicateEntries.length > 0) {
       // If there are invalid rows or duplicate entries, send the response with the errors
       return res.status(400).json({
         status: false, 
         // message: 'Invalid rows or duplicate entries found',
-        data:{invalidRows,dupesClients}
+        data:{invalidRows, duplicateEntries}
       });
     }
 
