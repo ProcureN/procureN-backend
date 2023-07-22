@@ -59,7 +59,7 @@ const register = async (req, res) => {
         button: {
             color: '#5c67f5', // Optional action button color
             text: `verify`,
-            link: 'https://procuren.in/otp/signup'
+            link: 'https://procuren.in/'
 
         }
     },

@@ -41,7 +41,7 @@ const importUser = async (req, res) => {
       const deliveryStatus = response[x].deliveryStatus ? response[x].deliveryStatus : 'Processing';
 
       // Check for missing or incorrect keys in the row
-      const requiredKeys = ['Date', 'Particular', 'Vendor', 'Quantity', 'Price', 'Vch-No'];
+      const requiredKeys = ['Date', 'Particulars', 'Vendor', 'Quantity', 'Price', 'Vch-No.'];
       const rowKeys = Object.keys(response[x]);
       const missingKeys = requiredKeys.filter((key) => !rowKeys.includes(key));
 
@@ -51,23 +51,23 @@ const importUser = async (req, res) => {
           invalidRows.push(missingKeys);
         }
       } else {
-        const existingClient = await clientModel.findOne({ vchNo: response[x]['Vch-No'] });
+        const existingClient = await clientModel.findOne({ vchNo: response[x]['Vch-No.'] });
         if (existingClient) {
           duplicateEntries.push({
             row: x + 2,
-            'Vch-No': response[x]['Vch-No'],
+            'Vch-No': response[x]['Vch-No.'],
           });
         } else {
           userData.push({
             date: response[x].Date,
             time: response[x].Time,
-            particular: response[x].Particular,
+            particular: response[x].Particulars,
             userID: '64ab86c5ec3352792ffcd39c',
             vendor: response[x].Vendor,
             quantity: response[x].Quantity,
             price: response[x].Price,
             isDeleted: false,
-            vchNo: response[x]['Vch-No'],
+            vchNo: response[x]['Vch-No.'],
             status: status,
             deliveryStatus: deliveryStatus,
           });
@@ -127,7 +127,7 @@ const importVendor = async (req, res) => {
       const deliveryStatus = response[i].deliveryStatus ? response[i].deliveryStatus : 'Processing';
 
       // Check for missing or incorrect keys in the row
-      const requiredKeys = ['Date', 'Particular', 'Vendor', 'Quantity', 'Price', 'Vch-No'];
+      const requiredKeys = ['Date', 'Particulars', 'Vendor', 'Quantity', 'Price', 'Vch-No.'];
       const rowKeys = Object.keys(response[i]);
       const missingKeys = requiredKeys.filter((key) => !rowKeys.includes(key));
       if (missingKeys.length > 0) {
@@ -136,23 +136,23 @@ const importVendor = async (req, res) => {
           invalidRows.push(missingKeys);
         }
       } else {
-        const existingVendor = await VendorModel.findOne({ vchNo: response[i]['Vch-No'] }); 
+        const existingVendor = await VendorModel.findOne({ vchNo: response[i]['Vch-No.'] }); 
         if (existingVendor) {
           duplicateEntries.push({
             row: i + 2,
-            'Vch-No': response[i]['Vch-No'],
+            'Vch-No': response[i]['Vch-No.'],
           });
         } else {
           userData.push({
             date: response[i].Date,
             time: response[i].Time,
-            particular: response[i].Particular,
+            particular: response[i].Particulars,
             userID: '64ab86c5ec3352792ffcd39c',
             vendor: response[i].Vendor,
             quantity: response[i].Quantity,
             price: response[i].Price,
             isDeleted: false,
-            vchNo: response[i]['Vch-No'],
+            vchNo: response[i]['Vch-No.'],
             status: status,
             deliveryStatus: deliveryStatus,
           });
