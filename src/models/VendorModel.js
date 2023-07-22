@@ -29,7 +29,7 @@ const VendorSchema = new mongoose.Schema({
         trim: true
     },
     price: {
-        type: Number,
+        type: String,
       //  require: true,
         trime: true
     },
