@@ -88,7 +88,7 @@ const contactform = async (req, res) => {
 
     let message = {
       from: EMAIL,
-      to: "veronicamiryala001@gmail.com",
+      to: "nar.procuren@gmail.com",
       subject: ` ProcureN - New enquiry from ${data.name}`,
       html: mail,
     };

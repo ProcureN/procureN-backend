@@ -79,7 +79,7 @@ const importUser = async (req, res) => {
       // If there are invalid rows or duplicate entries, send the response with the errors
       return res.status(400).json({
         status: false,
-        message: 'Invalid rows or duplicate entries found',
+        message: "Invalid rows or duplicate entries found in document",
         data: { invalidRows, duplicateEntries },
       });
     }
@@ -164,7 +164,7 @@ const importVendor = async (req, res) => {
       // If there are invalid rows or duplicate entries, send the response with the errors
       return res.status(400).json({
         status: false,
-        message: 'Invalid rows or duplicate entries found',
+        message: "Invalid rows or duplicate entries found in document",
         data: { invalidRows, duplicateEntries },
       });
     }
