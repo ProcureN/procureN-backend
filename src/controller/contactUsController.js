@@ -5,7 +5,8 @@ const Mailgen = require("mailgen");
 const moment = require("moment");
 require("moment-timezone");
 const { EMAIL, PASSWORD } = require("../env");
-require('dotenv').config();
+const contactUsModel = require("../models/contactUsModel");
+require("dotenv").config();
 const contactform = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
@@ -20,17 +21,14 @@ const contactform = async (req, res) => {
     data.date = date;
     data.time = time;
 
-
     console.log(process.cwd()); // Check current working directory
-   
-    
     let config = {
       service: "gmail",
       auth: {
         user: "nar.procuren@gmail.com",
         pass: process.env.PASSWORD,
       },
-    }; 
+    };
     let transporter = nodemailer.createTransport(config);
 
     let MailGenerator = new Mailgen({
@@ -53,7 +51,7 @@ const contactform = async (req, res) => {
         table: {
           data: [
             {
-              //name,email,subject,message,phone
+              Company: data.company,
               Email: data.email,
               Contact: data.phone,
               Subject: data.subject,
@@ -62,10 +60,10 @@ const contactform = async (req, res) => {
           columns: {
             // Optionally, customize the column widths
             customWidth: {
-              // Name: '15%',
+               company: '37%',
               Email: "20%",
-              Contact: "10%",
-              Subject: "70%",
+              Contact: "11%",
+              Subject: "33%",
             },
             // Optionally, change column text alignment
             customAlignment: {
@@ -77,12 +75,13 @@ const contactform = async (req, res) => {
           instructions: "",
           button: {
             color: "#5c67f5", // Optional action button color
-            text: `Home`,
-            link: "https://procuren.in/",
+            text: `Login`,
+            link: "https://procuren.in/login",
           },
         },
         signature: 'Best regards'
       },
+    
     };
     let mail = MailGenerator.generate(response);
 
@@ -94,7 +93,7 @@ const contactform = async (req, res) => {
     };
     transporter
       .sendMail(message)
-      .then(async() => {
+      .then(async () => {
         let saveData = await contactformModel.create(data);
         res.status(201).send({ status: true, data: saveData });
       })
@@ -111,31 +110,15 @@ const getcontactform = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let filter = { isDeleted: false };
-    const resultsPerPage =
-      req.params.limit === ":limit" ? 10 : req.params.limit;
-    let page = req.params.page >= 1 ? req.params.page : 1;
-    //const query = req.query.search;
-
-    page = page - 1;
-    let CountOfData = await contactformModel.find(filter).countDocuments();
-    if (CountOfData.length === 0) {
-      return res.status(400).send({ 
-        status: false, 
-        message: "No data found." 
-      });
-    }
     let data = await contactformModel
       .find(filter)
       .sort({ createdAt: -1 })
-      .limit(resultsPerPage)
-      .skip(resultsPerPage * page);
-    return res.status(200).send({ 
-      status: true, 
+    return res.status(200).send({
+      status: true,
       data: data,
-       count: CountOfData
-       });
+    });
   } catch (error) {
-    return res.status(500).send({ status: false, message: error.message }); 
+    return res.status(500).send({ status: false, message: error.message });
   }
 };
 //============================================================
@@ -144,33 +127,35 @@ const deleteContactForm = async (req, res) => {
   try {
     const contactUsId = req.params.contactUsId;
     //let error =[]
-    if (!validator.isValidObjectId(contactUsId)) {   // checking the object id
+    if (!validator.isValidObjectId(contactUsId)) {
+      // checking the object id
       res.status(400).send({
-         status: false,
-          message: "Please provide valid costumer Id" 
-        });
+        status: false,
+        message: "Please provide valid costumer Id",
+      });
     }
     let getID = await contactformModel.findById(contactUsId);
     if (!getID) {
       return res.status(404).send({
-          status: false,
-          message: "contactUs Id Not Found for the request id",
-        });
+        status: false,
+        message: "contactUs Id Not Found for the request id",
+      });
     }
     if (getID.isDeleted == true) {
       return res.status(404).send({
-          status: false,
-          message: "contactUs id is already deleted not found",
-        });
+        status: false,
+        message: "contactUs id is already deleted not found",
+      });
     }
 
     await contactformModel.updateOne(
       { _id: contactUsId },
       { isDeleted: true, deletedAt: Date.now() }
     );
-    return res.status(200).send({ 
+    return res.status(200).send({
       status: true,
-       message: "contactUs Id is deleted succesfully" });
+      message: "contactUs Id is deleted succesfully",
+    });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
@@ -189,9 +174,44 @@ const countOfContactForm = async (req, res) => {
   }
 };
 
-module.exports = {     
+//=================================================================================================
+const updateContactUs = async (req,res)=>{
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  try {
+    let data = req.body;
+    const Id = req.params.contactUsId; //getting the client id from the path params
+  
+
+    let getContactUs = await contactUsModel.findById(Id);
+    if (!getContactUs) {
+      return res.status(404).send({
+        status: false,
+        message: "no contactUs id found",
+      });
+    }
+   
+   
+    let userData = await contactUsModel.findOneAndUpdate({ _id: Id }, data, {
+      new: true,
+    });
+    if (!userData) {
+      return res.status(404).send({
+        status: false,
+        message: "no user found to update",
+      });
+    }
+    return res
+      .status(200)
+      .send({ status: true, message: "success", data: userData });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+}
+
+module.exports = {
   contactform,
   getcontactform,
   deleteContactForm,
   countOfContactForm,
+  updateContactUs
 };

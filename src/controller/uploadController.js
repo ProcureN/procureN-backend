@@ -7,11 +7,6 @@ const fs = require('fs');
 const xlsx = require('xlsx');
 const csv = require('csvtojson');
 
-
-const isValidObjectId = (objectId) => {
-  return mongoose.Types.ObjectId.isValid(objectId)
-  
-}
 const importUser = async (req, res) => {
   try {
     // Check if the file name is correct (assuming the correct file name is "client.csv")
@@ -37,12 +32,17 @@ const importUser = async (req, res) => {
     const invalidRows = [];
 
     for (let x = 0; x < response.length; x++) {
-      const status = response[x].status ? response[x].status : 'Pending';
-      const deliveryStatus = response[x].deliveryStatus ? response[x].deliveryStatus : 'Processing';
+      // Check if the row contains any valid data
+      const rowKeys = Object.keys(response[x]);
+      const isEmptyRow = rowKeys.every((key) => !response[x][key].trim());
+
+      if (isEmptyRow) {
+        // Skip processing empty rows
+        continue;
+      }
 
       // Check for missing or incorrect keys in the row
       const requiredKeys = ['Date', 'Particulars', 'Vendor', 'Quantity', 'Price', 'Vch-No.'];
-      const rowKeys = Object.keys(response[x]);
       const missingKeys = requiredKeys.filter((key) => !rowKeys.includes(key));
 
       if (missingKeys.length > 0) {
@@ -68,8 +68,7 @@ const importUser = async (req, res) => {
             price: response[x].Price,
             isDeleted: false,
             vchNo: response[x]['Vch-No.'],
-            status: status,
-            deliveryStatus: deliveryStatus,
+            
           });
         }
       }
@@ -79,7 +78,7 @@ const importUser = async (req, res) => {
       // If there are invalid rows or duplicate entries, send the response with the errors
       return res.status(400).json({
         status: false,
-        message: "Invalid rows or duplicate entries found in document",
+        message: 'Invalid rows or duplicate entries found in document',
         data: { invalidRows, duplicateEntries },
       });
     }
@@ -92,11 +91,10 @@ const importUser = async (req, res) => {
   }
 };
 
-module.exports = importUser;
 //======================================================================================================
 
 
-; // Replace this with the correct path to the VendorModel
+
 
 const importVendor = async (req, res) => {
   try {
@@ -123,12 +121,18 @@ const importVendor = async (req, res) => {
     const invalidRows = [];
 
     for (let i = 0; i < response.length; i++) {
-      const status = response[i].status ? response[i].status : 'Pending';
-      const deliveryStatus = response[i].deliveryStatus ? response[i].deliveryStatus : 'Processing';
+       // Check if the row contains any valid data
+       const rowKeys = Object.keys(response[i]);
+      const isEmptyRow = rowKeys.every((key) => !response[i][key].trim());
 
+      if (isEmptyRow) {
+        // Skip processing empty rows
+        continue;
+      }
+    
       // Check for missing or incorrect keys in the row
       const requiredKeys = ['Date', 'Particulars', 'Vendor', 'Quantity', 'Price', 'Vch-No.'];
-      const rowKeys = Object.keys(response[i]);
+     // const rowKeys = Object.keys(response[i]);
       const missingKeys = requiredKeys.filter((key) => !rowKeys.includes(key));
       if (missingKeys.length > 0) {
         const existingMissingKeys = invalidRows.find((row) => row.every((key) => missingKeys.includes(key)));
@@ -152,9 +156,7 @@ const importVendor = async (req, res) => {
             quantity: response[i].Quantity,
             price: response[i].Price,
             isDeleted: false,
-            vchNo: response[i]['Vch-No.'],
-            status: status,
-            deliveryStatus: deliveryStatus,
+            vchNo: response[i]['Vch-No.'], 
           });
         }
       }

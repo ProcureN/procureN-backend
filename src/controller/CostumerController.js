@@ -246,25 +246,7 @@ const getDetails = async (req, res) => {
     let data = req.query;
     let { selectRole } = data;
 
-    // let Role = ['Retailer', 'Manufacturer'];
-    // if (!Role.includes(selectRole))
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: `role must be slected among ${Role}` });
-    // if (Object.keys(data).length == 0)
-    //   return res
-    //     .status(400)
-    //     .send({ status: false, message: 'Enter the key and value to filter' });
-
-    // const resultsPerPage =
-    //   req.params.limit === ':limit' ? 10 : req.params.limit;
-    // let page = req.params.page >= 1 ? req.params.page : 1;
-    // //const query = req.query.search;
-    // page = page - 1;
-    // let CountOfData = await costumerModel
-    //   .find({
-    //      selectRole: selectRole,
-    //       isDeleted: false
+    
     //      }).countDocuments();
     let getdata = await costumerModel.find({
        selectRole: selectRole,
@@ -338,71 +320,7 @@ const Individualprofiles = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-//============================================================================================
-// const countOfManufacturer = async (req, res) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   try {
-//     //"Retailer", "Manufacturer"
-//     let data = await costumerModel
-//       .find({ selectRole: 'Manufacturer', isDeleted: false })
-//       .countDocuments();
-//     res.status(200).send({ status: true, data: data });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// };
-// //============================================================================================
-// const countOfRetailer = async (req, res) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   try {
-//     //"Retailer", "Manufacturer"
-//     let data = await costumerModel
-//       .find({ selectRole: 'Retailer', isDeleted: false })
-//       .countDocuments();
-//     res.status(200).send({ status: true, data: data });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// };
 
-const countOfManufacturerAndRetailer = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    const pipeline = [
-      {
-        $match: {
-          selectRole: { $in: ['Manufacturer', 'Retailer'] },
-          isDeleted: false,
-          verified :true
-        }
-      },
-      {
-        $group: {
-          _id: '$selectRole',
-          count: { $sum: 1 }
-        }
-      }
-    ];
-
-    const result = await costumerModel.aggregate(pipeline);
-
-    let manufacturerCount = 0;
-    let retailerCount = 0;
-    
-    result.forEach((entry) => {
-      if (entry._id === 'Manufacturer') {
-        manufacturerCount = entry.count;
-      } else if (entry._id === 'Retailer') {
-        retailerCount = entry.count;
-      }
-    });
-    let total = manufacturerCount + retailerCount
-
-    res.status(200).send({ status: true, data: { manufacturerCount, retailerCount ,total} });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
 
 //===========================================================================================================
 const updatePassword = async (req, res) => {
@@ -471,7 +389,7 @@ module.exports = {
   getDetails,
   getAllDetails,
   Individualprofiles,
-  countOfManufacturerAndRetailer,
+ 
   updatePassword,
   UniqueEmail,
   uniquePhone

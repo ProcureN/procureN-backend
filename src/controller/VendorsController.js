@@ -5,14 +5,14 @@ const aws = require("../aws/aws");
 const moment = require("moment");
 require("moment-timezone");
 
-const uploadFile = require("../middleware/uploads");
-const fs = require("fs");
-const { Aggregate } = require("mongoose");
-const Mail = require("nodemailer/lib/mailer");
+// const uploadFile = require("../middleware/uploads");
+// const fs = require("fs");
+// const { Aggregate } = require("mongoose");
+// const Mail = require("nodemailer/lib/mailer");
 const mongoose = require("mongoose");
-const nodemailer = require("nodemailer");
-const Mailgen = require("mailgen");
-const { EMAIL, PASSWORD } = require("../env");
+// const nodemailer = require("nodemailer");
+// const Mailgen = require("mailgen");
+// const { EMAIL, PASSWORD } = require("../env");
 
 const vendor = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -63,32 +63,6 @@ const vendor = async (req, res) => {
     let time = moment().format("HH:mm:ss");
     data.date = date;
     data.time = time;
-    //fetch the previous tracking id
-    // let lastVchNo = await VendorModel.findOne(
-    //   {},
-    //   {},
-    //   { sort: { createdAt: -1 } }
-    // );
-//     let lastTrackingNumber = lastVchNo.vchNo
-//     if(!lastTrackingNumber){
-//        let trackingID =`PN100`
-//        data.trackingID = trackingID;
-
-//     }
-// else{
-//     // Generate the new tracking number by adding 1 to the last tracking number
-//     let newTrackingNumber = lastTrackingNumber.substring(2);
-//     let addOne = parseInt(newTrackingNumber) + 1;
-//     // Generate the tracking ID
-//     let trackingID = `PN${addOne}`;
-//     data.trackingID = trackingID;
-
-// }
-
-//     let email = checkdata.email?.toString();
-//     let name = checkdata.name?.toString();
- 
-
     let saveData = await VendorModel.create(data);
     res.status(201).send({ 
       status: true,
@@ -107,8 +81,8 @@ const updateVendor = async (req, res) => {
   try {
     const vendorID = req.params.vendorID;
     const data = req.body;
-    let files = req.files;
-    let { selectImage1, selectImage2, status, deliveryStatus } = data;
+   
+
     let manufacturerData = await VendorModel.findById({ _id: vendorID });
     if (!manufacturerData) {
       return res.status(404).send({ 
@@ -117,7 +91,7 @@ const updateVendor = async (req, res) => {
          });
     }
     let userID = manufacturerData.userID?.toString();
-    let trackingID = manufacturerData.trackingID;
+   
     if (!userID) {
       return res.status(404).send({
          status: false,
@@ -131,284 +105,7 @@ const updateVendor = async (req, res) => {
          message: "user not found" 
         });
     }
-    let email = userData.email?.toString();
-    let name = userData.name?.toString();
-
-    if (status) {
-      if (status === "Rejected") {
-        let config = {
-          service: "gmail",
-          auth: {
-            user: "nar.procuren@gmail.com",
-            pass: process.env.PASSWORD,
-          },
-        };
-        let transporter = nodemailer.createTransport(config);
-
-        let MailGenerator = new Mailgen({
-          theme: "default",
-          color: "#48cfad",
-          product: {
-            logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
-            // Custom logo height
-            logoHeight: "100px",
-            name: "ProcureN",
-            link: "https://procuren.in/",
-          },
-        });
-        let response = {
-          body: {
-            greeting: "Dear",
-            name: `${name}`,
-            intro: [
-              `We regret to inform you that your product ${trackingID} has been rejected.`,
-              `Please contact us if you have any questions.`,
-            ],
-            outro: "Thank you for your understanding.",
-            signature: "Best regards",
-          },
-        };
-        let mail = MailGenerator.generate(response);
-        let message = {
-          from: EMAIL,
-          to: email,
-          subject: `ProcureN -  Your product is rejected`,
-          html: mail,
-        };
-        transporter
-          .sendMail(message)
-          .then(() => {
-            // return res.status(201).json({
-            //     message: "you should receive an email"
-            // })
-          })
-          .catch((error) => {
-            return res.status(500).json({ error });
-          });
-      }
-      if (status === "Approved") {
-        if (deliveryStatus === "Processing") {
-          let config = {
-            service: "gmail",
-            auth: {
-              user: "nar.procuren@gmail.com",
-              pass: process.env.PASSWORD,
-            },
-          };
-          let transporter = nodemailer.createTransport(config);
-
-          let MailGenerator = new Mailgen({
-            theme: "default",
-            product: {
-              logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
-              // Custom logo height
-              logoHeight: "100px",
-              name: "ProcureN",
-              link: "https://procuren.in/",
-            },
-          });
-          let response = {
-            body: {
-              name: `${name}`,
-              intro: [
-                `We are pleased to inform you that your product has been approved and is ready for dispatch.`,
-                `Your tracking ID : ${trackingID} `,
-              ],
-              action: {
-                instructions: "",
-                button: {
-                  color: "#5c67f5", // Optional action button color
-                  text: `Track Now`,
-                  link: "https://procuren.in/",
-                },
-              },
-              outro: "Thank you for your patience.",
-              signature: "Best regards",
-            },
-          };
-          let mail = MailGenerator.generate(response);
-          let message = {
-            from: EMAIL,
-            to: email,
-            subject: `ProcureN - Your product has been Approved!`,
-            html: mail,
-          };
-          transporter
-            .sendMail(message)
-            .then(() => {
-              // return res.status(201).json({
-              //     message: "you should receive an email"
-              // })
-            })
-            .catch((error) => {
-              return res.status(500).json({ error });
-            });
-        }
-        if (deliveryStatus === "Shipped") {
-          let config = {
-            service: "gmail",
-            auth: {
-              user: "nar.procuren@gmail.com",
-              pass: process.env.PASSWORD,
-            },
-          };
-          let transporter = nodemailer.createTransport(config);
-
-          let MailGenerator = new Mailgen({
-            theme: "default",
-            product: {
-              logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
-              // Custom logo height
-              logoHeight: "100px",
-              name: "ProcureN",
-              link: "https://procuren.in/",
-            },
-          });
-          let response = {
-            body: {
-              name: `${name}`,
-              intro: [
-                `We are pleased to inform you that your order has been shipped.`,
-                `Your tracking ID : ${trackingID} `,
-              ],
-              action: {
-                instructions: "",
-                button: {
-                  color: "#5c67f5", // Optional action button color
-                  text: `Track Now`,
-                  link: "https://procuren.in/",
-                },
-              },
-              outro: "Thank you for choosing our service.",
-              signature: "Best regards",
-            },
-          };
-          let mail = MailGenerator.generate(response);
-          let message = {
-            from: EMAIL,
-            to: email,
-            subject: `ProcureN - Product has Shipped!`,
-            html: mail,
-          };
-          transporter
-            .sendMail(message)
-            .then(() => {
-              // return res.status(201).json({
-              //     message: "you should receive an email"
-              // })
-            })
-            .catch((error) => {
-              return res.status(500).json({ error });
-            });
-        }
-        if (deliveryStatus === "Delivered") {
-          let config = {
-            service: "gmail",
-            auth: {
-              user: "nar.procuren@gmail.com",
-              pass: process.env.PASSWORD,
-            },
-          };
-          let transporter = nodemailer.createTransport(config);
-
-          let MailGenerator = new Mailgen({
-            theme: "default",
-            product: {
-              logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
-              // Custom logo height
-              logoHeight: "100px",
-              name: "ProcureN",
-              link: "https://procuren.in/",
-            },
-          });
-          let response = {
-            body: {
-              name: `${name}`,
-              intro: [
-                `We're happy to inform you that your order ${trackingID} has been delivered.`,
-              ],
-              outro: "Thank you for choosing our service.",
-              signature: "Best regards",
-            },
-          };
-          let mail = MailGenerator.generate(response);
-          let message = {
-            from: EMAIL,
-            to: email,
-            subject: `ProcureN - Delivery Confirmation`,
-            html: mail,
-          };
-          transporter
-            .sendMail(message)
-            .then(() => {
-              // return res.status(201).json({
-              //     message: "you should receive an email"
-              // })
-            })
-            .catch((error) => {
-              return res.status(500).json({ error });
-            });
-        }
-      }
-      if (status === "Pending") {
-        let config = {
-          service: "gmail",
-          auth: {
-            user: "nar.procuren@gmail.com",
-            pass: process.env.PASSWORD,
-          },
-        };
-        let transporter = nodemailer.createTransport(config);
-
-        let MailGenerator = new Mailgen({
-          theme: "default",
-          product: {
-            logo: "https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/misc/procurenlogo.png",
-            // Custom logo height
-            logoHeight: "100px",
-            name: "ProcureN",
-            link: "https://procuren.in/",
-          },
-        });
-        let response = {
-          body: {
-            name: `${name}`,
-            intro: [
-              `Your order  ${trackingID} is pending. We are working on it and will keep you updated.`,
-              `Please contact us if you have any questions.`,
-            ],
-            action: {
-              instructions: "",
-              button: {
-                color: "#5c67f5", // Optional action button color
-                text: `Track Now`,
-                link: "https://procuren.in/",
-              },
-            },
-            outro: "Thank you",
-            signature: "Best regards",
-          },
-        };
-        let mail = MailGenerator.generate(response);
-        let message = {
-          from: EMAIL,
-          to: email,
-          subject: `ProcureN - Pending of an enquiry`,
-          html: mail,
-        };
-        transporter
-          .sendMail(message)
-          .then(() => {
-            // return res.status(201).json({
-            //     message: "you should receive an email"
-            // })
-          })
-          .catch((error) => {
-            return res.status(500).json({ error });
-          });
-      }
-    }
-
+    
     let productData = await VendorModel.findOneAndUpdate(
       { _id: vendorID },
       data,
@@ -471,38 +168,6 @@ const DeleteVendor = async (req, res) => {
 };
 
 //======================get products=======================================================
-// const getVendor = async (req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   try {
-//     let filter = { isDeleted: false };
-
-//     // const resultsPerPage =
-//     //   req.params.limit === ":limit" ? 10 : req.params.limit;
-//     // let page = req.params.page >= 1 ? req.params.page : 1;
-//     // //const query = req.query.search;
-
-//     // page = page - 1;
-//     // let CountOfData = await VendorModel.find(filter).countDocuments();
-
-//     let data = await VendorModel.find(filter)
-//       .sort([["createdAt", -1]])
-//       .limit(resultsPerPage)
-//       .skip(resultsPerPage * page);
-//     if (!data)
-//       return res.status(404).send({ 
-//         status: false,
-//          message: "no products found" 
-//         });
-
-//     res.status(200).send({
-//       status: true,
-//       data: data,
-//       // count: CountOfData,
-//     });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// };
 
 
 const getVendor = async (req, res) => {
@@ -601,92 +266,6 @@ const countProduct = async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-//==============================================================================
-// const pending = async (req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   try {
-//     //["pending","approved","rejected"]
-//     let data = await VendorModel.find({
-//       status: "pending",
-//       isDeleted: false,
-//     }).countDocuments();
-//     res.status(200).send({
-//        status: true, 
-//        data: data });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// };
-// //===============================================================================
-// const rejected = async (req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   try {
-//     let data = await VendorModel.find({
-//       status: "rejected",
-//       isDeleted: false,
-//     }).countDocuments();
-//     res.status(200).send({ status: true, data: data });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// };
-// //=====================================================================================
-// const approved = async (req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   try {
-//     let data = await VendorModel.find({
-//       status: "approved",
-//       isDeleted: false,
-//     }).countDocuments();
-//     res.status(200).send({ status: true, data: data });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// };
-// //==============================================================================
-// const countOfInprocessing = async (req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   try {
-//     //"processing","shipped","delivered"
-//     let data = await VendorModel.find({
-//       deliveryStatus: "Processing",
-//       isDeleted: false,
-//     }).countDocuments();
-//     res.status(200).send({ status: true, data: data });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// };
-// //=====================================================================================
-// //==============================================================
-// const countOfinshipped = async (req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   try {
-//     //"processing","shipped","delivered"
-//     let data = await VendorModel.find({
-//       deliveryStatus: "Shipped",
-//       isDeleted: false,
-//     }).countDocuments();
-//     res.status(200).send({ status: true, data: data });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// };
-// //==============================================================================
-// const countOfindelivered = async (req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   try {
-//     //"processing","shipped","delivered"
-//     let data = await VendorModel.find({
-//       deliveryStatus: "Delivered",
-//       isDeleted: false,
-//     }).countDocuments();
-//     res.status(200).send({ status: true, data: data });
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// };
-//========================================================================
 
 const getCounts = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
