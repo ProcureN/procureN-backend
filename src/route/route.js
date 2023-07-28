@@ -44,7 +44,13 @@ const {
   deleteClient,
   updateclient,
 } = require("../controller/ClientController");
-//const { authentication, authorization, authorization1, authorization2 ,authorization3} = require("../middleware/auth")
+const {
+  authentication,
+  authorization,
+  authorization1,
+  // authorization2,
+  authorization3,
+} = require("../middleware/auth");
 
 const {
   otpVerification,
@@ -56,19 +62,13 @@ const {
   getcontactform,
   deleteContactForm,
   countOfContactForm,
-  updateContactUs
+  updateContactUs,
 } = require("../controller/contactUsController");
 const {
   vendor,
   updateVendor,
   DeleteVendor,
   getVendor,
-  getManufactureProducts,
-  getproductnames,
-  countProduct,
-  getCounts,
-  individualProductsCount,
-  countOfStatusByCustomerIdOfProducts,
 } = require("../controller/VendorsController");
 
 router.get("/test-me", function (req, res) {
@@ -104,53 +104,36 @@ router.get("/Individualprofiles/:customerID", Individualprofiles);
 
 //============================client ============================
 router.post("/client", client);
-router.get("/getclient", getclient); // by admin
+router.get("/getclient", authentication, getclient); // by admin
 router.put(
-  "/updateclient/:clientId",  /*  */
-  // authentication,
-  // authorization2,
+  "/updateclient/:clientId" /*  */,
+  authentication,
+  authorization,
   updateclient
-);
-router.get(
-  "/Individualclient/:userID/:page/:limit",
-  // authentication,
-  // authorization,
-  Individualclient
 );
 router.delete(
   "/deleteClient/:clientId",
-  // authentication,
-  // authorization2,
+  authentication,
+  authorization,
   deleteClient
 );
 
-
 //======================= vendor ===================================
 router.post("/vendor", vendor);
-router.get("/getVendor", getVendor);
+router.get("/getVendor", authentication, getVendor);
 router.put(
   "/updateVendor/:vendorID",
-  // authentication,
-  // authorization1,
+  authentication,
+  authorization1,
   updateVendor
 );
 router.delete(
-  "/DeleteVendor/:productID",
-  // authentication,
-  // authorization1,
+  "/DeleteVendor/:vendorID",
+  authentication,
+  authorization1,
   DeleteVendor
 );
 // by admin
-router.get("/getproducts/:customerID/:page/:limit", getManufactureProducts);
-router.get("/getproductnames", getproductnames);
-router.get("/countProduct", countProduct);
-
-router.get("/getCountsOfProduct", getCounts);
-router.get("/individualproductscount/:customerID", individualProductsCount);
-router.get(
-  "/countOfStatusByCustomerIdOfProducts/:limit",
-  countOfStatusByCustomerIdOfProducts
-);
 
 //=============================otp verification===================================
 router.post("/otp", otpVerification);
@@ -159,14 +142,19 @@ router.put("/forgetPassword", forgetPassword);
 
 //======================contactform================================
 router.post("/contactform", contactform);
-router.get("/getcontactform", getcontactform); //by admin
+router.get("/getcontactform", authentication, getcontactform); //by admin
 router.delete(
-  "/deleteContactForm/:contactUsId",
-  // authentication,
-  // authorization3,
+  "/deleteContactForm/:contactUsId/:userID",
+  authentication,
+  authorization3,
   deleteContactForm
 ); // by admin
-router.put('/updateContactUs/:contactUsId',updateContactUs)
-router.get("/countOfContactForm", countOfContactForm);
+router.put(
+  "/updateContactUs/:contactUsId/:userID",
+  authentication,
+  authorization3,
+  updateContactUs
+);
+
 
 module.exports = router;

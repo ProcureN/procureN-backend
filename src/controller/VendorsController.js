@@ -160,7 +160,7 @@ const DeleteVendor = async (req, res) => {
     );
     return res.status(200).send({
        status: true,
-        message: "Product is deleted" 
+        message: "vendor is deleted" 
       });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });

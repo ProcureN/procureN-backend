@@ -179,14 +179,14 @@ const login = async (req, res) => {
     }
     // > Create Jwt Token
     const token = jwt.sign(
-      { customerID: isEmailExists._id.toString() },
+      { userID: isEmailExists._id.toString() },
       'procure-n secret key',
       { expiresIn: '24h' }
     );
 
     //  Make Respoense
     let result = {
-      customerID: isEmailExists._id.toString(),
+      userID: isEmailExists._id.toString(),
       selectRole: isEmailExists.selectRole.toString(),
       token: token,
     };
