@@ -43,6 +43,7 @@ const {
   Individualclient,
   deleteClient,
   updateclient,
+  uniqueVchNo
 } = require("../controller/ClientController");
 const {
   authentication,
@@ -117,7 +118,7 @@ router.delete(
   authorization,
   deleteClient
 );
-
+//router.get("/uniqueVchNo",uniqueVchNo)
 //======================= vendor ===================================
 router.post("/vendor", vendor);
 router.get("/getVendor", authentication, getVendor);

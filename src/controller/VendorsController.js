@@ -81,6 +81,7 @@ const updateVendor = async (req, res) => {
   try {
     const vendorID = req.params.vendorID;
     const data = req.body;
+    let vchNo = data.vchNo;
    
 
     let manufacturerData = await VendorModel.findById({ _id: vendorID });
@@ -91,7 +92,7 @@ const updateVendor = async (req, res) => {
          });
     }
     let userID = manufacturerData.userID?.toString();
-   
+   let existingVchNo = manufacturerData.vchNo
     if (!userID) {
       return res.status(404).send({
          status: false,
@@ -105,7 +106,12 @@ const updateVendor = async (req, res) => {
          message: "user not found" 
         });
     }
-    
+    if(existingVchNo !== vchNo){
+      let vchoNoExist = await VendorModel.findOne({ vchNo: vchNo });
+      if (vchoNoExist) {
+        return res.status(400).send({ status: false, message: "vchNo already exists" });
+      }
+    }
     let productData = await VendorModel.findOneAndUpdate(
       { _id: vendorID },
       data,
@@ -453,14 +459,6 @@ module.exports = {
   getManufactureProducts: IndividualVendor,
   getproductnames,
   countProduct,
-  // pending,
-  // rejected,
-  // approved,
-  // countOfInprocessing,
-
-  // countOfinshipped,
-  // countOfindelivered,
-  // productsByStatus,
   getCounts,
   individualProductsCount,
   countOfStatusByCustomerIdOfProducts

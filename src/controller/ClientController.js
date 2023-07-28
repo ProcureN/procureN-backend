@@ -5,222 +5,230 @@ const validator = require("../validation/validations");
 const moment = require("moment");
 require("moment-timezone");
 require('dotenv').config();
-const Mail = require("nodemailer/lib/mailer");
-const mongoose = require("mongoose");
-const nodemailer = require("nodemailer");
-const Mailgen = require("mailgen");
-const { EMAIL, PASSWORD } = require("../env");
+
 
 const client = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    //   let costumerId = req.params.customerID
+    // Get the data from the request body
     let data = req.body;
     const { userID } = data;
 
+    // Check if the userID is provided
     if (!validator.isValid1(userID)) {
-      //checking user id required
+      // Checking user id required
       return res.status(400).send({
         status: false,
         message: "userID is required",
       });
     }
+
+    // Validate the userID format (should be a valid MongoDB ObjectId)
     if (!validator.isValidObjectId(userID)) {
-      //user id (objectid) validation
+      // User id (objectid) validation
       return res.status(400).send({
         status: false,
         message: "userID not valid",
       });
     }
+
+    // Find the user in the UserModel by the provided userID
     let getCostumers = await UserModel.findOne({
       _id: userID,
       isDeleted: false,
-    }); //checking the user is present and not deleted
+    });
+
+    // Check if the user exists and is not deleted
     if (!getCostumers) {
       return res.status(404).send({
         status: false,
         message: "user not found or already deleted",
       });
     }
-    let findVchNo = await clientModel.findOne({vchNo:data.vchNo})
-    if(findVchNo){
-      return res.status(404).send({status:false,message:"vchNo already exist"})
+
+    // Find if a client with the provided vchNo already exists in the clientModel
+    let findVchNo = await clientModel.findOne({ vchNo: data.vchNo });
+
+    // Check if the vchNo is already taken
+    if (findVchNo) {
+      return res.status(404).send({ status: false, message: "vchNo already exists" });
     }
-    moment.tz.setDefault("Asia/Kolkata"); //default timezone as india
+
+    // Set the default timezone to Asia/Kolkata
+    moment.tz.setDefault("Asia/Kolkata");
 
     // Get the current date and time
-    let date = moment().format("DD/MM/YYYY"); //saving date and time
+    let date = moment().format("DD/MM/YYYY");
     let time = moment().format("HH:mm:ss");
+
+    // Add date and time to the data object
     data.date = date;
     data.time = time;
+
+    // Create a new client record in the clientModel
     let saveData = await clientModel.create(data);
 
+    // Return the successful response
     res.status(201).send({ status: true, data: saveData });
   } catch (error) {
+    // If there's an error, return the error message
     return res.status(500).send({ status: false, message: error.message });
   }
 };
-//==========================================================================================================
 
+//==========================Get Clients=========================================
 const getclient = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
+    // Retrieve all client documents from the clientModel collection
     let data = await clientModel.aggregate([
-      { $match: { isDeleted: false } }, //maching the key and the value
-      { $group: { _id: "$vchNo", doc: { $first: "$$ROOT" } } }, // grouping with vchNo and fetching the 1sy docs
-      { $replaceRoot: { newRoot: "$doc" } }, //replacing the doc with new root
-      { $sort: { createdAt: -1 } }, //sorting in the deceasing order
+      { $match: { isDeleted: false } }, // Match documents where the 'isDeleted' field is set to false
+      { $group: { _id: "$vchNo", doc: { $first: "$$ROOT" } } }, // Group the documents by 'vchNo' and fetch the first document of each group
+      { $replaceRoot: { newRoot: "$doc" } }, // Replace the current root with the 'doc' object from the group (unwrap the grouped documents)
+      { $sort: { createdAt: -1 } }, // Sort the documents in descending order based on the 'createdAt' field
     ]);
 
+    // Check if data is empty or no documents were found
     if (!data || data.length === 0) {
       return res.status(404).send({ status: false, message: "Not found" });
     }
 
+    // Return the successful response with the data
     res.status(200).send({ status: true, data: data });
   } catch (error) {
+    // If there's an error, return the error message
     return res.status(500).send({ status: false, message: error.message });
   }
 };
 
-//==========================update costumers =========================================
+
+//==========================Update Clients=========================================
 const updateclient = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     let data = req.body;
-    const clientId = req.params.clientId; //getting the client id from the path params
-  
+    let vchNo = data.vchNo;
+    const clientId = req.params.clientId; // Getting the client id from the path params
 
+    // Finding the client doc with the given id
     let getclient = await clientModel.findById(clientId);
     if (!getclient) {
       return res.status(404).send({
         status: false,
-        message: "no customer enquiry found",
+        message: "No customer enquiry found",
       });
     }
-    let userID = getclient.userID?.toString(); // converting the object id to string
+    let userID = getclient.userID?.toString(); // Extracting the user id and converting the object id to string
+    let existingVchNo = getclient.vchNo
+
     
+    // Checking if the user is present or not
     if (!userID) {
       return res.status(404).send({
         status: false,
         message: "userID not found",
       });
     }
+
+    // Finding the userId in the database
     let user = await UserModel.findById(userID);
+
+    // If user is not found
     if (!user) {
-      return res.status(404).send({ status: false, message: "user not found" });
+      return res.status(404).send({ status: false, message: "User not found" });
     }
+
+    
+    // if (vchNo) {
+    //   let vchoNoExist = await clientModel.findOne({ vchNo: vchNo });
+    //   if (vchoNoExist) {
+    //     return res.status(400).send({ status: false, message: "vchNo already exists" });
+    //   }
+    // }
+
+    if(existingVchNo !== vchNo){
+      let vchoNoExist = await clientModel.findOne({ vchNo: vchNo });
+      if (vchoNoExist) {
+        return res.status(400).send({ status: false, message: "vchNo already exists" });
+      }
+    }
+    // Updating the client doc with the given id and the data provided
     let userData = await clientModel.findOneAndUpdate({ _id: clientId }, data, {
       new: true,
     });
+
+    // Checking if the client is present or not
     if (!userData) {
       return res.status(404).send({
         status: false,
-        message: "no user found to update",
+        message: "No user found to update",
       });
     }
-    return res
-      .status(200)
-      .send({ status: true, message: "success", data: userData });
+
+    return res.status(200).send({ status: true, message: "Success", data: userData });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
 };
 
-//=========================================get individual costumer enquiry================================
 
-const Individualclient = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  try {
-    let userID = req.params.userID;  //user id om path params
-
-    if (!validator.isValid1(userID)) {
-      return res.status(400).send({
-        status: false,
-        message: "costumerID is required",
-      });
-    }
-    if (!validator.isValidObjectId(userID)) {
-      return res.status(400).send({
-        status: false,
-        message: "costumerID not valid",
-      });
-    }
-
-    const resultsPerPage =req.params.limit === ":limit" ? 10 : req.params.limit; //pagination
-    let page = req.params.page >= 1 ? req.params.page : 1;
-    page = page - 1;
-    //const query = req.query.search;
-    let CountOfData = await clientModel  //finding the count of user and not deleted
-      .find({
-        isDeleted: false,
-        userID: userID,
-      })
-      .countDocuments();
-    let getData = await clientModel  //finding the docs doc of user id, not deleted and appling the pagination
-      .find({
-        isDeleted: false,
-        userID: userID,
-      })
-      .sort({ createdAt: -1 })
-      .limit(resultsPerPage)
-      .skip(resultsPerPage * page);
-
-    return res
-      .status(200)
-      .send({ status: true, data: getData, count: CountOfData });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-
-//==============================delete costumer enquiry =====================================
-
+//==============================Delete Client====================================
 const deleteClient = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let clientId = req.params.clientId;   // client id form path params
+    let clientId = req.params.clientId; // Getting client id from path params
+
+    // Checking if clientId is a valid ObjectId
     if (!validator.isValidObjectId(clientId)) {
       res.status(400).send({
         status: false,
-        message: "Please provide valid clientId",
-      });
-    }
-    let getclient = await clientModel.findOne({
-      _id: clientId,  //check that client is present or not
-    });
-    if (!getclient) {
-      return res.status(404).send({
-        status: false,
-        message: "clientId  Not Found for the request id",
-      });
-    }
-    if (getclient.isDeleted == true) {  // is that client is deleted....?
-      return res.status(404).send({
-        status: false,
-        message: "already deleted not found",
+        message: "Please provide a valid clientId",
       });
     }
 
-    await clientModel.updateOne(   //if not deleted then updating and making it dirty
+    // Finding the client with the given clientId
+    let getclient = await clientModel.findOne({
+      _id: clientId,
+    });
+
+    // Checking if the client is present or not
+    if (!getclient) {
+      return res.status(404).send({
+        status: false,
+        message: "ClientId not found for the requested id",
+      });
+    }
+
+    // Checking if the client is already deleted
+    if (getclient.isDeleted == true) {
+      return res.status(404).send({
+        status: false,
+        message: "Already deleted, not found",
+      });
+    }
+
+    // Updating the client document and marking it as deleted
+    await clientModel.updateOne(
       { _id: clientId },
       { isDeleted: true, deletedAt: Date.now() }
     );
+
     return res.status(200).send({
       status: true,
-      message: "deleted successfull",
+      message: "Deleted successfully",
     });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
   }
+
 };
-
-//==========================tracking customer enquiry====================================
-
+ 
+//==================================================================================================
 
 module.exports = {
   client,
   getclient,
-  Individualclient,
   deleteClient,
   updateclient,
+  //uniqueVchNo
 };

@@ -44,14 +44,14 @@ const contactform = async (req, res) => {
         link: "https://procuren.in/",
       },
     });
-    let response = {
+    let response = { //make a response and body in table format
       body: {
         name: "ProcureN",
         intro: [`You got an enquiry from ${data.name}`],
         table: {
           data: [
             {
-              Company: data.company,
+              Company: data.company, //assigning the values to the table
               Email: data.email,
               Contact: data.phone,
               Subject: data.subject,
@@ -74,7 +74,7 @@ const contactform = async (req, res) => {
         action: {
           instructions: "",
           button: {
-            color: "#5c67f5", // Optional action button color
+            color: "#5c67f5",    //login button redirects to login page
             text: `Login`,
             link: "https://procuren.in/login",
           },
@@ -109,8 +109,9 @@ const contactform = async (req, res) => {
 const getcontactform = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    let filter = { isDeleted: false };
-    let data = await contactformModel
+    let filter = { isDeleted: false }; //required the docs which r not deleted
+   //finding the docs with filter and sorting in deceasing order for createdAt key
+    let data = await contactformModel 
       .find(filter)
       .sort({ createdAt: -1 })
     return res.status(200).send({
@@ -125,10 +126,11 @@ const getcontactform = async (req, res) => {
 const deleteContactForm = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
-    const contactUsId = req.params.contactUsId;
-    //let error =[]
+    const contactUsId = req.params.contactUsId;  //required contactUsId form path params
+    
+    // Validate the userID format (should be a valid MongoDB ObjectId)
     if (!validator.isValidObjectId(contactUsId)) {
-      // checking the object id
+      
       res.status(400).send({
         status: false,
         message: "Please provide valid costumer Id",
@@ -207,7 +209,7 @@ const updateContactUs = async (req,res)=>{
     return res.status(500).send({ status: false, message: error.message });
   }
 }
-
+//===============================================
 module.exports = {
   contactform,
   getcontactform,
