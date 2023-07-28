@@ -134,12 +134,6 @@ router.delete(
   DeleteVendor
 );
 // by admin
-
-//=============================otp verification===================================
-router.post("/otp", otpVerification);
-router.post("/resendOtp", resendOtp);
-router.put("/forgetPassword", forgetPassword);
-
 //======================contactform================================
 router.post("/contactform", contactform);
 router.get("/getcontactform", authentication, getcontactform); //by admin
@@ -155,6 +149,11 @@ router.put(
   authorization3,
   updateContactUs
 );
+//=============================otp verification===================================
+router.post("/otp", otpVerification);
+router.post("/resendOtp", resendOtp);
+router.put("/forgetPassword", forgetPassword);
+
 
 
 module.exports = router;
