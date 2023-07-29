@@ -134,7 +134,7 @@ router.delete(
   authorization1,
   DeleteVendor
 );
-// by admin
+
 //======================contactform================================
 router.post("/contactform", contactform);
 router.get("/getcontactform", authentication, getcontactform); //by admin

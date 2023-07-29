@@ -56,24 +56,46 @@ const authorization3 = async function (req, res, next) {
 
 const authorization = async function (req, res, next) {
   try {
-      let Id = req.params.clientId
-      if (!validator.isValidObjectId(Id)) {
-          return res.status(400).send({ status: false, message: "invalid user Id" })
-      }
-      const clientData = await clientModel.findById(Id)
-      const getUserID = clientData.userID.toString()
-      const user = await userModel.findById(getUserID)
-      if (!user) {
-          return res.status(404).send({ status: false, message: "User Not Found" })
-      }
-      let decoded = req.decoded.userID
-      if (getUserID !== decoded) { return res.status(403).send({ staus: false, msg: "you are not authorized" }) }
-      next()
-  } catch (error) {
-      return res.status(500).send({ status: false, message: error.message })
-  }
+    let clientId = req.params.clientId;
 
-}
+    if (!validator.isValidObjectId(clientId)) {
+      return res.status(400).send({ status: false, message: "Invalid client ID" });
+    }
+
+    // Retrieve the client document by ID
+    const clientData = await clientModel.findById(clientId);
+
+    // Check if the client document exists
+    if (!clientData) {
+      return res.status(404).send({ status: false, message: "Client Not Found" });
+    }
+
+    // Convert the user ID to a string
+    const getUserID = clientData.userID?.toString();
+
+    // Retrieve the user by ID
+    const user = await userModel.findById(getUserID);
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).send({ status: false, message: "User Not Found" });
+    }
+
+    // Get the user ID from the decoded token (assuming you have a middleware that decodes the token and adds it to req.decoded.userID)
+    let decodedUserID = req.decoded?.userID;
+
+    // Check if the user ID from the token matches the client's user ID
+    if (getUserID !== decodedUserID) {
+      return res.status(403).send({ status: false, message: "You are not authorized" });
+    }
+
+    // If everything is fine, proceed to the next middleware or route handler
+    next();
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
 // //========================================================================
 
 const authorization1 = async function (req, res, next) {
@@ -83,7 +105,7 @@ const authorization1 = async function (req, res, next) {
           return res.status(400).send({ status: false, message: "invalid user Id" })
       }
       const vendorData = await VendorModel.findById(Id)
-      const getUserID = vendorData.userID.toString()
+      const getUserID = vendorData.userID?.toString()
       const user = await userModel.findById(getUserID)
       if (!user) {
           return res.status(404).send({ status: false, message: "User Not Found" })
@@ -98,73 +120,6 @@ const authorization1 = async function (req, res, next) {
 }
 
 
-// async function authorization2(req, res, next) {
-//   try {
-//     const customerID = req.decoded.customerID;
-//     const customerEnquiryId = req.params.customerEnquiryId;
-
-//     const errors = [];
-
-//     if (customerEnquiryId === ':customerEnquiryId') {
-//       errors.push('customerEnquiryId is required');
-//     } else {
-//       if (!validator.isValidObjectId(customerID)) {
-//         errors.push('Given bookId is an invalid ObjectId');
-//       }
-//     }
-
-//     if (errors.length > 0) {
-//       return res.status(400).send({
-//         status: false,
-//         message: `${errors.join(', ')}`,
-//       });
-//     }
-
-//     const customerEnquiryDocument = await customerEnquiryModel.find({
-//       _id: customerEnquiryId,
-//       isDeleted: false,
-//     });
-//     if (!customerEnquiryDocument || customerEnquiryDocument.length === 0) {
-//       return res
-//         .status(404)
-//         .send({ status: false, message: 'customerEnquiryDocument not found' });
-//     }
-
-//     const pathcustomerID = '642a78ce9c3be64d3b6d3aaa';
-//     if (!pathcustomerID || customerID !== pathcustomerID) {
-//       return res
-//         .status(403)
-//         .send({ status: false, message: 'user not authorized' });
-//     }
-//     next();
-//   } catch (error) {
-//     return res.status(500).send({ status: false, message: error.message });
-//   }
-// }
-// //=================================================================================================
-// const authorization3 = async function (req, res, next) {
-//   try {
-//     let adminID =  "642a78ce9c3be64d3b6d3aaa" ;
-//     if (!validator.isValidObjectId(adminID)) {
-//       return res
-//         .status(400)
-//         .send({ status: false, message: 'invalid user Id' });
-//     }
-//     const user = await costumerModel.findById(adminID);
-//     if (!user) {
-//       return res.status(404).send({ status: false, message: 'User Not Found' });
-//     }
-//     let decoded = req.decoded.customerID;
-//     if (adminID!== decoded) {
-//       return res
-//         .status(403)
-//         .send({ staus: false, message: 'you are not authorized' });
-//     }
-//     next();
-//   } catch (err) {
-//     return res.status(500).send({ status: false, message: err.message });
-//   }
-// };
 
 module.exports = {
   authentication,
