@@ -238,90 +238,6 @@ const deleteCostumers = async (req, res) => {
   }
 };
 
-//==============================get details======================================
-
-const getDetails = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    let data = req.query;
-    let { selectRole } = data;
-
-    
-    //      }).countDocuments();
-    let getdata = await costumerModel.find({
-       selectRole: selectRole,
-        isDeleted: false 
-      }).sort({ createdAt: -1 })
-      
-    res.status(200).send({ status: true, data: getdata });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//========================================================================
-const getAllDetails = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    const resultsPerPage =
-      req.params.limit === ':limit' ? 10 : req.params.limit;
-    let page = req.params.page >= 1 ? req.params.page : 1;
-    //const query = req.query.search;
-
-    page = page - 1;
-    let CountOfData = await costumerModel
-      .find({
-        isDeleted: false,
-        verified:true,
-        selectRole: {$ne: 'admin',},
-      }).countDocuments();
-    let data = await costumerModel
-      .find({
-        isDeleted: false,
-        verified:true,
-        selectRole: { $ne: 'admin'},
-      }).sort({  createdAt: -1 })
-      .limit(resultsPerPage)
-      .skip(resultsPerPage * page);
-    res.status(200).send({ status: true, data: data, count: CountOfData });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-//====================================================================================
-
-const Individualprofiles = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  try {
-    let customerID = req.params.customerID;
-    if (!validator.isValid1(customerID)) {
-      return res.status(400).send({
-         status: false,
-          message: 'costumerID is required'
-         });
-    }
-    if (!validator.isValidObjectId(customerID)) {
-      return res.status(400).send({ 
-        status: false,
-         message: 'costumerID not valid'
-        });
-    }
-    let getData = await costumerModel.findOne({
-      _id: customerID,
-      isDeleted: false,
-    });
-    if (!getData) {
-      return res.status(400).send({ 
-        status: false,
-         message: 'not enquiries found'
-         });
-    }
-    return res.status(200).send({ status: true, data: getData });
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-};
-
-
 //===========================================================================================================
 const updatePassword = async (req, res) => {
   try {
@@ -342,55 +258,13 @@ const updatePassword = async (req, res) => {
     return res.status(500).send({ status: false, message: err.message });
   }
 };
-//====================================== UniqueEmail =========================================
 
-const UniqueEmail = async (req,res)=>{
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  try {
-    let email = req.body.email
-    let checkdata = await costumerModel.find({email:email})
-    if(!checkdata || checkdata.length ===0){
-       return res.status(200).send({
-        status:true,
-        message:"email is unique"
-      })
-    }else
-    return res.status(400).send({
-      status:false,
-      message:"email already existing"
-    })
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
- 
-}
-//==================================================================================================
-
-const uniquePhone = async (req,res)=>{
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  try {
-    let phone = req.body.phone
-    let checkdata = await costumerModel.find({phone:phone})
-    if(!checkdata || checkdata.length ===0){
-       return res.status(200).send({status:true,message:"phone is unique"})
-    }else
-    return res.status(400).send({status:false,message:"phone already existing"})
-  } catch (error) {
-    return res.status(500).send({ status: false, message: error.message });
-  }
-
-}
 //====================================================================================================
 module.exports = {
   register,
   updateCostumer,
   login,
   deleteCostumers,
-  getDetails,
-  getAllDetails,
-  Individualprofiles,
- 
   updatePassword,
-  UniqueEmail,
-  uniquePhone
+  
 };

@@ -30,26 +30,18 @@ const {
   updateCostumer,
   login,
   updatePassword,
-  deleteCostumers,
-  getDetails,
-  getAllDetails,
-  Individualprofiles,
-  UniqueEmail,
-  uniquePhone,
+  deleteCostumers
 } = require("../controller/CostumerController");
 const {
   client,
   getclient,
-  Individualclient,
   deleteClient,
-  updateclient,
-  uniqueVchNo
+  updateclient
 } = require("../controller/ClientController");
 const {
   authentication,
   authorization,
   authorization1,
-  // authorization2,
   authorization3,
 } = require("../middleware/auth");
 
@@ -62,7 +54,6 @@ const {
   contactform,
   getcontactform,
   deleteContactForm,
-  countOfContactForm,
   updateContactUs,
 } = require("../controller/contactUsController");
 const {
@@ -76,9 +67,6 @@ router.get("/test-me", function (req, res) {
   res.send("this is successfully created");
 });
 //=============================costumer==================================
-
-router.post("/UniqueEmail", UniqueEmail);
-router.post("/uniquePhone", uniquePhone);
 
 router.post("/register", register);
 router.put(
@@ -95,13 +83,13 @@ router.delete(
   deleteCostumers
 );
 router.post("/login", login);
-router.get(
-  "/getroles",
-  //authentication,
-  getDetails
-); // by admin
-router.get("/getAllDetails/:page/:limit", getAllDetails); // by admin
-router.get("/Individualprofiles/:customerID", Individualprofiles);
+// router.get(
+//   "/getroles",
+//   //authentication,
+//   getDetails
+// ); // by admin
+// router.get("/getAllDetails/:page/:limit", getAllDetails); // by admin
+// router.get("/Individualprofiles/:customerID", Individualprofiles);
 
 //============================client ============================
 router.post("/client", client);
