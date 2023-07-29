@@ -108,7 +108,8 @@ const updateVendor = async (req, res) => {
     }
     if(existingVchNo !== vchNo){
       let vchoNoExist = await VendorModel.findOne({ vchNo: vchNo });
-      if (vchoNoExist) {
+      // Check if the vchNo already exists and the corresponding client document is not deleted
+      if (vchoNoExist && !vchoNoExist.isDeleted) {
         return res.status(400).send({ status: false, message: "vchNo already exists" });
       }
     }

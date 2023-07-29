@@ -119,9 +119,8 @@ const updateclient = async (req, res) => {
       });
     }
     let userID = getclient.userID?.toString(); // Extracting the user id and converting the object id to string
-    let existingVchNo = getclient.vchNo
+    let existingVchNo = getclient.vchNo;
 
-    
     // Checking if the user is present or not
     if (!userID) {
       return res.status(404).send({
@@ -138,20 +137,17 @@ const updateclient = async (req, res) => {
       return res.status(404).send({ status: false, message: "User not found" });
     }
 
-    
-    // if (vchNo) {
-    //   let vchoNoExist = await clientModel.findOne({ vchNo: vchNo });
-    //   if (vchoNoExist) {
-    //     return res.status(400).send({ status: false, message: "vchNo already exists" });
-    //   }
-    // }
-
-    if(existingVchNo !== vchNo){
+    // Check if the provided vchNo is different from the existing vchNo in the database
+    // If it's different, then check if the new vchNo already exists in the database
+    if (existingVchNo !== vchNo) {
       let vchoNoExist = await clientModel.findOne({ vchNo: vchNo });
-      if (vchoNoExist) {
+
+      // Check if the vchNo already exists and the corresponding client document is not deleted
+      if (vchoNoExist && !vchoNoExist.isDeleted) {
         return res.status(400).send({ status: false, message: "vchNo already exists" });
       }
     }
+
     // Updating the client doc with the given id and the data provided
     let userData = await clientModel.findOneAndUpdate({ _id: clientId }, data, {
       new: true,
