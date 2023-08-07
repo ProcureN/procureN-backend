@@ -194,7 +194,7 @@ const getVendor = async (req, res) => {
     ]);
 
     if (!data || data.length === 0) {
-      return res.status(404).send({ status: false, message: "No products found" });
+      return res.status(404).send({ status: false, data: [] });
     }
 
     res.status(200).send({ status: true,  data });

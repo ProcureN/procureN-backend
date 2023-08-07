@@ -90,7 +90,7 @@ const getclient = async (req, res) => {
 
     // Check if data is empty or no documents were found
     if (!data || data.length === 0) {
-      return res.status(404).send({ status: false, message: "Not found" });
+      return res.status(404).send({ status: false, data: [] });
     }
 
     // Return the successful response with the data
