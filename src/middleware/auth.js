@@ -38,6 +38,7 @@ const authorization3 = async function (req, res, next) {
         .send({ status: false, message: 'invalid user Id' });
     }
     const user = await userModel.findById(userID);
+    
     if (!user) {
       return res.status(404).send({ status: false, message: 'User Not Found' });
     }
