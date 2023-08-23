@@ -47,12 +47,13 @@ const client = async (req, res) => {
     }
 
     // Find if a client with the provided vchNo already exists in the clientModel
-    let findVchNo = await clientModel.findOne({ vchNo: data.vchNo });
+    let vchoNoExist = await clientModel.findOne({ vchNo: data.vchNo });
 
-    // Check if the vchNo is already taken
-    if (findVchNo) {
-      return res.status(404).send({ status: false, message: "vchNo already exists" });
-    }
+    
+   // Check if the vchNo already exists and the corresponding client document is not deleted
+   if (vchoNoExist && !vchoNoExist.isDeleted) {
+    return res.status(400).send({ status: false, message: "vchNo already exists" });
+  }
 
     // Set the default timezone to Asia/Kolkata
     moment.tz.setDefault("Asia/Kolkata");
